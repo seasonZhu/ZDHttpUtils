@@ -82,9 +82,10 @@ class NetworkListener {
     
     //MARK:- 结束监听
     public func stopListen() {
-        if isListening { return }
+        if !isListening { return }
         
         manager.stopListening()
+        isListening = false
         //LogUtils.logSimple(isListening ? "结束监听成功" : "结束监听失败")
     }
     
