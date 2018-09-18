@@ -9,14 +9,16 @@
 import Foundation
 import Alamofire
 
-public enum NetworkType: CustomStringConvertible {
+public enum NetworkType {
     
     case
     unknow,
     notReachable,
     wifi,
     mobile
-    
+}
+
+extension NetworkType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .unknow: return "未知"
