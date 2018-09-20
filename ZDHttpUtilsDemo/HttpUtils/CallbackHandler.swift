@@ -22,7 +22,7 @@ protocol CallbackHandlerProtocol {
 }
 
 
-/// 结果回调
+/// 结果回调句柄
 public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     
     public var success: ((Mappable?, [Mappable]?)-> ())?

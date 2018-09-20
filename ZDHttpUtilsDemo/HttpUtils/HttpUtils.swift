@@ -30,7 +30,13 @@ public class HttpUtils {
         //  检查网络
         guard NetworkListener.shared.isReachable else {
             print("没有网络!")
+            
+            //  没有网络的拦截
             interceptHandle.onNetworkIsNotReachableHandler(type: NetworkListener.shared.status)
+            
+            //  响应缓存
+            responseCache(url: url, callbackHandler: callbackHandler)
+            
             return
         }
         
@@ -106,6 +112,22 @@ public class HttpUtils {
         case .failure(let error):
             callbackHandler.failure?(response.data, error)
             interceptHandle.onResponseErrorHandler(error: error)
+        }
+    }
+    
+    //  缓存响应 没有网络的时候触发
+    private static func responseCache<T: Mappable>(url: String, callbackHandler: CallbackHandler<T>) {
+        if callbackHandler.isArray {
+            //  目前保存的data是包含所有的JSON信息的 即data保存的是Top格式 所以转换需要一点小手段
+            if let JSONDict = HttpCacheManager.getCacheDict(url: url), let dicts = JSONDict[ResponseKey.share.result] as? [[String: Any]] {
+                let cache = Mapper<T>().mapArray(JSONArray: dicts)
+                callbackHandler.success?(nil, cache)
+            }
+        }else {
+            if let JSONString = HttpCacheManager.getCacheString(url: url) {
+                let cache = T(JSONString: JSONString)
+                callbackHandler.success?(cache, nil)
+            }
         }
     }
 }
