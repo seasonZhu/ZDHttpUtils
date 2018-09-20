@@ -19,7 +19,7 @@ protocol InterceptHandleProtocol: class {
     
     func onAfterHandler(url: String, response: DataResponse<JSON>?)
     
-    func onDataIntercept(data: Data?) -> Bool
+    func onDataInterceptHandler(data: Data?) -> Bool
     
     func onResponseErrorHandler(error: Error?)
     
@@ -115,7 +115,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     }
     
     //MARK:- 数据拦截
-    func onDataIntercept(data: Data?) -> Bool {
+    func onDataInterceptHandler(data: Data?) -> Bool {
         
         guard let unwrapedData = data,
             let JSONDict = try? JSONSerialization.jsonObject(with: unwrapedData, options:[]),

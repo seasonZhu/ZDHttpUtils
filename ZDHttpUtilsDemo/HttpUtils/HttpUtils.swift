@@ -77,7 +77,7 @@ public class HttpUtils {
     private static func responseCallbackHandler<T: Mappable>(response: DataResponse<T>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
         //  如果对数据进行拦截,那么直接return 不会回调数据
-        if interceptHandle.onDataIntercept(data: response.data) {
+        if interceptHandle.onDataInterceptHandler(data: response.data) {
             return
         }
         
@@ -98,7 +98,7 @@ public class HttpUtils {
     //  模型数组响应
     private static func responseArrayCallbackHandler<T: Mappable>(response: DataResponse<[T]>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
-        if interceptHandle.onDataIntercept(data: response.data) {
+        if interceptHandle.onDataInterceptHandler(data: response.data) {
             return
         }
         
