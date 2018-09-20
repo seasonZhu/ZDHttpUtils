@@ -77,18 +77,14 @@ class NetworkListener {
     //MARK:- 开始监听
     public func startListen() {
         if isListening { return }
-        
         isListening = manager.startListening()
-        //LogUtils.logSimple(isListening ? "开始监听成功" : "开始监听失败")
     }
     
     //MARK:- 结束监听
     public func stopListen() {
         if !isListening { return }
-        
         manager.stopListening()
         isListening = false
-        //LogUtils.logSimple(isListening ? "结束监听成功" : "结束监听失败")
     }
     
     //MARK:- 获取监听的网络状态
@@ -110,7 +106,6 @@ class NetworkListener {
     ///
     /// - Parameter callback: 回调
     public func listenStatus(_ callback: @escaping (_ type: NetworkType) -> ()) {
-        
         manager.listener = { status in
             let status = NetworkType.getType(by: status)
             callback(status)
