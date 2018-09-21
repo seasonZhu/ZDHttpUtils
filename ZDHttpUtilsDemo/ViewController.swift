@@ -44,7 +44,7 @@ extension ViewController {
     @objc
     func requestToTop() {
         
-        //  直接到根路径进行转换
+        //  直接到顶层路径进行转换
         let callbackHandler = CallbackHandler<ResponseArray<Item>>()
         
         callbackHandler.success = { model, models in
@@ -65,20 +65,20 @@ extension ViewController {
     @objc
     func requestToRoot() {
         //  直接到目的路径 所以泛型的类型需要进行更改
-        let callbackKeyPath = CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
+        let callbackHandler = CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
         
-        callbackKeyPath.success = { model, models in
+        callbackHandler.success = { model, models in
             guard let unwrapedModels = models else {
                 return
             }
             print(unwrapedModels)
         }
         
-        callbackKeyPath.failure = { data, error in
+        callbackHandler.failure = { data, error in
             print(String(describing: data), String(describing: error))
         }
         
-        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackKeyPath)
+        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
         
     }
 }
