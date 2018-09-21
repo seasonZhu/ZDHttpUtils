@@ -15,7 +15,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     
     let userAgentInfo: String = UIWebView(frame: CGRect.zero).stringByEvaluatingJavaScript(from: "navigator.userAgent") ?? "Unknown"
     
-    var sessionManage: SessionManager
+    var sessionManager: SessionManager
     
     var headers = ["Content-Type": "application/json"]
     
@@ -45,7 +45,9 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         
         //sessionManage = Alamofire.SessionManager(configuration: config)
         
-        sessionManage = SessionManager.default
+        //sessionManager = SessionManager.default
+        
+        sessionManager = SessionManager.normal
     }
 }
 
@@ -56,7 +58,7 @@ extension BaseDao {
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
                           callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManage, method: .get, url: ApiUrl.baseUrl + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+        HttpUtils.request(sessionManage: sessionManager, method: .get, url: ApiUrl.baseUrl + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
     
     //MARK:- 内部的post请求, 使用header时候 需要注意是否需要签名
@@ -64,7 +66,15 @@ extension BaseDao {
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
                           callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManage, method: .post, url: ApiUrl.baseUrl + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+        HttpUtils.request(sessionManage: sessionManager, method: .post, url: ApiUrl.baseUrl + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
 }
 
+extension SessionManager {
+    static let normal: SessionManager = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 30
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        return SessionManager(configuration: configuration)
+    }()
+}
