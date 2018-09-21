@@ -132,6 +132,95 @@ public class HttpUtils {
     }
 }
 
+/// 上传闭包
+typealias UploadResult = (_ uploadUrl: URL?, _ isSuccess: Bool, _ resultDict: [String: Any]?) -> ()
+
+/// 上传进度闭包
+typealias UploadProgress = (_ uploadUrl: URL?, _ progress: Progress) -> ()
+
+/// 上传数据流
+typealias UploadStream = [String: Data]
+
+//MARK:- 上传的网络请求
+extension HttpUtils {
+    
+    /// 文件上传
+    ///
+    /// - Parameters:
+    ///   - url: 请求的url
+    ///   - uploadStream: 上传流
+    ///   - params: 请求字段
+    ///   - size: 如果是图片 图片大小
+    ///   - mimeType: 媒体类型
+    ///   - uploadResult: 上传结果回调
+    ///   - uploadProgress: 上传进度回调
+    class func uploadData(url: String,
+                          uploadStream: UploadStream,
+                          params: Parameters? = nil,
+                          size: CGSize?,
+                          mimeType: MimeType,
+                          uploadResult: @escaping UploadResult,
+                          uploadProgress: @escaping UploadProgress) {
+        //  请求头的设置
+        var headers = ["Content-Type": "multipart/form-data;charset=UTF-8"]
+        
+        if let mediaSize = size {
+            headers.merge(["width":"\(mediaSize.width)","height":"\(mediaSize.height)"]) { (old, new) in new }
+        }
+        
+        //  菊花转
+        indicatorRun()
+        
+        //  开始请求
+        Alamofire.upload(multipartFormData: { multipartFormData in
+            
+            //  是否有请求字段
+            if let parameters = params as? [String: String]{
+                for (key, value) in parameters {
+                    if let data = value.data(using: .utf8) {
+                        multipartFormData.append(data, withName: key)
+                    }
+                }
+            }
+            
+            //  数据上传
+            for (key, value) in uploadStream {
+                multipartFormData.append(value, withName: key, fileName: key + mimeType.getDefaultFileName(), mimeType: mimeType.getMimeTypeString())
+            }
+        },
+                         to: url,
+                         headers: headers,
+                         encodingCompletion: { encodingResult in
+                            
+                            //  菊花转结束
+                            indicatorStop()
+                            
+                            //  响应请求结果
+                            switch encodingResult {
+                            case .success(let uploadRequest, _ , let streamFileURL):
+                                
+                                uploadRequest.responseJSON(completionHandler: { (response) in
+                                    switch response.result {
+                                    case .success(let value):
+                                        uploadResult(streamFileURL, true, value as? [String: Any])
+                                    case .failure(_):
+                                        uploadResult(streamFileURL, false ,nil)
+                                    }
+                                })
+                                
+                                uploadRequest.uploadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
+                                    uploadProgress(streamFileURL, progress)
+                                }
+                                
+                            case .failure(_):
+                                uploadResult(nil, false, nil)
+                                
+                            }
+        })
+        
+    }
+}
+
 //MARK:- 系统状态栏上的网络请求转圈
 extension HttpUtils {
     
