@@ -16,7 +16,7 @@ public class HttpUtils {
     public static func request<T: Mappable>(sessionManage: SessionManager = SessionManager.default,
                                             method: HTTPMethod,
                                             url:String,
-                                            parameters: Parameters?,
+                                            parameters: Parameters? = nil,
                                             headers: HTTPHeaders? = nil,
                                             interceptHandle: InterceptHandle,
                                             callbackHandler: CallbackHandler<T>) {
