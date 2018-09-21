@@ -16,16 +16,18 @@ class HttpCacheManager {
     /// - Parameters:
     ///   - data: 数据
     ///   - url: url
-    /// - Returns: 是否写入成功
-    @discardableResult
-    static func write(data: Data?, by url: String) -> Bool {
-        let filePath = getFilePath(url: url)
-        let fileUrl = URL(fileURLWithPath: filePath)
-        do {
-            try data?.write(to: fileUrl)
-            return true
-        } catch _ {
-            return false
+    ///   - callback: 是否写入成功的回调
+    static func write(data: Data?, by url: String, callback: ((Bool) -> ())? = nil) {
+        let ioQueue = DispatchQueue(label: "com.lostsakura.season")
+        ioQueue.async {
+            let filePath = getFilePath(url: url)
+            let fileUrl = URL(fileURLWithPath: filePath)
+            do {
+                try data?.write(to: fileUrl)
+                callback?(true)
+            } catch _ {
+                callback?(false)
+            }
         }
     }
     

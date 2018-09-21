@@ -52,6 +52,11 @@ public class HttpUtils {
             
             //  后置拦截 打印漂亮的Json
             interceptHandle.onAfterHandler(url: url, response: response)
+            
+            //  缓存数据
+            HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
+                print("写入\(isOK ? "成功" : "失败")")
+            })
         }
         
         //  结果进行回调

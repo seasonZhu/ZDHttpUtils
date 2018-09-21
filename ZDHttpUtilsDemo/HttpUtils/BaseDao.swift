@@ -19,7 +19,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     
     var headers = ["Content-Type": "application/json"]
     
-    init(httpConfig: HttpConfig) {
+    init(httpConfig: HttpConfig, sessionManager: SessionManager? = nil) {
         
         self.httpConfig = httpConfig
         
@@ -30,10 +30,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         let config = URLSessionConfiguration.default
         //  配置超时时间
         config.timeoutIntervalForRequest = httpConfig.timeOut
-        //  配置请求头
-        config.httpAdditionalHeaders = headers
-        
-        
+
         /*
          我跪在这里了 一旦不是使用SessionManager.default 而是自己使用构造器进行请求 就跪了
          load failed with error Error Domain=NSURLErrorDomain Code=-999 "cancelled"
@@ -43,11 +40,11 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
          感觉和设置安全设置与SSL有关 但是目前又不知道怎么回事
          */
         
-        //sessionManage = Alamofire.SessionManager(configuration: config)
+        //sessionManager = Alamofire.SessionManager(configuration: config)
         
         //sessionManager = SessionManager.default
         
-        sessionManager = SessionManager.normal
+        self.sessionManager = sessionManager ?? SessionManager.default
     }
 }
 
@@ -71,7 +68,15 @@ extension BaseDao {
 }
 
 extension SessionManager {
-    static let normal: SessionManager = {
+    
+    static let timeout5s: SessionManager = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 5
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        return SessionManager(configuration: configuration)
+    }()
+    
+    static let timeout30s: SessionManager = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 30
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
