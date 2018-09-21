@@ -10,4 +10,8 @@ import Foundation
 
 class BaseViewModel {
     
+    /// 拦截句柄 可以子类中进行重写
+    var interceptHandle: InterceptHandle {
+        return InterceptHandle()
+    }
 }

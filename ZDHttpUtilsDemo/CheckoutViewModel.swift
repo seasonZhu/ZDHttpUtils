@@ -11,9 +11,11 @@ import Alamofire
 import ObjectMapper
 
 class CheckoutViewModel: BaseViewModel {
-    private lazy var dao = CheckoutDao.init(httpConfig: HttpConfig.Builder().setTimeOut(10).constructor)
+    private lazy var dao = CheckoutDao.init(httpConfig: HttpConfig.Builder().setTimeOut(10).constructor, sessionManager: SessionManager.timeout30s)
     
-    private var interceptHandle = InterceptHandle.Builder().setIsShowToast(false).constructor
+    override var interceptHandle: InterceptHandle {
+        return InterceptHandle.Builder().setIsShowToast(false).constructor
+    }
     
     func getResponse<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle? = nil, callbackHandler: CallbackHandler<T>) {
         dao.getList(parameters: parameters, interceptHandle: interceptHandle ?? self.interceptHandle, callbackHandler: callbackHandler)
