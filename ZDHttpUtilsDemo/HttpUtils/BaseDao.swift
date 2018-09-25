@@ -82,4 +82,13 @@ extension SessionManager {
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         return SessionManager(configuration: configuration)
     }()
+    
+    static let timeout45s: SessionManager? = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 45
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        let delegate = SessionDelegate()
+        let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        return SessionManager(session: session, delegate: delegate)
+    }()
 }

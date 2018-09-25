@@ -71,7 +71,20 @@ extension ViewController {
 //            print(response)
 //        }
         
-        CheckoutViewModel().getResponse(callbackHandler: callbackHandler)
+//        let configuration = URLSessionConfiguration.default
+//        configuration.timeoutIntervalForRequest = 15.0
+//        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+//        let delegate = SessionDelegate()
+//        let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
+//        SessionManager(session: session, delegate: delegate)?.request("http://sun.topray-media.cn/tz_inf/api/topics", method: .post, parameters: nil).responseJSON { (response) in
+//                print(response)
+//            }
+        
+//        SessionManager.timeout45s?.request("http://sun.topray-media.cn/tz_inf/api/topics", method: .post, parameters: nil).responseJSON { (response) in
+//            print(response)
+//        }
+        
+        //CheckoutViewModel().getResponse(callbackHandler: callbackHandler)
     }
     
     //MARK:- 到底层的模型请求
@@ -95,6 +108,3 @@ extension ViewController {
         
     }
 }
-
-
-
