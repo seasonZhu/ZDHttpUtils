@@ -12,7 +12,7 @@ import Alamofire
 public enum NetworkType {
     
     case
-    unknow,
+    unknown,
     notReachable,
     wifi,
     mobile
@@ -21,7 +21,7 @@ public enum NetworkType {
 extension NetworkType: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .unknow: return "未知"
+        case .unknown: return "未知"
         case .notReachable: return "没有网络"
         case .wifi: return "wifi网络"
         case .mobile: return "手机网络"
@@ -35,7 +35,7 @@ extension NetworkType {
         var status: NetworkType
         switch reachabilityStatus {
         case .unknown:
-            status = .unknow
+            status = .unknown
         case .notReachable:
             status = .notReachable
         case .reachable(NetworkReachabilityManager.ConnectionType.ethernetOrWiFi):
@@ -47,6 +47,7 @@ extension NetworkType {
     }
 }
 
+/// 网络监听器
 class NetworkListener {
     
     //MARK:- 属性设置

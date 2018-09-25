@@ -55,15 +55,15 @@ extension BaseDao {
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
                           callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManager, method: .get, url: ApiUrl.baseUrl + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+        HttpUtils.request(sessionManage: sessionManager, method: .get, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
     
-    //MARK:- 内部的post请求, 使用header时候 需要注意是否需要签名
+    //MARK:- 内部的post请求, 使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
     func post<T: Mappable>(moduleUrl: String,
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
                           callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManager, method: .post, url: ApiUrl.baseUrl + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+        HttpUtils.request(sessionManage: sessionManager, method: .post, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
 }
 

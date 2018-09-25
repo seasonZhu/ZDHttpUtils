@@ -6,6 +6,8 @@
 //  Copyright © 2018年 season. All rights reserved.
 //
 
+/// Swift原生MD5
+
 public typealias Byte = UInt8
 typealias Word = UInt32
 

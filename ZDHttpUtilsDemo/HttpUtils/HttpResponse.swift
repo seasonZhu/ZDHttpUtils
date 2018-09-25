@@ -12,6 +12,7 @@ import ObjectMapper
 //MARK:- 响应字符串key
 class ResponseKey {
     static let share = ResponseKey()
+    private init() {}
     
     var code = "code"
     var message = "message"
