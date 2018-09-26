@@ -11,7 +11,7 @@ import Alamofire
 import ObjectMapper
 
 class CheckoutViewModel: BaseViewModel {
-    private lazy var dao = CheckoutDao.init(httpConfig: HttpConfig.Builder().setTimeOut(10).constructor, sessionManager: SessionManager.timeout30s)
+    private lazy var dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).constructor, sessionManager: SessionManager.timeout45s)
     
     override var interceptHandle: InterceptHandle {
         return InterceptHandle.Builder().setIsShowToast(false).constructor

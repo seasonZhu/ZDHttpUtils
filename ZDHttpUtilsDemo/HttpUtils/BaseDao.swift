@@ -26,11 +26,16 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         //  处理Header
         headers.merge(SessionManager.defaultHTTPHeaders) { (str1, str2) -> String in return str1 }
         
+        //  赋值sessionManager
+        self.sessionManager = sessionManager ?? SessionManager.default
+        
+        /*----------- 下面是坑爹的点 ----------*/
+        
         //  配置Session
         let config = URLSessionConfiguration.default
         //  配置超时时间
         config.timeoutIntervalForRequest = httpConfig.timeOut
-
+        
         /*
          我跪在这里了 一旦不是使用SessionManager.default 而是自己使用构造器进行请求 就跪了
          load failed with error Error Domain=NSURLErrorDomain Code=-999 "cancelled"
@@ -38,13 +43,18 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
          Most likely you should be checking if there is an implementation of authentication challenge delegate method and check if its calling NSURLSessionAuthChallengeCancelAuthenticationChallenge.
          
          感觉和设置安全设置与SSL有关 但是目前又不知道怎么回事
+         
+         20180926更新: 这个Isusse是普遍存在的:
+         不能在方法里面进行这些设置，sessionManager在退出方法后便被回收，设置自然不起作用，正确的方法是要保持一个公有的sessionManager变量，这样就不会被回收。即要改写为静态变量的设置
+         如果不想写静态变量,可以像我w下面写manager一样进行写 但是在点击的瞬间还是不报错,不过会请求到结果
          */
         
-        //sessionManager = Alamofire.SessionManager(configuration: config)
-        
-        //sessionManager = SessionManager.default
-        
-        self.sessionManager = sessionManager ?? SessionManager.default
+        let manager: SessionManager = {
+            let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForRequest = httpConfig.timeOut
+            configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+            return SessionManager(configuration: configuration)
+        }()
     }
 }
 

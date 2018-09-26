@@ -96,7 +96,9 @@ public class InterceptHandle: InterceptHandleProtocol {
         }
         
         //  打印请求API
+        #if DEBUG
         print("HttpUtils ## API Request ## \(method) ## \(url) ## params=\(String(describing: parameters))")
+        #endif
         
         return isBeforeHandler
     }
@@ -111,7 +113,9 @@ public class InterceptHandle: InterceptHandleProtocol {
             return
         }
         
+        #if DEBUG
         print("HttpUtils ## API Response ## \(String(describing: url)) ## data=\(String(describing: response))")
+        #endif
     }
     
     //MARK:- 数据拦截
