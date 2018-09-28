@@ -55,7 +55,9 @@ public class HttpUtils {
             
             //  缓存数据
             HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
-                print("写入\(isOK ? "成功" : "失败")")
+                #if DDEBUG
+                print("写入JSON缓存\(isOK ? "成功" : "失败")")
+                #endif
             })
         }
         
@@ -165,7 +167,7 @@ extension HttpUtils {
     ///   - uploadProgress: 上传进度回调
     class func uploadData(url: String,
                           uploadStream: UploadStream,
-                          params: Parameters? = nil,
+                          parameters: Parameters? = nil,
                           size: CGSize?,
                           mimeType: MimeType,
                           uploadResult: @escaping UploadResult,
@@ -173,8 +175,10 @@ extension HttpUtils {
         //  请求头的设置
         var headers = ["Content-Type": "multipart/form-data;charset=UTF-8"]
         
+        //  如果有多媒体的宽高信息,就加入headers中
         if let mediaSize = size {
-            headers.merge(["width":"\(mediaSize.width)","height":"\(mediaSize.height)"]) { (old, new) in new }
+            headers.updateValue("\(mediaSize.width)", forKey: "width")
+            headers.updateValue("\(mediaSize.height)", forKey: "height")
         }
         
         //  菊花转
@@ -184,8 +188,8 @@ extension HttpUtils {
         Alamofire.upload(multipartFormData: { multipartFormData in
             
             //  是否有请求字段
-            if let parameters = params as? [String: String]{
-                for (key, value) in parameters {
+            if let dict = parameters as? [String: String]{
+                for (key, value) in dict {
                     if let data = value.data(using: .utf8) {
                         multipartFormData.append(data, withName: key)
                     }
