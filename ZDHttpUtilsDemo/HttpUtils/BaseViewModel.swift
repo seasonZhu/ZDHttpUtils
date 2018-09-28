@@ -14,4 +14,12 @@ class BaseViewModel {
     var interceptHandle: InterceptHandle {
         return InterceptHandle()
     }
+    
+    deinit {
+        print("\(String(describing: type(of: BaseViewModel.self))) 销毁了")
+    }
+}
+
+extension BaseViewModel {
+    /// 如果想使用ViewModel的类方法,那么需要配置化InterceptHandle的静态变量 😁
 }

@@ -23,14 +23,21 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         
         self.httpConfig = httpConfig
         
+        //  headers的处理
+        
         //  这个方法不仅可以更新 也可以进行键值对的添加
         headers.updateValue(userAgentInfo, forKey: "User-Agent")
         headers.updateValue("season", forKey: "developer")
         
+        //  如果需要进行签名 这里需要进行
+        if httpConfig.isNeedSign {
+            headers.updateValue("season".swiftMd5, forKey: "token")
+        }
+        
         //  处理Header merge的用法 点进去看详细的
         headers.merge(SessionManager.defaultHTTPHeaders) { (current, new) -> String in return current }
         
-        print("defaultHTTPHeaders: \(SessionManager.defaultHTTPHeaders)")
+        //print("defaultHTTPHeaders: \(SessionManager.defaultHTTPHeaders)")
         print("headers: \(headers)")
         
         //  赋值sessionManager
@@ -62,6 +69,10 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
             configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
             return SessionManager(configuration: configuration)
         }()
+    }
+    
+    deinit {
+        print("\(String(describing: type(of: BaseDao.self))) 销毁了")
     }
 }
 

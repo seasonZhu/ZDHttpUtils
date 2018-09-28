@@ -11,13 +11,20 @@ import Alamofire
 import ObjectMapper
 
 class CheckoutViewModel: BaseViewModel {
-    private lazy var dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).constructor, sessionManager: SessionManager.timeout45s)
+    //MARK:- 对象方法使用
+    private lazy var dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).isNeedSign(true).constructor, sessionManager: SessionManager.timeout45s)
     
     override var interceptHandle: InterceptHandle {
         return InterceptHandle.Builder().setIsShowToast(false).constructor
     }
     
-    func getResponse<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle? = nil, callbackHandler: CallbackHandler<T>) {
+    func getList<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle? = nil, callbackHandler: CallbackHandler<T>) {
         dao.getList(parameters: parameters, interceptHandle: interceptHandle ?? self.interceptHandle, callbackHandler: callbackHandler)
+    }
+    
+    //MARK:- 类方法使用
+    static func getList<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle? = nil, callbackHandler: CallbackHandler<T>) {
+        let dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).constructor, sessionManager: SessionManager.timeout45s)
+        dao.getList(parameters: parameters, interceptHandle: interceptHandle ?? InterceptHandle(), callbackHandler: callbackHandler)
     }
 }

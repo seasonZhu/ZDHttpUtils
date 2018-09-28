@@ -62,7 +62,8 @@ extension ViewController {
 //        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
         
         
-        CheckoutViewModel().getResponse(callbackHandler: callbackHandler)
+        CheckoutViewModel().getList(callbackHandler: callbackHandler)
+        //CheckoutViewModel.getList(callbackHandler: callbackHandler)
     }
     
     //MARK:- 到底层的模型请求
