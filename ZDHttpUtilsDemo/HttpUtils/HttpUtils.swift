@@ -127,11 +127,15 @@ public class HttpUtils {
             if let JSONDict = HttpCacheManager.getCacheDict(url: url), let dicts = JSONDict[ResponseKey.share.result] as? [[String: Any]] {
                 let cache = Mapper<T>().mapArray(JSONArray: dicts)
                 callbackHandler.success?(nil, cache)
+            }else {
+                callbackHandler.message?("读取缓存失败")
             }
         }else {
             if let JSONString = HttpCacheManager.getCacheString(url: url) {
                 let cache = T(JSONString: JSONString)
                 callbackHandler.success?(cache, nil)
+            }else {
+                callbackHandler.message?("读取缓存失败")
             }
         }
     }

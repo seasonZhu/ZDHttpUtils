@@ -23,8 +23,15 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         
         self.httpConfig = httpConfig
         
-        //  处理Header
-        headers.merge(SessionManager.defaultHTTPHeaders) { (str1, str2) -> String in return str1 }
+        //  这个方法不仅可以更新 也可以进行键值对的添加
+        headers.updateValue(userAgentInfo, forKey: "User-Agent")
+        headers.updateValue("season", forKey: "developer")
+        
+        //  处理Header merge的用法 点进去看详细的
+        headers.merge(SessionManager.defaultHTTPHeaders) { (current, new) -> String in return current }
+        
+        print("defaultHTTPHeaders: \(SessionManager.defaultHTTPHeaders)")
+        print("headers: \(headers)")
         
         //  赋值sessionManager
         self.sessionManager = sessionManager ?? SessionManager.default
@@ -46,7 +53,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
          
          20180926更新: 这个Isusse是普遍存在的:
          不能在方法里面进行这些设置，sessionManager在退出方法后便被回收，设置自然不起作用，正确的方法是要保持一个公有的sessionManager变量，这样就不会被回收。即要改写为静态变量的设置
-         如果不想写静态变量,可以像我w下面写manager一样进行写 但是在点击的瞬间还是不报错,不过会请求到结果
+         如果不想写静态变量,可以像我下面写manager一样进行写 但是在点击的瞬间还是会报错,不过会请求到结果
          */
         
         let manager: SessionManager = {
@@ -77,6 +84,7 @@ extension BaseDao {
     }
 }
 
+// MARK: - SessionManager实例的静态写法
 extension SessionManager {
     
     static let timeout5s: SessionManager = {
