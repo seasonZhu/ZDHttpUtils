@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import ObjectMapper
 import SwiftyJSON
+import NVActivityIndicatorView
 
 protocol InterceptHandleProtocol: class {
     
@@ -88,11 +89,15 @@ public class InterceptHandle: InterceptHandleProtocol {
     //MARK:- 前置拦截
     func onBeforeHandler(method: HTTPMethod, url: String, parameters: Parameters?) -> Bool {
         if isShowLoading && !isBeforeHandler {
+            let data: ActivityData
             if let text = loadingText {
+                data = ActivityData(message: text, type: .lineSpinFadeLoader, textColor: nil)
                 //带文字的菊花转
             } else {
                 //不带文字的菊花转
+                data = ActivityData(message: nil, type: .lineSpinFadeLoader, textColor: nil)
             }
+            NVActivityIndicatorPresenter.sharedInstance.startAnimating(data, nil)
         }
         
         //  打印请求API
@@ -107,6 +112,9 @@ public class InterceptHandle: InterceptHandleProtocol {
     func onAfterHandler(url: String, response: DataResponse<JSON>?) {
         if isShowLoading {
             //  隐藏菊花转
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+               NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
+            }
         }
         
         if isAfterHandler {

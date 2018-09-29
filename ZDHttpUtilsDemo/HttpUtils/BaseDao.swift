@@ -50,6 +50,8 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         //  配置超时时间
         config.timeoutIntervalForRequest = httpConfig.timeOut
         
+        let unuserableSesssionManager = SessionManager(configuration: config)
+        
         /*
          我跪在这里了 一旦不是使用SessionManager.default 而是自己使用构造器进行请求 就跪了
          load failed with error Error Domain=NSURLErrorDomain Code=-999 "cancelled"

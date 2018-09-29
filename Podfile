@@ -18,5 +18,8 @@ target 'ZDHttpUtilsDemo' do
 
 	#Toast
     pod 'Toast-Swift'
+    
+    #很牛X的loading界面 也就很牛X的简单用用,这个实在是太高端了
+    pod 'NVActivityIndicatorView'
 
 end

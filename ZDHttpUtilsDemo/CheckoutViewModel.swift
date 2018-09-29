@@ -15,7 +15,7 @@ class CheckoutViewModel: BaseViewModel {
     private lazy var dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).isNeedSign(true).constructor, sessionManager: SessionManager.timeout45s)
     
     override var interceptHandle: InterceptHandle {
-        return InterceptHandle.Builder().setIsShowToast(false).constructor
+        return InterceptHandle.Builder().setIsShowToast(false).setIsShowLoading(true).setLoadingText("wait...").constructor
     }
     
     func getList<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle? = nil, callbackHandler: CallbackHandler<T>) {
