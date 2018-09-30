@@ -3,8 +3,10 @@ Swift 基于Alamofire/ObjectMapper/SwiftyJson的封装
 
 写了一个结果回调类CallbackHandler用于处理模型
 写了一个拦截回调类InterceptHandle用于处理各种非正常情况
+封装了一个网络监听器,用于监听网络状态,在每次网络请求时都进行一次取值,避免无网络继续进行请求
+写了一个JSON缓存工具,将请求成功的JSON转为Data保存在沙盒中,在没有网络的情况下可以通过url的MD5进行读取
 
-这样的话就将不同的业务分离出来,进行不同封装
+这样的话就将不同的业务分离出来,进行不同处理
 
 其实写的Dao层与ViewModel层只是很薄的一层封装,如果不想使用直接使用HttpUtils就可以了
 
