@@ -1,4 +1,17 @@
 # ZDHttpUtils
 Swift 基于Alamofire/ObjectMapper/SwiftyJson的封装
 
-基本的封装思路已经完成了,不过需要抽代码与重新建工程,最近还是想先多读代码,先占个坑,O(∩_∩)O哈哈~
+写了一个结果回调类CallbackHandler用于处理模型
+写了一个拦截回调类InterceptHandle用于处理各种非正常情况
+
+这样的话就将不同的业务分离出来,进行不同封装
+
+其实写的Dao层与ViewModel层只是很薄的一层封装,如果不想使用直接使用HttpUtils就可以了
+
+另外泛型的装配是一个很奇怪但是很不错的思路,我也是无意间想到的,比起通过集成来获得父类的属性,这样做更加灵活
+
+通过AlamofireObjectMapper,你可以直达JSON层里面你想要数据那一层,也是很不错的思路
+
+因为这个组件使用需要高度的自定义,所以cocopods还是问题
+
+
