@@ -54,12 +54,3 @@ class HttpConfig {
         }
     }
 }
-
-
-//MARK:- 吐司显示
-func showToast(_ message: String) {
-    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-        return
-    }
-    appDelegate.window?.rootViewController?.view.makeToast(message)
-}

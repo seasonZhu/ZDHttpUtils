@@ -97,7 +97,8 @@ public class InterceptHandle: InterceptHandleProtocol {
                 //不带文字的菊花转
                 data = ActivityData(message: nil, type: .lineSpinFadeLoader, textColor: nil)
             }
-            NVActivityIndicatorPresenter.sharedInstance.startAnimating(data, nil)
+            //NVActivityIndicatorPresenter.sharedInstance.startAnimating(data, nil)
+            showActivity()
         }
         
         //  打印请求API
@@ -112,8 +113,9 @@ public class InterceptHandle: InterceptHandleProtocol {
     func onAfterHandler(url: String, response: DataResponse<JSON>?) {
         if isShowLoading {
             //  隐藏菊花转
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-               NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+               //NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
+                hideActivity()
             }
         }
         
