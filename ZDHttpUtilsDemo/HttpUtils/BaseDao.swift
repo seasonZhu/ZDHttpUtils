@@ -80,7 +80,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
 
 extension BaseDao {
     
-    //MARK:- get请求
+    //MARK:- 内部get请求
     func get<T: Mappable>(moduleUrl: String,
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
@@ -88,7 +88,7 @@ extension BaseDao {
         HttpUtils.request(sessionManage: sessionManager, method: .get, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
     
-    //MARK:- 内部的post请求, 使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
+    //MARK:- 内部post请求, 使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
     func post<T: Mappable>(moduleUrl: String,
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
