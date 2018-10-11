@@ -60,7 +60,6 @@ class HttpCacheManager {
         return string
     }
     
-    
     /// 通过传递的路径判断 文件或者文件夹, 如果不存在就进行创建, 这个方法一定要调用呀
     ///
     /// - Parameter path: 路径

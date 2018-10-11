@@ -13,8 +13,6 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        configResponseKey()
         setUpUI()
     }
     
@@ -31,11 +29,23 @@ class ViewController: UIViewController {
         requestToRootButton.backgroundColor = UIColor.lightGray
         requestToRootButton.addTarget(self, action: #selector(requestToRoot), for: .touchUpInside)
         view.addSubview(requestToRootButton)
+        
+        let u17Button = UIButton(frame: CGRect(x:  0, y: 216, width: view.bounds.width, height: 44))
+        u17Button.setTitle("有妖气请求 非常复杂", for: .normal)
+        u17Button.backgroundColor = UIColor.lightGray
+        u17Button.addTarget(self, action: #selector(requestU17), for: .touchUpInside)
+        view.addSubview(u17Button)
     }
     
     //MARK:- 设置请求服务的key
     private func configResponseKey() {
         ResponseKey.share.result = "list"
+        ResponseKey.share.code = "code"
+    }
+    
+    //MARK:- 设置u17请求服务的key
+    private func configU17ResponseKey() {
+        ResponseKey.share.result = "data"
         ResponseKey.share.code = "code"
     }
 }
@@ -44,6 +54,8 @@ extension ViewController {
     //MARK:- 到顶层的模型请求
     @objc
     func requestToTop() {
+        
+        configResponseKey()
         
         //  直接到顶层路径进行转换
         let callbackHandler = CallbackHandler<ResponseArray<Item>>()
@@ -69,6 +81,9 @@ extension ViewController {
     //MARK:- 到底层的模型请求
     @objc
     func requestToRoot() {
+        
+        configResponseKey()
+        
         //  直接到目的路径 所以泛型的类型需要进行更改
         let callbackHandler = CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
         
@@ -85,5 +100,29 @@ extension ViewController {
         
         HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
         
+    }
+    
+    //MARK:- 有妖气的网络请求 返回非常的复杂
+    @objc
+    func requestU17() {
+        
+        configU17ResponseKey()
+        
+        let callbackHandler = CallbackHandler<Response<U17Data>>() // CallbackHandler<U17Root>()
+        
+        callbackHandler.success = { model, models in
+            guard let unwrapedModel = model else {
+                return
+            }
+            print(unwrapedModel)
+        }
+        
+        callbackHandler.failure = { data, error in
+            print(String(describing: data), String(describing: error))
+        }
+        
+        let parameters = ["sexType":"1","key":"fabe6953ce6a1b8738bd2cabebf893a472d2b6274ef7ef6f6a5dc7171e5cafb14933ae65c70bceb97e0e9d47af6324d50394ba70c1bb462e0ed18b88b26095a82be87bc9eddf8e548a2a3859274b25bd0ecfce13e81f8317cfafa822d8ee486fe2c43e7acd93e9f19fdae5c628266dc4762060f6026c5ca83e865844fc6beea59822ed4a70f5288c25edb1367700ebf5c78a27f5cce53036f1dac4a776588cd890cd54f9e5a7adcaeec340c7a69cd986:::open","target":"U17_3.0","version":"3.3.3","v":"3320101","model":"Simulator","device_id":"29B09615-E478-4320-8E6A-55B1DE48CB36","time":"\(Int32(Date().timeIntervalSince1970))"]
+        
+        HttpUtils.request(method: .post, url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", parameters: parameters, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
     }
 }
