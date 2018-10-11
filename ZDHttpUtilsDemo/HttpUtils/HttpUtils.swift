@@ -55,7 +55,7 @@ public class HttpUtils {
             
             //  缓存数据
             HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
-                #if DDEBUG
+                #if DEBUG
                 print("写入JSON缓存\(isOK ? "成功" : "失败")")
                 #endif
             })
