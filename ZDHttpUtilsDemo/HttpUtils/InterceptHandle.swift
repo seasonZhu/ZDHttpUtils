@@ -12,7 +12,7 @@ import ObjectMapper
 import SwiftyJSON
 import NVActivityIndicatorView
 
-protocol InterceptHandleProtocol: class {
+protocol InterceptHandleProtocol {
     
     func onNetworkIsNotReachableHandler(type: NetworkType)
     
@@ -89,13 +89,13 @@ public class InterceptHandle: InterceptHandleProtocol {
     //MARK:- 前置拦截
     func onBeforeHandler(method: HTTPMethod, url: String, parameters: Parameters?) -> Bool {
         if isShowLoading && !isBeforeHandler {
-            let data: ActivityData
+            //let data: ActivityData
             if let text = loadingText {
-                data = ActivityData(message: text, type: .lineSpinFadeLoader, textColor: nil)
+                //data = ActivityData(message: text, type: .lineSpinFadeLoader, textColor: nil)
                 //带文字的菊花转
             } else {
                 //不带文字的菊花转
-                data = ActivityData(message: nil, type: .lineSpinFadeLoader, textColor: nil)
+                //data = ActivityData(message: nil, type: .lineSpinFadeLoader, textColor: nil)
             }
             //NVActivityIndicatorPresenter.sharedInstance.startAnimating(data, nil)
             showActivity()
@@ -114,7 +114,7 @@ public class InterceptHandle: InterceptHandleProtocol {
         if isShowLoading {
             //  隐藏菊花转
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-               //NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
+                //NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
                 hideActivity()
             }
         }
@@ -150,7 +150,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     //MARK:- 响应结果拦截 主要针对失败
     func onResponseErrorHandler(error: Error?) {
         if isShowToast, let _ = error {
-            showToast("网络请求失败")
+            showToast(error.debugDescription)
         }
     }
     
@@ -163,7 +163,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     }
     
     /// 设置请求的Tag
-    func setTag(tag: String?) -> Self{
+    func setTag(tag: String?) -> Self {
         self.tag = tag
         return self
     }

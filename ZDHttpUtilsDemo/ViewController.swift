@@ -31,7 +31,7 @@ class ViewController: UIViewController {
         view.addSubview(requestToRootButton)
         
         let u17Button = UIButton(frame: CGRect(x:  0, y: 216, width: view.bounds.width, height: 44))
-        u17Button.setTitle("有妖气请求 非常复杂", for: .normal)
+        u17Button.setTitle("有妖气请求", for: .normal)
         u17Button.backgroundColor = UIColor.lightGray
         u17Button.addTarget(self, action: #selector(requestU17), for: .touchUpInside)
         view.addSubview(u17Button)
