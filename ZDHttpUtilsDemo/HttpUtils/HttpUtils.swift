@@ -88,7 +88,6 @@ public class HttpUtils {
             return
         }
         
-        
         //  响应请求结果回调
         switch response.result {
             
