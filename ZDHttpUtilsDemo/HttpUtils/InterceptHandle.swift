@@ -24,6 +24,8 @@ protocol InterceptHandleProtocol {
     
     func onResponseErrorHandler(error: Error?)
     
+    func onCacheHandler() -> Bool
+    
 }
 
 /// 拦截句柄
@@ -48,6 +50,9 @@ public class InterceptHandle: InterceptHandleProtocol {
     
     ///  是否进行吐司
     private var isShowToast = false
+    
+    ///  是否进行缓存设置
+    private var isCache = true
         
     ///  请求的tag
     private var tag: String?
@@ -56,7 +61,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     
     /// 便利构造函数
     public convenience init() {
-        self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isShowLoading: false, loadingText: nil, isShowToast: true, tag: nil)
+        self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isShowLoading: true, loadingText: nil, isShowToast: true, isCache: true,tag: nil)
     }
     
     /// 如果需要进行配置 请使用这个
@@ -66,6 +71,7 @@ public class InterceptHandle: InterceptHandleProtocol {
          isShowLoading: Bool = false,
          loadingText: String? = nil,
          isShowToast: Bool = true,
+         isCache: Bool = true,
          tag: String? = nil) {
         
         self.isBeforeHandler = isBeforeHandler
@@ -74,6 +80,7 @@ public class InterceptHandle: InterceptHandleProtocol {
         self.isShowLoading = isShowLoading
         self.loadingText = loadingText
         self.isShowToast = isShowToast
+        self.isCache = isCache
         self.tag = tag
     }
     
@@ -137,14 +144,21 @@ public class InterceptHandle: InterceptHandleProtocol {
             return isDataIntercept
         }
         
-        if let code = dict[ResponseKey.share.code] as? Int {
-            //  通过状态码进行 登录过期 账号被挤 等操作
-            if code == 0 {
-                showToast("网络请求成功了")
+        if isShowToast {
+            if let code = dict[ResponseKey.share.code] as? Int {
+                //  通过状态码进行 登录过期 账号被挤 等操作
+                if code == 0 {
+                    showToast("网络请求成功了")
+                }
             }
         }
         
         return isDataIntercept
+    }
+    
+    //MARK:- 缓存配置
+    func onCacheHandler() -> Bool {
+        return isCache
     }
     
     //MARK:- 响应结果拦截 主要针对失败
@@ -159,6 +173,12 @@ public class InterceptHandle: InterceptHandleProtocol {
     ///  是否展示吐司
     func setIsShowToast(_ isShowToast: Bool) -> Self {
         self.isShowToast = isShowToast
+        return self
+    }
+    
+    ///  是否进行缓存配置
+    func setIsCache(_ isCache: Bool) -> Self {
+        self.isCache = isCache
         return self
     }
     
@@ -180,6 +200,7 @@ extension InterceptHandle {
                   isShowLoading: builder.isShowLoading,
                   loadingText: builder.loadingText,
                   isShowToast: builder.isShowToast,
+                  isCache: builder.isCache,
                   tag: builder.tag)
     }
     
@@ -202,6 +223,9 @@ extension InterceptHandle {
         
         ///  是否进行吐司
         var isShowToast = false
+        
+        ///  是否进行缓存设置
+        var isCache = true
         
         ///  请求的tag
         var tag: String?
@@ -235,6 +259,12 @@ extension InterceptHandle {
         ///  是否展示吐司
         func setIsShowToast(_ isShowToast: Bool) -> Self {
             self.isShowToast = isShowToast
+            return self
+        }
+        
+        ///  是否进行缓存配置
+        func setIsCache(_ isCache: Bool) -> Self {
+            self.isCache = isCache
             return self
         }
         

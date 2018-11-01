@@ -35,7 +35,9 @@ public class HttpUtils {
             interceptHandle.onNetworkIsNotReachableHandler(type: NetworkListener.shared.status)
             
             //  响应缓存
-            responseCache(url: url, callbackHandler: callbackHandler)
+            if interceptHandle.onCacheHandler() {
+                responseCache(url: url, callbackHandler: callbackHandler)
+            }
             
             return
         }
@@ -54,11 +56,13 @@ public class HttpUtils {
             interceptHandle.onAfterHandler(url: url, response: response)
             
             //  缓存数据
-            HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
-                #if DEBUG
-                print("写入JSON缓存\(isOK ? "成功" : "失败")")
-                #endif
-            })
+            if interceptHandle.onCacheHandler() {
+                HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
+                    #if DEBUG
+                    print("写入JSON缓存\(isOK ? "成功" : "失败")")
+                    #endif
+                })
+            }
         }
         
         //  结果进行回调
