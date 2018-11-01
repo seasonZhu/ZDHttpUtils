@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import ObjectMapper
 
 class ViewController: UIViewController {
 
@@ -30,11 +31,17 @@ class ViewController: UIViewController {
         requestToRootButton.addTarget(self, action: #selector(requestToRoot), for: .touchUpInside)
         view.addSubview(requestToRootButton)
         
-        let u17Button = UIButton(frame: CGRect(x:  0, y: 216, width: view.bounds.width, height: 44))
+        let u17Button = UIButton(frame: CGRect(x:  0, y: 220, width: view.bounds.width, height: 44))
         u17Button.setTitle("有妖气请求", for: .normal)
         u17Button.backgroundColor = UIColor.lightGray
         u17Button.addTarget(self, action: #selector(requestU17), for: .touchUpInside)
         view.addSubview(u17Button)
+        
+        let basicButton = UIButton(frame: CGRect(x:  0, y: 308, width: view.bounds.width, height: 44))
+        basicButton.setTitle("基本类型使用本地字符串JSON尝试", for: .normal)
+        basicButton.backgroundColor = UIColor.lightGray
+        basicButton.addTarget(self, action: #selector(requesJSONStringToModel), for: .touchUpInside)
+        view.addSubview(basicButton)
     }
     
     //MARK:- 设置请求服务的key
@@ -126,5 +133,17 @@ extension ViewController {
                           "time":"\(Int32(Date().timeIntervalSince1970))",]
         
         HttpUtils.request(method: .post, url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", parameters: parameters, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
+    }
+    
+    @objc
+    func requesJSONStringToModel() {
+        
+        configResponseKey()
+        
+        let JSONString = "{\"list\": \"-1\", \"code\": 200, \"message\": \"hello\"}"
+        
+        let basicModel = Mapper<ResponseBase<Bool>>().map(JSONString: JSONString)
+        
+        print(basicModel)
     }
 }

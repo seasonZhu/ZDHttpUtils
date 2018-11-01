@@ -102,7 +102,21 @@ extension BaseDao {
         HttpUtils.request(sessionManage: sessionManager, method: .get, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
     
-    //MARK:- 内部post请求, 使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
+    //MARK:- 内部post请求,网址后面追加参数,使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
+    func post<T: Mappable>(moduleUrl: String,
+                          parameters: Parameters? = nil,
+                          behindUrl extraParameters: String...,
+                          interceptHandle: InterceptHandle,
+                          callbackHandler: CallbackHandler<T>) {
+        
+        var url = ApiUrl.base + moduleUrl
+        if extraParameters.count > 0 {
+            url += "/" + extraParameters.joined(separator: "/")
+        }
+        HttpUtils.request(sessionManage: sessionManager, method: .post, url: url, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+    }
+    
+    //MARK:- 内部post请求,使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
     func post<T: Mappable>(moduleUrl: String,
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
