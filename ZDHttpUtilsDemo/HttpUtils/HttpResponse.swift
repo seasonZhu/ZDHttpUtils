@@ -27,7 +27,7 @@ class ResponseKey {
 class Response<T: Mappable>: Mappable {
 
     var code: Int?
-    var status : Int?
+    var status : String?
     var total : Int?
     var result : T?
     var message : String?
@@ -50,7 +50,7 @@ class Response<T: Mappable>: Mappable {
 class ResponseArray<T: Mappable>: Mappable {
     
     var code: Int?
-    var status : Int?
+    var status : String?
     var total : Int?
     var result : [T]?
     var message : String?
@@ -71,10 +71,11 @@ class ResponseArray<T: Mappable>: Mappable {
 //MARK:- 泛型基本类型装配 通用 result是基本类型 Int Bool String
 class ResponseBase<T: BasicStructProtocol>: Mappable {
     var code: Int?
-    var status : Int?
+    var status : String?
     var total : Int?
     var result : T?
     var message : String?
+    
     var isJump = false
     
     required init?(map: Map) {

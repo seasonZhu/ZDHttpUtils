@@ -140,17 +140,18 @@ public class InterceptHandle: InterceptHandleProtocol {
         
         guard let unwrapedData = data,
             let JSONDict = try? JSONSerialization.jsonObject(with: unwrapedData, options:[]),
-            let dict = JSONDict as? [String: Any] else {
+            var dict = JSONDict as? [String: Any] else {
             return isDataIntercept
         }
-        
-        if isShowToast {
-            if let code = dict[ResponseKey.share.code] as? Int {
-                //  通过状态码进行 登录过期 账号被挤 等操作
-                if code == 0 {
-                    showToast("网络请求成功了")
-                }
-            }
+        dict[ResponseKey.share.message] = "测试一下"
+        if let code = dict[ResponseKey.share.code] as? Int,
+            !SuccessCodes.nums.contains(code),
+            let msg = dict[ResponseKey.share.message] as? String {
+            showToast(msg)
+        } else if let status = dict[ResponseKey.share.status] as? String,
+            !SuccessCodes.strings.contains(status),
+            let msg = dict[ResponseKey.share.message] as? String {
+            showToast(msg)
         }
         
         return isDataIntercept
@@ -284,4 +285,11 @@ extension InterceptHandle {
         }
     }
     
+}
+
+extension InterceptHandle {
+    struct SuccessCodes {
+        static let nums = 200..<300
+        static let strings = "200"..<"300"
+    }
 }
