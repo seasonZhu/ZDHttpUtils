@@ -46,7 +46,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         self.sessionManager = sessionManager ?? SessionManager.default
         
         /*----------- 下面是坑爹的点 ----------*/
-        
+        /*
         //  配置Session
         let config = URLSessionConfiguration.default
         //  配置超时时间
@@ -73,6 +73,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
             configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
             return SessionManager(configuration: configuration)
         }()
+        */
     }
     
     deinit {
@@ -99,19 +100,27 @@ extension BaseDao {
     }
     
     //MARK:- 内部get请求,网址后面无追加参数
-    func get<T: Mappable>(moduleUrl: String,
-                          parameters: Parameters? = nil,
-                          interceptHandle: InterceptHandle,
-                          callbackHandler: CallbackHandler<T>) {
+    func getWithExtraParameters<T: Mappable>(moduleUrl: String,
+                                             parameters: Parameters? = nil,
+                                             interceptHandle: InterceptHandle,
+                                             callbackHandler: CallbackHandler<T>) {
         HttpUtils.request(sessionManage: sessionManager, method: .get, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
     
-    //MARK:- 内部post请求,网址后面追加参数,使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
+    //MARK:- 内部post请求,使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
     func post<T: Mappable>(moduleUrl: String,
-                          parameters: Parameters? = nil,
-                          behindUrl extraParameters: String...,
-                          interceptHandle: InterceptHandle,
-                          callbackHandler: CallbackHandler<T>) {
+                           parameters: Parameters? = nil,
+                           interceptHandle: InterceptHandle,
+                           callbackHandler: CallbackHandler<T>) {
+        HttpUtils.request(sessionManage: sessionManager, method: .post, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+    }
+    
+    //MARK:- 内部post请求,网址后面追加参数,使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
+    func postWithExtraParameters<T: Mappable>(moduleUrl: String,
+                                              parameters: Parameters? = nil,
+                                              behindUrl extraParameters: String...,
+                                              interceptHandle: InterceptHandle,
+                                              callbackHandler: CallbackHandler<T>) {
         
         var url = ApiUrl.base + moduleUrl
         if extraParameters.count > 0 {
@@ -119,14 +128,11 @@ extension BaseDao {
         }
         HttpUtils.request(sessionManage: sessionManager, method: .post, url: url, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
+}
+
+// MARK: -针对httpConfig中timeOut进行配置化请求超时时间
+extension BaseDao {
     
-    //MARK:- 内部post请求,使用header时候 需要注意是否需要签名, 如果需要签名 则需要对heads进行处理
-    func post<T: Mappable>(moduleUrl: String,
-                          parameters: Parameters? = nil,
-                          interceptHandle: InterceptHandle,
-                          callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManager, method: .post, url: ApiUrl.base + moduleUrl, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-    }
 }
 
 // MARK: - SessionManager实例的静态写法
@@ -146,9 +152,18 @@ extension SessionManager {
         return SessionManager(configuration: configuration)
     }()
     
-    static let timeout45s: SessionManager? = {
+    static let timeout60s: SessionManager? = {
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 45
+        configuration.timeoutIntervalForRequest = 60
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        let delegate = SessionDelegate()
+        let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        return SessionManager(session: session, delegate: delegate)
+    }()
+    
+    static let timeout120s: SessionManager? = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 120
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         let delegate = SessionDelegate()
         let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)

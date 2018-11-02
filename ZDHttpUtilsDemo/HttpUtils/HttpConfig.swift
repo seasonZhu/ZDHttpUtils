@@ -30,7 +30,7 @@ class HttpConfig {
     class Builder {
         
         //  超时时间
-        var timeOut: TimeInterval = 10
+        var timeOut: TimeInterval = 15
         
         //  是否需要签名
         var isNeedSign = false
