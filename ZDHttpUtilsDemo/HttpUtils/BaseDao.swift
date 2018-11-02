@@ -38,7 +38,9 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         headers.merge(SessionManager.defaultHTTPHeaders) { (current, new) -> String in return current }
         
         //print("defaultHTTPHeaders: \(SessionManager.defaultHTTPHeaders)")
+        #if DEBUG
         print("headers: \(headers)")
+        #endif
         
         //  赋值sessionManager
         self.sessionManager = sessionManager ?? SessionManager.default
@@ -74,7 +76,9 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     }
     
     deinit {
+        #if DEBUG
         print("\(String(describing: type(of: BaseDao.self))) 销毁了")
+        #endif
     }
 }
 

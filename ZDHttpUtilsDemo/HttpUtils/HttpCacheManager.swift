@@ -76,10 +76,14 @@ class HttpCacheManager {
                     try fileManager.removeItem(atPath: path)
                     createBaseDirectory(at: path)
                 }catch {
+                    #if DEBUG
                     print("removeItem at Path Error")
+                    #endif
                 }
             }else {
+                #if DEBUG
                 print("The \(path) is Exist ")
+                #endif
             }
         }
     }
@@ -87,7 +91,9 @@ class HttpCacheManager {
     /// 缓存文件夹路径
     class var httpUtilsCachePath: String {
         let path = NSHomeDirectory() + "/Library/HttpUtilsCache"
+        #if DEBUG
         print("path: \(path)")
+        #endif
         return path
     }
     
@@ -99,13 +105,29 @@ class HttpCacheManager {
             try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
             addDoNotBackupAttribute(path: path)
         }catch {
+            #if DEBUG
             print("create cache directory failed")
+            #endif
         }
     }
     
     private static func addDoNotBackupAttribute(path: String) {
         var url = URL.init(fileURLWithPath: path)
         url.setTemporaryResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
+    }
+    
+    /// 清理本地缓存的json数据
+    class func clearDiskCache() {
+        DispatchQueue.global().async {
+            do {
+                try FileManager.default.removeItem(atPath: httpUtilsCachePath)
+                checkDirectory()
+            }catch {
+                #if DEBUG
+                print("clearDiskCache error")
+                #endif
+            }
+        }
     }
 }
 
@@ -121,9 +143,9 @@ private extension Data {
             return dic
             
         }catch {
-            
+            #if DEBUG
             print("data转Dict失败")
-            
+            #endif
             return nil
         }
     }

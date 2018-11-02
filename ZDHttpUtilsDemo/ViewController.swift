@@ -15,6 +15,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        
+        let student = Student()
+        //student.name = "season"
+        //student.age = 18
+        
+        let person = Person(sex: "man", name: "sola")
+        
+        print(student.reflectToDictory())
+        print(person.reflectToDictory())
     }
     
     //MARK:- 搭建界面
@@ -147,3 +156,17 @@ extension ViewController {
         print(basicModel)
     }
 }
+
+class Student {
+    var name: String?
+    var age: Int?
+}
+
+extension Student: ReflectProtocol {}
+
+struct Person {
+    let sex: String
+    let name: String
+}
+
+extension Person: ReflectProtocol {}

@@ -23,13 +23,17 @@ public class HttpUtils {
         
         //  前置拦截 如果没有前置拦截,打印请求Api
         if interceptHandle.onBeforeHandler(method: method, url: url, parameters: parameters) {
+            #if DEBUG
             print("前置拦截,无法进行网络请求")
+            #endif
             return
         }
         
         //  检查网络
         guard NetworkListener.shared.isReachable else {
+            #if DEBUG
             print("没有网络!")
+            #endif
             
             //  没有网络的拦截
             interceptHandle.onNetworkIsNotReachableHandler(type: NetworkListener.shared.status)
