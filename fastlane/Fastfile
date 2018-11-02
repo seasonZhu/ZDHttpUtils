@@ -1,0 +1,257 @@
+# Customize this file, documentation can be found here:
+# https://docs.fastlane.tools/actions/
+# All available actions: https://docs.fastlane.tools/actions
+# can also be listed using the `fastlane actions` command
+
+# Change the syntax highlighting to Ruby
+# All lines starting with a # are ignored when running `fastlane`
+
+# If you want to automatically update fastlane if a new version is available:
+# update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.85.0"
+
+default_platform :ios
+
+def prepare_version(options)
+
+    # increment_version_number_in_plist(
+    #     version_number: options[:version],
+    #     target: options[:scheme]
+    # )
+
+    # increment_build_number_in_plist(
+    #     build_number: options[:build],
+    #     target: options[:scheme]
+    # )
+
+    # set_info_plist_value(
+    #     path: "./dssp/config/versiondisplay.plist",
+    #     key: "versiondisplay",
+    #     value: options[:versiondisplay]
+    #   )
+
+end
+
+#保存蒲公英的key
+api_key="2eb1b8349ccd12db401368427dfa5059"
+user_key="a5dabd67af043f363cfc29b890139266"
+
+platform :ios do
+
+  #开始之前先cocoapods
+  before_all do
+    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
+    cocoapods
+    # carthage
+  end
+
+  # desc "Runs all the tests"
+  # lane :test do
+  #   scan
+  # end
+
+  desc "Submit a new Build to pgyer"
+  lane :pg do |options|
+    # match(type: "appstore") # more information: https://codesigning.guide
+    # increment_build_number
+
+    prepare_version(options)
+
+    full_version = options[:version] + '_' + options[:build]
+
+    scheme = options[:scheme]
+	  changelog = options[:changelog]
+	  date = Time.new.strftime("%Y%m%d-%H%M")
+    # packageName = options[:versiondisplay]
+
+    gym({
+      scheme: "#{scheme}",
+      #隐藏没有必要的文件
+      silent: true,
+      # 编译前执行 clean，可减少 ipa 文件大小
+      clean: true,
+      # 指定打包方式，Release 或者 Debug
+      configuration: "Release",
+      # 指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development
+      export_method: "development",
+      # 指定输出文件夹
+      output_directory:"./fastlane/build/pgyer",
+      #指定输出名称
+      output_name: "#{scheme}_#{full_version}_#{date}.ipa",
+      # output_name: "#{packageName}.ipa",
+      # Xcode9将不会允许你访问钥匙串里的内容，除非设置allowProvisioningUpdates
+      export_xcargs: "-allowProvisioningUpdates",
+      # export_options: {
+      #           provisioningProfiles: {
+      #               "com.mobile.capsa" => "dsspdevelop",
+      #           }
+      #       }
+    })
+
+    pgyer(api_key: "#{api_key}", user_key: "#{user_key}", update_description: "#{changelog}")
+    # sh "fir publish './build/fir/#{scheme}_#{full_version}.ipa' -T #{fir_token}"
+    # You can also use other beta testing services here (run `fastlane actions`)
+    
+  end
+
+  desc "Submit a new Beta Build to Apple TestFlight"
+  desc "This will also make sure the profile is up to date"
+  lane :beta do |options|
+    # match(type: "appstore") # more information: https://codesigning.guide
+    # increment_build_number
+
+    prepare_version(options)
+
+    full_version = options[:version] + '_' + options[:build]
+
+    scheme = options[:scheme]
+	changelog = options[:changelog]
+	date = Time.new.strftime("%Y%m%d-%H%M")
+  packageName = options[:versiondisplay]
+
+    gym({
+      scheme: "#{scheme}",
+      #隐藏没有必要的文件
+      silent: true,
+      # 编译前执行 clean，可减少 ipa 文件大小
+      clean: true,
+      # 指定打包方式，Release 或者 Debug
+      configuration: "Release",
+      # 指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development
+      export_method: "app-store",
+      # 指定输出文件夹
+      output_directory:"./fastlane/build/testflight",
+      #指定输出名称
+      # output_name: "#{scheme}_#{full_version}_#{date}.ipa",
+      output_name: "#{packageName}.ipa",
+      # Xcode9将不会允许你访问钥匙串里的内容，除非设置allowProvisioningUpdates
+      export_xcargs: "-allowProvisioningUpdates",
+      export_options: {
+                provisioningProfiles: {
+                    "com.mobile.capsa" => "dsspdistribution",
+                }
+            }
+    })
+
+    pilot(
+    	distribute_external: true,
+    	notify_external_testers: true,
+    	groups: "cusc",
+    	changelog: "#{changelog}"
+    	)
+
+    # sh "your_script.sh"
+    # You can also use other beta testing services here (run `fastlane actions`)
+  end
+
+  desc "Submit a new Beta Build to Apple TestFlight"
+  desc "This will also make sure the profile is up to date"
+  lane :uat do |options|
+    # match(type: "appstore") # more information: https://codesigning.guide
+    # increment_build_number
+
+    prepare_version(options)
+
+    full_version = options[:version] + '_' + options[:build]
+
+    scheme = options[:scheme]
+  changelog = options[:changelog]
+  date = Time.new.strftime("%Y%m%d-%H%M")
+  packageName = options[:versiondisplay]
+
+    gym({
+      scheme: "#{scheme}",
+      #隐藏没有必要的文件
+      silent: true,
+      # 编译前执行 clean，可减少 ipa 文件大小
+      clean: true,
+      # 指定打包方式，Release 或者 Debug
+      configuration: "Release",
+      # 指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development
+      export_method: "app-store",
+      # 指定输出文件夹
+      output_directory:"./fastlane/build/testflight",
+      #指定输出名称
+      # output_name: "#{scheme}_#{full_version}_#{date}.ipa",
+      output_name: "#{packageName}.ipa",
+      # Xcode9将不会允许你访问钥匙串里的内容，除非设置allowProvisioningUpdates
+      export_xcargs: "-allowProvisioningUpdates",
+      export_options: {
+                provisioningProfiles: {
+                    "com.mobile.capsa" => "dsspdistribution",
+                }
+            }
+    })
+
+    pilot(
+      distribute_external: true,
+      notify_external_testers: true,
+      groups: ['cusc', 'capsa'],
+      changelog: "#{changelog}"
+      )
+
+    # sh "your_script.sh"
+    # You can also use other beta testing services here (run `fastlane actions`)
+  end
+
+  desc "Deploy a new version to the App Store"
+  lane :release do |options|
+    # match(type: "appstore")
+    # snapshot
+    scheme = options[:scheme]
+    packageName = options[:versiondisplay]
+    gym({
+      scheme: "#{scheme}",
+      #隐藏没有必要的文件
+      silent: true,
+      # 编译前执行 clean，可减少 ipa 文件大小
+      clean: true,
+      # 指定打包方式，Release 或者 Debug
+      configuration: "Release",
+      # 指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development
+      export_method: "app-store",
+      # 指定输出文件夹
+      output_directory:"./fastlane/build/release",
+      #指定输出名称
+      # output_name: "#{scheme}_#{full_version}.ipa",
+      output_name: "#{packageName}.ipa",
+      # Xcode9将不会允许你访问钥匙串里的内容，除非设置allowProvisioningUpdates
+      export_xcargs: "-allowProvisioningUpdates",
+      export_options: {
+                provisioningProfiles: {
+                    "com.mobile.capsa" => "dsspdistribution",
+                }
+            }
+    })
+    
+    deliver(force: true)
+    # frameit
+  end
+
+  # You can define as many lanes as you want
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
+
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
+  end
+end
+
+
+# More information about multiple platforms in fastlane: https://docs.fastlane.tools/advanced/#control-configuration-by-lane-and-by-platform
+# All available actions: https://docs.fastlane.tools/actions
+
+# fastlane reports which actions are used. No personal data is recorded.
+# Learn more at https://docs.fastlane.tools/#metrics
