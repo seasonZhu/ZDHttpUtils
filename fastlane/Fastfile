@@ -37,9 +37,9 @@ def prepare_infoPlist(options)
     set_info_plist_value(
         path: "./ZDHttpUtilsDemo/Info.plist",
         key: "CFBundleDisplayName",
-        value: options[:displayName],
-        key: "BaseUrl",
-        value: options[:url]
+        value: options[:displayName]
+        #key: "BaseUrl",
+        #value: options[:url]
       )
 
 end
@@ -96,7 +96,7 @@ platform :ios do
     #打包的模式,可以写死,可选 一般是Release模式.我这里是为了测试可以打Debug包才做的测试
     mode = options[:mode]
     #不同环境配对不同的baseUrl
-    url = options[:url]
+    #url = options[:url]
     #更新说明
 	  changelog = options[:changelog]
     #打包时间

@@ -24,6 +24,8 @@ class ViewController: UIViewController {
         
         print(student.reflectToDictory())
         print(person.reflectToDictory())
+        
+        modelChangeByFastlane()
     }
     
     //MARK:- 搭建界面
@@ -52,13 +54,6 @@ class ViewController: UIViewController {
         basicButton.addTarget(self, action: #selector(requesJSONStringToModel), for: .touchUpInside)
         view.addSubview(basicButton)
         
-        let modelLabel = UILabel(frame: CGRect(x: 0, y: 396, width: view.bounds.width, height: 44))
-        modelLabel.textAlignment = .center
-        modelLabel.textColor = UIColor.black
-    
-        let text = Bundle.main.infoDictionary?["BaseUrl"] as? String
-        modelLabel.text = text
-        view.addSubview(modelLabel)
     }
     
     //MARK:- 设置请求服务的key
@@ -71,6 +66,28 @@ class ViewController: UIViewController {
     private func configU17ResponseKey() {
         ResponseKey.share.result = "data"
         ResponseKey.share.code = "code"
+    }
+    
+    //MARK:- 通过fastlane进行模式区分
+    private func modelChangeByFastlane() {
+        let text = Bundle.main.infoDictionary?["BaseUrl"] as? String
+        
+        let msg: String
+        #if DEBUG
+        msg = "debug"
+        #elseif SIT
+        msg = "sit"
+        #elseif SITRelease
+        msg = "sit-release"
+        #else
+        msg = "release"
+        #endif
+        
+        let modelLabel = UILabel(frame: CGRect(x: 0, y: 396, width: view.bounds.width, height: 44))
+        modelLabel.textAlignment = .center
+        modelLabel.textColor = UIColor.black
+        modelLabel.text = msg
+        view.addSubview(modelLabel)
     }
 }
 

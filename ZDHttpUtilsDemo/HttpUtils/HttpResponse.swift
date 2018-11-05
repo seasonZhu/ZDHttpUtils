@@ -128,3 +128,27 @@ public struct BoolString {
     static let trues = ["TRUE", "True", "true", "YES", "Yes", "yes"]
     static let falses = ["FALSE", "False", "false", "NO", "No", "no"]
 }
+
+
+//MARK:- 泛型模型装配 Final流氓系列
+class ResponseFinal<CODE, STATUS, TOTAL, RESULT: Mappable, MESSAGE>: Mappable {
+    
+    var code: CODE?
+    var status : STATUS?
+    var total : TOTAL?
+    var result : RESULT?
+    var message : MESSAGE?
+    
+    required init?(map: Map) {
+        
+    }
+    
+    // 这个地方的字符串可以进行转译映射 这个可控制性更强
+    func mapping(map: Map) {
+        code <- map[ResponseKey.share.code]
+        status <- map[ResponseKey.share.status]
+        total <- map[ResponseKey.share.total]
+        result <- map[ResponseKey.share.result]
+        message <- map[ResponseKey.share.message]
+    }
+}
