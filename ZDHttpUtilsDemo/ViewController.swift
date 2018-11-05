@@ -52,11 +52,13 @@ class ViewController: UIViewController {
         basicButton.addTarget(self, action: #selector(requesJSONStringToModel), for: .touchUpInside)
         view.addSubview(basicButton)
         
-        #if DEBUG
-        
-        #else
-        basicButton.isHidden = true
-        #endif
+        let modelLabel = UILabel(frame: CGRect(x: 0, y: 396, width: view.bounds.width, height: 44))
+        modelLabel.textAlignment = .center
+        modelLabel.textColor = UIColor.black
+    
+        let text = Bundle.main.infoDictionary?["BaseUrl"] as? String
+        modelLabel.text = text
+        view.addSubview(modelLabel)
     }
     
     //MARK:- 设置请求服务的key

@@ -13,9 +13,15 @@
 # Update this, if you use features of a newer version
 fastlane_version "2.85.0"
 
+sit_text="调试模式(Sit)"
+pre_text="预生产模式(Pre)"
+pro_text="生产模式(Pro)"
+debug_text="Debug模式"
+release_text="Release模式"
+
 default_platform :ios
 
-def prepare_version(options)
+def prepare_infoPlist(options)
 
     #fastlane add_plugin versioning 使用下面两个函数,必须添加插件versioning
     increment_version_number_in_plist(
@@ -31,9 +37,27 @@ def prepare_version(options)
     set_info_plist_value(
         path: "./ZDHttpUtilsDemo/Info.plist",
         key: "CFBundleDisplayName",
-        value: options[:displayName]
+        value: options[:displayName],
+        key: "BaseUrl",
+        value: options[:url]
       )
 
+end
+
+def check_type(options)
+
+    type = options[:type]
+    if type == "0"
+      return "#{sit_text}"
+    elsif type == "1" 
+      return "#{pre_text}"
+    elsif type == "2"
+      return "#{pro_text}"
+    elsif type == "3"
+      return "#{debug_text}"
+    else
+     # "#{release_text}"
+    end 
 end
 
 #保存蒲公英的key
@@ -54,19 +78,28 @@ platform :ios do
   #   scan
   # end
 
+  #仅仅将上传蒲公英的脚本进行了配置化与优化
   desc "Submit a new Build to pgyer"
   lane :pg do |options|
     # match(type: "appstore") # more information: https://codesigning.guide
     # increment_build_number
 
-    prepare_version(options)
+    #独立函数 进行info.plist变更
+    prepare_infoPlist(options)
 
+    #完整的版本信息version+"_"+build
     full_version = options[:version] + '_' + options[:build]
-
+    #scheme,可以写死,可选
     scheme = options[:scheme]
+    #app的名称,可以写死,可选 我这里是为了对应不同的打包环境所以才没有写死
     displayName = options[:displayName]
+    #打包的模式,可以写死,可选 一般是Release模式.我这里是为了测试可以打Debug包才做的测试
     mode = options[:mode]
+    #不同环境配对不同的baseUrl
+    url = options[:url]
+    #更新说明
 	  changelog = options[:changelog]
+    #打包时间
 	  date = Time.new.strftime("%Y%m%d-%H%M")
     # packageName = options[:versiondisplay]
     
@@ -82,11 +115,12 @@ platform :ios do
       export_method: "development",
       # 指定输出文件夹
       output_directory:"./fastlane/build/pgyer",
-      #指定输出名称
-      output_name: "#{scheme}_#{full_version}_#{date}.ipa",
+      #指定输出名称 这个地方使用scheme还是displayName随意
+      output_name: "#{displayName}_#{full_version}_#{date}.ipa",
       # output_name: "#{packageName}.ipa",
       # Xcode9将不会允许你访问钥匙串里的内容，除非设置allowProvisioningUpdates
       export_xcargs: "-allowProvisioningUpdates",
+      # 这个地方是BundleId对应证书的类型,其实还没有验证
       # export_options: {
       #           provisioningProfiles: {
       #               "com.mobile.capsa" => "dsspdevelop",
