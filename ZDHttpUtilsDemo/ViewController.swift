@@ -51,6 +51,12 @@ class ViewController: UIViewController {
         basicButton.backgroundColor = UIColor.lightGray
         basicButton.addTarget(self, action: #selector(requesJSONStringToModel), for: .touchUpInside)
         view.addSubview(basicButton)
+        
+        #if DEBUG
+        
+        #else
+        basicButton.isHidden = true
+        #endif
     }
     
     //MARK:- 设置请求服务的key

@@ -17,21 +17,22 @@ default_platform :ios
 
 def prepare_version(options)
 
-    # increment_version_number_in_plist(
-    #     version_number: options[:version],
-    #     target: options[:scheme]
-    # )
+    #fastlane add_plugin versioning 使用下面两个函数,必须添加插件versioning
+    increment_version_number_in_plist(
+        version_number: options[:version],
+        target: options[:scheme]
+    )
 
-    # increment_build_number_in_plist(
-    #     build_number: options[:build],
-    #     target: options[:scheme]
-    # )
+    increment_build_number_in_plist(
+        build_number: options[:build],
+        target: options[:scheme]
+    )
 
-    # set_info_plist_value(
-    #     path: "./dssp/config/versiondisplay.plist",
-    #     key: "versiondisplay",
-    #     value: options[:versiondisplay]
-    #   )
+    set_info_plist_value(
+        path: "./ZDHttpUtilsDemo/Info.plist",
+        key: "CFBundleDisplayName",
+        value: options[:displayName]
+      )
 
 end
 
@@ -63,10 +64,12 @@ platform :ios do
     full_version = options[:version] + '_' + options[:build]
 
     scheme = options[:scheme]
+    displayName = options[:displayName]
+    mode = options[:mode]
 	  changelog = options[:changelog]
 	  date = Time.new.strftime("%Y%m%d-%H%M")
     # packageName = options[:versiondisplay]
-
+    
     gym({
       scheme: "#{scheme}",
       #隐藏没有必要的文件
@@ -74,7 +77,7 @@ platform :ios do
       # 编译前执行 clean，可减少 ipa 文件大小
       clean: true,
       # 指定打包方式，Release 或者 Debug
-      configuration: "Release",
+      configuration: "#{mode}",
       # 指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development
       export_method: "development",
       # 指定输出文件夹
