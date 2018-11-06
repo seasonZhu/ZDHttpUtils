@@ -22,8 +22,8 @@ class ViewController: UIViewController {
         
         let person = Person(sex: "man", name: "sola")
         
-        print(student.reflectToDictory())
-        print(person.reflectToDictory())
+        print(student.reflectToDictionary())
+        print(person.reflectToDictionary())
         
         modelChangeByFastlane()
     }
@@ -88,6 +88,12 @@ class ViewController: UIViewController {
         modelLabel.textColor = UIColor.black
         modelLabel.text = msg
         view.addSubview(modelLabel)
+    }
+    
+    func check<N>(_ field: N) {
+        if let x = field as? Any, x is Int || x is NSNumber {
+            
+        }
     }
 }
 

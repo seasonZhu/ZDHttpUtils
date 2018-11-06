@@ -78,7 +78,7 @@ platform :ios do
   #   scan
   # end
 
-  #仅仅将上传蒲公英的脚本进行了配置化与优化
+  #仅仅将上传蒲公英的脚本进行了配置化与优化 使用蒲公英 需要添加插件fastlane add_plugin pgyer
   desc "Submit a new Build to pgyer"
   lane :pg do |options|
     # match(type: "appstore") # more information: https://codesigning.guide
@@ -93,9 +93,10 @@ platform :ios do
     scheme = options[:scheme]
     #app的名称,可以写死,可选 我这里是为了对应不同的打包环境所以才没有写死
     displayName = options[:displayName]
-    #打包的模式,可以写死,可选 一般是Release模式.我这里是为了测试可以打Debug包才做的测试
+    #打包的模式,在一个target对应不同的configration的时候,可以自定义不同的模式,进而将测试/预生产/生产 环境进行区分
+    #我目前公司的需求如上
     mode = options[:mode]
-    #不同环境配对不同的baseUrl
+    #不同环境配对不同的baseUrl,可选
     #url = options[:url]
     #更新说明
 	  changelog = options[:changelog]

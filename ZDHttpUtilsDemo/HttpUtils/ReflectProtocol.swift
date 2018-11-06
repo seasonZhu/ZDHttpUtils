@@ -9,19 +9,20 @@
 import Foundation
 
 /*
- 这个类用于将一个层级模型映射为字典,主要用于网络请求,将parameters的模型转为字典,当然你完全可以使用ObjectMapper的toJSON方法实现.
- 不过那样写起来特别的麻烦.这个只用类或者结构体继承就可以调用了.
- 注意之前使用这个方法的使用出现过模型有值但是转为空字典的情况,由于使用的都是系统方法而且使用了guard去守护,目前不知道为什么
+ 这个类用于将一个层级的模型映射为字典,主要用于网络请求,将parameters的模型转为字典,当然你完全可以使用ObjectMapper的toJSON方法实现.
+ 不过那样写起来特别的麻烦.这个只用类或者结构体遵守该协议可以调用了.
+ 注意之前使用这个方法出现过模型有值但是转为空字典的情况,由于使用的都是系统方法而且使用了guard去守护,目前不知道为什么
  */
-///
+
+/// 反射协议
 protocol ReflectProtocol {
-    func reflectToDictory() -> [String: Any]
+    func reflectToDictionary() -> [String: Any]
 }
 
 extension ReflectProtocol {
-    func reflectToDictory() -> [String: Any] {
-        let mirror = Mirror.init(reflecting: self)
-        var dictory = [String: Any]()
+    func reflectToDictionary() -> [String: Any] {
+        let mirror = Mirror(reflecting: self)
+        var dictionary = [String: Any]()
         for item in mirror.children {
             guard let key = item.label else {
                 continue
@@ -32,22 +33,27 @@ extension ReflectProtocol {
                 continue
             }
             
-            dictory[key] = value
+            dictionary[key] = value
         }
         
-        return dictory
+        return dictionary
     }
     
+    /// optional解包
+    ///
+    /// - Parameter any: Any
+    /// - Returns: 解包后的Any
     private func unwrap(any: Any) -> Any {
-        let mi = Mirror(reflecting: any)
+        let mirror = Mirror(reflecting: any)
         
-        guard let type = mi.displayStyle else { return any }
+        guard let type = mirror.displayStyle else { return any }
         
         if type != .optional { return any }
         
-        if mi.children.count == 0 { return any }
+        if mirror.children.count == 0 { return any }
         
-        let (_, some) = mi.children.first!
+        let (_, some) = mirror.children.first!
+        
         return some
     }
 }
