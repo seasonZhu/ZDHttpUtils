@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-//MARK:- 响应字符串key
+//MARK:- 映射表
 class ResponseKey {
     static let share = ResponseKey()
     private init() {}
@@ -22,9 +22,8 @@ class ResponseKey {
 
 }
 
-
 //MARK:- 泛型模型装配 通用 result是模型
-class Response<T: Mappable>: Mappable {
+struct Response<T: Mappable>: Mappable {
 
     var code: Int?
     var status : String?
@@ -32,12 +31,12 @@ class Response<T: Mappable>: Mappable {
     var result : T?
     var message : String?
     
-    required init?(map: Map) {
+    init?(map: Map) {
         
     }
     
     // 这个地方的字符串可以进行转译映射 这个可控制性更强
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         code <- map[ResponseKey.share.code]
         status <- map[ResponseKey.share.status]
         total <- map[ResponseKey.share.total]
@@ -47,7 +46,7 @@ class Response<T: Mappable>: Mappable {
 }
 
 //MARK:- 泛型模型数组装配 通用 result是模型数组
-class ResponseArray<T: Mappable>: Mappable {
+struct ResponseArray<T: Mappable>: Mappable {
     
     var code: Int?
     var status : String?
@@ -55,11 +54,11 @@ class ResponseArray<T: Mappable>: Mappable {
     var result : [T]?
     var message : String?
     
-    required init?(map: Map) {
+    init?(map: Map) {
         
     }
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         code <- map[ResponseKey.share.code]
         status <- map[ResponseKey.share.status]
         total <- map[ResponseKey.share.total]
@@ -69,7 +68,7 @@ class ResponseArray<T: Mappable>: Mappable {
 }
 
 //MARK:- 泛型基本类型装配 通用 result是基本类型 Int Bool String
-class ResponseBase<T: BasicStructProtocol>: Mappable {
+struct ResponseBase<T: BasicStructProtocol>: Mappable {
     var code: Int?
     var status : String?
     var total : Int?
@@ -78,11 +77,11 @@ class ResponseBase<T: BasicStructProtocol>: Mappable {
     
     var isJump = false
     
-    required init?(map: Map) {
+    init?(map: Map) {
         checkStringToBool(map: map)
     }
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         code <- map[ResponseKey.share.code]
         status <- map[ResponseKey.share.status]
         total <- map[ResponseKey.share.total]
@@ -95,7 +94,7 @@ class ResponseBase<T: BasicStructProtocol>: Mappable {
 
 // MARK: - 判断字符串类型的bool值类型
 extension ResponseBase {
-    func checkStringToBool(map: Map) {
+    mutating func checkStringToBool(map: Map) {
         if let string = map.JSON[ResponseKey.share.result] as? String {
             let bool: Bool
             
@@ -131,7 +130,7 @@ public struct BoolString {
 
 
 //MARK:- 泛型模型装配 Final流氓系列
-class ResponseFinal<CODE, STATUS, TOTAL, RESULT: Mappable, MESSAGE>: Mappable {
+struct ResponseFinal<CODE, STATUS, TOTAL, RESULT: Mappable, MESSAGE>: Mappable {
     
     var code: CODE?
     var status : STATUS?
@@ -139,12 +138,12 @@ class ResponseFinal<CODE, STATUS, TOTAL, RESULT: Mappable, MESSAGE>: Mappable {
     var result : RESULT?
     var message : MESSAGE?
     
-    required init?(map: Map) {
+    init?(map: Map) {
         
     }
     
     // 这个地方的字符串可以进行转译映射 这个可控制性更强
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         code <- map[ResponseKey.share.code]
         status <- map[ResponseKey.share.status]
         total <- map[ResponseKey.share.total]

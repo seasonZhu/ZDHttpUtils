@@ -10,13 +10,13 @@ import Foundation
 import ObjectMapper
 
 //MARK:- 网络请求测试用例
-class Item: Mappable {
+struct Item: Mappable {
     
-    required init?(map: Map) {
+    init?(map: Map) {
         
     }
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         topicImageUrl <- map["topicImageUrl"]
         topicOrder <- map["topicOrder"]
         id <- map["id"]

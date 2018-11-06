@@ -9,6 +9,7 @@
 import Foundation
 import ObjectMapper
 
+/// 回调协议
 protocol CallbackHandlerProtocol {
     var success: ((Mappable?, [Mappable]?)-> ())? { get set }
     

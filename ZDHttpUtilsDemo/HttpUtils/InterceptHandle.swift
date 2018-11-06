@@ -232,26 +232,32 @@ extension InterceptHandle {
         var tag: String?
         
         //MARK:- 链式编程
+        
+        ///  是否数据拦截
         func setIsDataIntercept(_ isDataIntercept: Bool) -> Self {
             self.isDataIntercept = isDataIntercept
             return self
         }
         
+        ///  是否显示loading画面
         func setIsShowLoading(_ isShowLoading: Bool) -> Self {
             self.isShowLoading = isShowLoading
             return self
         }
         
+        ///  是否显示loading文字.必须使用Hud
         func setLoadingText(_ loadingText: String?) -> Self {
             self.loadingText = loadingText
             return self
         }
         
+        ///  是否前置拦截
         func setIsBeforeHandler(_ isBeforeHandler: Bool) -> Self {
             self.isBeforeHandler = isBeforeHandler
             return self
         }
         
+        ///  是否后置拦截
         func setIsAfterHandler(_ isAfterHandler: Bool) -> Self {
             self.isAfterHandler = isAfterHandler
             return self

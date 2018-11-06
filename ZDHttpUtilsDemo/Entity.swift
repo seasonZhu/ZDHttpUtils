@@ -11,47 +11,47 @@ import ObjectMapper
 
 
 /// 这个根的没有使用 使用的是泛型装配
-class U17Root: Mappable {
+struct U17Root: Mappable {
     var code : Int?
     var data : U17Data?
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         code <- map["code"]
         data <- map["data"]
         
     }
     
-    required init?(map: Map) {
+    init?(map: Map) {
         
     }
 }
 
-class U17Data: Mappable{
+struct U17Data: Mappable{
     
     var message : String?
     var returnData : ReturnData?
     var stateCode : Int?
     
-    required init?(map: Map){}
+    init?(map: Map){}
 
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         message <- map["message"]
         returnData <- map["returnData"]
         stateCode <- map["stateCode"]
     }
 }
 
-class ReturnData: Mappable{
+struct ReturnData: Mappable{
     
     var comicLists : [ComicList]?
     var editTime : String?
     var galleryItems : [GalleryItem]?
     var textItems : [AnyObject]?
     
-    required init?(map: Map){}
+    init?(map: Map){}
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         comicLists <- map["comicLists"]
         editTime <- map["editTime"]
         galleryItems <- map["galleryItems"]
@@ -60,7 +60,7 @@ class ReturnData: Mappable{
     }
 }
 
-class GalleryItem: Mappable{
+struct GalleryItem: Mappable{
     
     var content : String?
     var cover : String?
@@ -69,9 +69,9 @@ class GalleryItem: Mappable{
     var linkType : Int?
     var title : String?
     
-    required init?(map: Map){}
+    init?(map: Map){}
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         content <- map["content"]
         cover <- map["cover"]
         ext <- map["ext"]
@@ -82,20 +82,20 @@ class GalleryItem: Mappable{
     }
 }
 
-class Ext: Mappable{
+struct Ext: Mappable{
     
     var key : String?
     var val : String?
     
-    required init?(map: Map){}
+    init?(map: Map){}
 
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         key <- map["key"]
         val <- map["val"]
     }
 }
 
-class ComicList: Mappable {
+struct ComicList: Mappable {
     
     var argName : String?
     var argType : Int?
@@ -109,9 +109,9 @@ class ComicList: Mappable {
     var sortId : String?
     var titleIconUrl : String?
     
-    required init?(map: Map){}
+    init?(map: Map){}
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         argName <- map["argName"]
         argType <- map["argType"]
         argValue <- map["argValue"]
@@ -127,7 +127,7 @@ class ComicList: Mappable {
     }
 }
 
-class Comic: Mappable{
+struct Comic: Mappable{
     
     var authorName : String?
     var comicId : Int?
@@ -140,9 +140,9 @@ class Comic: Mappable{
     var subTitle : String?
     var tags : [String]?
     
-    required init?(map: Map){}
+    init?(map: Map){}
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         authorName <- map["author_name"]
         comicId <- map["comicId"]
         cornerInfo <- map["cornerInfo"]
