@@ -143,14 +143,14 @@ public class InterceptHandle: InterceptHandleProtocol {
             var dict = JSONDict as? [String: Any] else {
             return isDataIntercept
         }
-        dict[ResponseKey.share.message] = "测试一下"
-        if let code = dict[ResponseKey.share.code] as? Int,
+        dict[MappingTable.share.message] = "测试一下"
+        if let code = dict[MappingTable.share.code] as? Int,
             !SuccessCodes.nums.contains(code),
-            let msg = dict[ResponseKey.share.message] as? String {
+            let msg = dict[MappingTable.share.message] as? String {
             showToast(msg)
-        } else if let status = dict[ResponseKey.share.status] as? String,
+        } else if let status = dict[MappingTable.share.status] as? String,
             !SuccessCodes.strings.contains(status),
-            let msg = dict[ResponseKey.share.message] as? String {
+            let msg = dict[MappingTable.share.message] as? String {
             showToast(msg)
         }
         

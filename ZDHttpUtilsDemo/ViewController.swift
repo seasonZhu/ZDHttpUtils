@@ -21,7 +21,6 @@ class ViewController: UIViewController {
         //student.age = 18
         
         let person = Person(sex: "man", name: "sola")
-        
         print(student.reflectToDictionary())
         print(person.reflectToDictionary())
         
@@ -57,15 +56,15 @@ class ViewController: UIViewController {
     }
     
     //MARK:- 设置请求服务的key
-    private func configResponseKey() {
-        ResponseKey.share.result = "list"
-        ResponseKey.share.code = "code"
+    private func configMappingTable() {
+        MappingTable.share.result = "list"
+        MappingTable.share.code = "code"
     }
     
     //MARK:- 设置u17请求服务的key
-    private func configU17ResponseKey() {
-        ResponseKey.share.result = "data"
-        ResponseKey.share.code = "code"
+    private func configU17MappingTable() {
+        MappingTable.share.result = "data"
+        MappingTable.share.code = "code"
     }
     
     //MARK:- 通过fastlane进行模式区分
@@ -102,7 +101,7 @@ extension ViewController {
     @objc
     func requestToTop() {
         
-        configResponseKey()
+        configMappingTable()
         
         //  直接到顶层路径进行转换
         let callbackHandler = CallbackHandler<ResponseArray<Item>>()
@@ -128,7 +127,7 @@ extension ViewController {
     @objc
     func requestToRoot() {
         
-        configResponseKey()
+        configMappingTable()
         
         //  直接到目的路径 所以泛型的类型需要进行更改
         let callbackHandler = CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
@@ -150,7 +149,7 @@ extension ViewController {
     @objc
     func requestU17() {
         
-        configU17ResponseKey()
+        configU17MappingTable()
         
         /// 这个地方还是需要进行一次强转的,否则的话类型会是Mappable这个基类,另外可以在函数里面进行别名的使用
         typealias ResponseU17 = Response<U17Data>
@@ -181,7 +180,7 @@ extension ViewController {
     @objc
     func requesJSONStringToModel() {
         
-        configResponseKey()
+        configMappingTable()
         
         let JSONString = "{\"list\": \"-1\", \"code\": 200, \"message\": \"hello\"}"
         
