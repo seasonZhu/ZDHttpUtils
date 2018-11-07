@@ -20,7 +20,7 @@ protocol InterceptHandleProtocol {
     
     func onAfterHandler(url: String, response: DataResponse<JSON>?)
     
-    func onDataInterceptHandler(data: Data?) -> Bool
+    func onDataInterceptHandler(data: Data?, httpResponse: HTTPURLResponse?) -> Bool
     
     func onResponseErrorHandler(error: Error?)
     
@@ -136,14 +136,23 @@ public class InterceptHandle: InterceptHandleProtocol {
     }
     
     //MARK:- 数据拦截
-    func onDataInterceptHandler(data: Data?) -> Bool {
+    func onDataInterceptHandler(data: Data?, httpResponse: HTTPURLResponse?) -> Bool {
         
+        //  协议层的statusCode处理
+        guard let response = httpResponse else {
+            return isDataIntercept
+        }
+        if !SuccessCodes.nums.contains(response.statusCode) {
+            //  statusCode -> 转描述
+        }
+        
+        //  业务层的处理
         guard let unwrapedData = data,
             let JSONDict = try? JSONSerialization.jsonObject(with: unwrapedData, options:[]),
             var dict = JSONDict as? [String: Any] else {
             return isDataIntercept
         }
-        dict[MappingTable.share.message] = "测试一下"
+        
         if let code = dict[MappingTable.share.code] as? Int,
             !SuccessCodes.nums.contains(code),
             let msg = dict[MappingTable.share.message] as? String {
@@ -294,6 +303,8 @@ extension InterceptHandle {
 }
 
 extension InterceptHandle {
+    
+    /// 协议层的成功范围
     struct SuccessCodes {
         static let nums = 200..<300
         static let strings = "200"..<"300"

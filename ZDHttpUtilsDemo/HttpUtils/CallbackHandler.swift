@@ -11,9 +11,9 @@ import ObjectMapper
 
 /// 回调协议
 protocol CallbackHandlerProtocol {
-    var success: ((Mappable?, [Mappable]?)-> ())? { get set }
+    var success: ((Mappable?, [Mappable]?, HTTPURLResponse?)-> ())? { get set }
     
-    var failure: ((Data?, Error?) -> ())? { get set }
+    var failure: ((Data?, Error?, HTTPURLResponse?) -> ())? { get set }
     
     var message: ((String?) -> ())? { get set }
     
@@ -26,9 +26,9 @@ protocol CallbackHandlerProtocol {
 /// 结果回调句柄
 public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     
-    public var success: ((Mappable?, [Mappable]?)-> ())?
+    public var success: ((Mappable?, [Mappable]?, HTTPURLResponse?)-> ())?
     
-    public var failure: ((Data?, Error?) -> ())?
+    public var failure: ((Data?, Error?, HTTPURLResponse?) -> ())?
     
     public var message: ((String?) -> ())?
     

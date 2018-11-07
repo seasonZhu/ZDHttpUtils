@@ -92,7 +92,7 @@ public class HttpUtils {
     private static func responseCallbackHandler<T: Mappable>(response: DataResponse<T>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
         //  如果对数据进行拦截,那么直接return 不会回调数据
-        if interceptHandle.onDataInterceptHandler(data: response.data) {
+        if interceptHandle.onDataInterceptHandler(data: response.data, httpResponse: response.response) {
             return
         }
         
@@ -101,10 +101,10 @@ public class HttpUtils {
             
         //  响应成功
         case .success(let value):
-            callbackHandler.success?(value, nil)
+            callbackHandler.success?(value, nil, response.response)
         //  响应失败
         case .failure(let error):
-            callbackHandler.failure?(nil, error)
+            callbackHandler.failure?(nil, error, response.response)
             interceptHandle.onResponseErrorHandler(error: error)
         }
     }
@@ -112,7 +112,7 @@ public class HttpUtils {
     //  模型数组响应
     private static func responseArrayCallbackHandler<T: Mappable>(response: DataResponse<[T]>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
-        if interceptHandle.onDataInterceptHandler(data: response.data) {
+        if interceptHandle.onDataInterceptHandler(data: response.data, httpResponse: response.response) {
             return
         }
         
@@ -121,10 +121,10 @@ public class HttpUtils {
             
         //  响应成功
         case .success(let value):
-            callbackHandler.success?(nil, value)
+            callbackHandler.success?(nil, value, response.response)
         //  响应失败
         case .failure(let error):
-            callbackHandler.failure?(response.data, error)
+            callbackHandler.failure?(response.data, error, response.response)
             interceptHandle.onResponseErrorHandler(error: error)
         }
     }
@@ -135,14 +135,14 @@ public class HttpUtils {
             //  目前保存的data是包含所有的JSON信息的 即data保存的是Top格式 所以转换需要一点小手段
             if let JSONDict = HttpCacheManager.getCacheDict(url: url), let dicts = JSONDict[MappingTable.share.result] as? [[String: Any]] {
                 let cache = Mapper<T>().mapArray(JSONArray: dicts)
-                callbackHandler.success?(nil, cache)
+                callbackHandler.success?(nil, cache, nil)
             }else {
                 callbackHandler.message?("读取缓存失败")
             }
         }else {
             if let JSONString = HttpCacheManager.getCacheString(url: url) {
                 let cache = T(JSONString: JSONString)
-                callbackHandler.success?(cache, nil)
+                callbackHandler.success?(cache, nil, nil)
             }else {
                 callbackHandler.message?("读取缓存失败")
             }
