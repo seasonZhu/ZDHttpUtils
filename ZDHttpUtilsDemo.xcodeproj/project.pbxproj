@@ -16,7 +16,7 @@
 		6151242E21524204005C15A9 /* InterceptHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151242D21524204005C15A9 /* InterceptHandle.swift */; };
 		6151243021524577005C15A9 /* HttpConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151242F21524577005C15A9 /* HttpConfig.swift */; };
 		61512432215245C7005C15A9 /* HttpUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61512431215245C7005C15A9 /* HttpUtils.swift */; };
-		6151243421525109005C15A9 /* HttpResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151243321525109005C15A9 /* HttpResponse.swift */; };
+		6151243421525109005C15A9 /* MapResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151243321525109005C15A9 /* MapResponse.swift */; };
 		6151243621533699005C15A9 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6151243521533699005C15A9 /* Model.swift */; };
 		615124382153764C005C15A9 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615124372153764C005C15A9 /* MD5.swift */; };
 		6151243A215376A0005C15A9 /* HttpCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61512439215376A0005C15A9 /* HttpCacheManager.swift */; };
@@ -46,7 +46,7 @@
 		6151242D21524204005C15A9 /* InterceptHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterceptHandle.swift; sourceTree = "<group>"; };
 		6151242F21524577005C15A9 /* HttpConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpConfig.swift; sourceTree = "<group>"; };
 		61512431215245C7005C15A9 /* HttpUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpUtils.swift; sourceTree = "<group>"; };
-		6151243321525109005C15A9 /* HttpResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpResponse.swift; sourceTree = "<group>"; };
+		6151243321525109005C15A9 /* MapResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapResponse.swift; sourceTree = "<group>"; };
 		6151243521533699005C15A9 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		615124372153764C005C15A9 /* MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
 		61512439215376A0005C15A9 /* HttpCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpCacheManager.swift; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 				6116D244214FAD5000B5595D /* NetworkListener.swift */,
 				6151242B21524059005C15A9 /* CallbackHandler.swift */,
 				6151242D21524204005C15A9 /* InterceptHandle.swift */,
-				6151243321525109005C15A9 /* HttpResponse.swift */,
+				6151243321525109005C15A9 /* MapResponse.swift */,
 				6151242F21524577005C15A9 /* HttpConfig.swift */,
 				61512439215376A0005C15A9 /* HttpCacheManager.swift */,
 				6151243B21548028005C15A9 /* HttpUrlProtocol.swift */,
@@ -293,7 +293,7 @@
 				6151243021524577005C15A9 /* HttpConfig.swift in Sources */,
 				6116D245214FAD5000B5595D /* NetworkListener.swift in Sources */,
 				6151243E2154821F005C15A9 /* HttpRequestProtocol.swift in Sources */,
-				6151243421525109005C15A9 /* HttpResponse.swift in Sources */,
+				6151243421525109005C15A9 /* MapResponse.swift in Sources */,
 				615124382153764C005C15A9 /* MD5.swift in Sources */,
 				6151244221548789005C15A9 /* BaseViewModel.swift in Sources */,
 				6195047F214B887700C838C5 /* AppDelegate.swift in Sources */,

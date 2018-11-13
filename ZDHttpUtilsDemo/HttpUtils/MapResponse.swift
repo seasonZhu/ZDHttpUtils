@@ -185,7 +185,7 @@ struct ResponseBase<T: BasicStructProtocol>: ResponseBaseProtocol, Mappable {
 }
 
 
-//----------- 以下还没有来的急实践,但是思路肯定是对的 ----------- //
+//----------- 以下还没有来得急实践,但是思路肯定是对的 ----------- //
 
 //MARK:- 响应全泛型 模型类型协议
 protocol ResponseGenericProtocol {

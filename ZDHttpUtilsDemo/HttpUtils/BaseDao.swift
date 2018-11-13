@@ -43,7 +43,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         #endif
         
         //  赋值sessionManager
-        self.sessionManager = sessionManager ?? SessionManager.default
+        self.sessionManager = sessionManager ?? BaseDao.getSesssion(timeOut: httpConfig.timeOut)
         
         /*----------- 下面是坑爹的点 ----------*/
         /*
@@ -133,6 +133,26 @@ extension BaseDao {
 // MARK: -针对httpConfig中timeOut进行配置化请求超时时间
 extension BaseDao {
     
+    /// 针对httpConfig中timeOut进行配置化请求超时时间,主要是对区间进行了判断
+    ///
+    /// - Parameter timeOut: 超时时间
+    /// - Returns: SessionManager
+    static func getSesssion(timeOut: TimeInterval) -> SessionManager {
+        switch timeOut {
+        case 0...5:
+            return SessionManager.timeout5s
+        case 6...15:
+            return SessionManager.default
+        case 16...30:
+            return SessionManager.timeout30s
+        case 31...60:
+            return SessionManager.timeout60s
+        case 61...120:
+            return SessionManager.timeout120s
+        default:
+            return SessionManager.default
+        }
+    }
 }
 
 // MARK: - SessionManager实例的静态写法
@@ -152,21 +172,23 @@ extension SessionManager {
         return SessionManager(configuration: configuration)
     }()
     
-    static let timeout60s: SessionManager? = {
+    static let timeout60s: SessionManager = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 60
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
-        let delegate = SessionDelegate()
-        let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
-        return SessionManager(session: session, delegate: delegate)
+        return SessionManager(configuration: configuration)
+        //let delegate = SessionDelegate()
+        //let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        //return SessionManager(session: session, delegate: delegate)
     }()
     
-    static let timeout120s: SessionManager? = {
+    static let timeout120s: SessionManager = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 120
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
-        let delegate = SessionDelegate()
-        let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
-        return SessionManager(session: session, delegate: delegate)
+        return SessionManager(configuration: configuration)
+        //let delegate = SessionDelegate()
+        //let session = URLSession.init(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        //return SessionManager(session: session, delegate: delegate)
     }()
 }
