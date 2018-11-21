@@ -32,7 +32,7 @@ extension NetworkType: CustomStringConvertible {
 extension NetworkType {
     //MARK:- 获取网络状态
     fileprivate static func getType(by reachabilityStatus: NetworkReachabilityManager.NetworkReachabilityStatus) -> NetworkType {
-        var status: NetworkType
+        let status: NetworkType
         switch reachabilityStatus {
         case .unknown:
             status = .unknown
