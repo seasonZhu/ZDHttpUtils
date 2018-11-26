@@ -44,7 +44,7 @@ public struct BoolString {
 }
 
 //MARK:- 响应模型协议
-protocol ResponseProtocol: Mappable {
+protocol ResponseProtocol {
     
     associatedtype R
     
