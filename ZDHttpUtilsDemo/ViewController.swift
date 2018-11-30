@@ -108,7 +108,7 @@ extension ViewController {
         
         callbackHandler.success = { model, models, _ in
             // 其实一旦回调成功, model或者models中有一个必然有值,因为走success的条件是 Alamofire中.success (let value) 所以这里,知道后台返回的是JSON或者是JSON数组的话,这里完全可以隐式解包,当然使用guard守护也是不错
-            guard let unwrapedModel = model as? ResponseArray<Item> else { return }
+            guard let unwrapedModel = model else { return }
             print(unwrapedModel)
         }
         
@@ -157,7 +157,7 @@ extension ViewController {
         let callbackHandler = CallbackHandler<ResponseU17>() // CallbackHandler<U17Root>()
         
         callbackHandler.success = { model, models, _ in
-            guard let unwrapedModel = model as? ResponseU17 else { return }
+            guard let unwrapedModel = model else { return }
             print(unwrapedModel)
         }
         

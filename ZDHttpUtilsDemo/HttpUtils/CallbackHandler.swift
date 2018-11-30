@@ -11,7 +11,10 @@ import ObjectMapper
 
 /// 回调协议
 protocol CallbackHandlerProtocol {
-    var success: ((Mappable?, [Mappable]?, HTTPURLResponse?)-> ())? { get set }
+    
+    associatedtype M: Mappable
+    
+    var success: ((M?, [M]?, HTTPURLResponse?)-> ())? { get set }
     
     var failure: ((Data?, Error?, HTTPURLResponse?) -> ())? { get set }
     
@@ -26,7 +29,9 @@ protocol CallbackHandlerProtocol {
 /// 结果回调句柄
 public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     
-    public var success: ((Mappable?, [Mappable]?, HTTPURLResponse?)-> ())?
+    typealias M = T
+    
+    public var success: ((T?, [T]?, HTTPURLResponse?) -> ())?
     
     public var failure: ((Data?, Error?, HTTPURLResponse?) -> ())?
     
