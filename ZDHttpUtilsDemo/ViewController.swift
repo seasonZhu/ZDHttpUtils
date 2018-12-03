@@ -88,12 +88,6 @@ class ViewController: UIViewController {
         modelLabel.text = msg
         view.addSubview(modelLabel)
     }
-    
-    func check<N>(_ field: N) {
-        if let x = field as? Any, x is Int || x is NSNumber {
-            
-        }
-    }
 }
 
 extension ViewController {
@@ -106,7 +100,7 @@ extension ViewController {
         //  直接到顶层路径进行转换
         let callbackHandler = CallbackHandler<ResponseArray<Item>>()
         
-        callbackHandler.success = { model, models, _ in
+        callbackHandler.success = { model, models, data, jsonString, httpResponse in
             // 其实一旦回调成功, model或者models中有一个必然有值,因为走success的条件是 Alamofire中.success (let value) 所以这里,知道后台返回的是JSON或者是JSON数组的话,这里完全可以隐式解包,当然使用guard守护也是不错
             guard let unwrapedModel = model else { return }
             print(unwrapedModel)
@@ -116,7 +110,7 @@ extension ViewController {
             print(String(describing: data), String(describing: error))
         }
         
-//        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
+        //HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
         
         
         CheckoutViewModel().getList(callbackHandler: callbackHandler)
@@ -132,7 +126,7 @@ extension ViewController {
         //  直接到目的路径 所以泛型的类型需要进行更改
         let callbackHandler = CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
         
-        callbackHandler.success = { model, models, _ in
+        callbackHandler.success = { model, models, data, jsonString, httpResponse in
             guard let unwrapedModels = models else { return }
             print(unwrapedModels)
         }
@@ -156,7 +150,7 @@ extension ViewController {
         
         let callbackHandler = CallbackHandler<ResponseU17>() // CallbackHandler<U17Root>()
         
-        callbackHandler.success = { model, models, _ in
+        callbackHandler.success = { model, models, data, jsonString, httpResponse in
             guard let unwrapedModel = model else { return }
             print(unwrapedModel)
         }

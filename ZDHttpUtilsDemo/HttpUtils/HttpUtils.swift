@@ -15,7 +15,7 @@ import ObjectMapper
 public class HttpUtils {
     public static func request<T: Mappable>(sessionManage: SessionManager = SessionManager.default,
                                             method: HTTPMethod,
-                                            url:String,
+                                            url: String,
                                             parameters: Parameters? = nil,
                                             headers: HTTPHeaders? = nil,
                                             interceptHandle: InterceptHandle,
@@ -72,59 +72,75 @@ public class HttpUtils {
         //  结果进行回调
         if let keyPath = callbackHandler.keyPath {
             if callbackHandler.isArray {
-                dataRequset.responseArray(keyPath: keyPath) { (response: DataResponse<[T]>) in
-                    responseArrayCallbackHandler(response: response, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+                dataRequset.responseArray(keyPath: keyPath) { (responseArray: DataResponse<[T]>) in
+                    responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
                 }
             }else {
-                dataRequset.responseObject(keyPath: keyPath) { (response: DataResponse<T>) in
-                    responseCallbackHandler(response: response, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+                dataRequset.responseObject(keyPath: keyPath) { (responseObject: DataResponse<T>) in
+                    responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
                 }
             }
         }else {
-            dataRequset.responseObject { (response: DataResponse<T>) in
-                responseCallbackHandler(response: response, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+            dataRequset.responseObject { (responseObject: DataResponse<T>) in
+                responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
             }
         }
         
     }
     
     //  模型响应
-    private static func responseCallbackHandler<T: Mappable>(response: DataResponse<T>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
+    private static func responseObjectCallbackHandler<T: Mappable>(responseObject: DataResponse<T>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
         //  如果对数据进行拦截,那么直接return 不会回调数据
-        if interceptHandle.onDataInterceptHandler(data: response.data, httpResponse: response.response) {
+        if interceptHandle.onDataInterceptHandler(data: responseObject.data, httpResponse: responseObject.response) {
             return
         }
         
+        //  data -> jsonString
+        let jsonString: String?
+        if let data = responseObject.data {
+            jsonString = String(data: data, encoding: .utf8)
+        }else {
+            jsonString = nil
+        }
+        
         //  响应请求结果回调
-        switch response.result {
+        switch responseObject.result {
             
         //  响应成功
         case .success(let value):
-            callbackHandler.success?(value, nil, response.response)
+            callbackHandler.success?(value, nil, responseObject.data, jsonString, responseObject.response)
         //  响应失败
         case .failure(let error):
-            callbackHandler.failure?(nil, error, response.response)
+            callbackHandler.failure?(responseObject.data, error, responseObject.response)
             interceptHandle.onResponseErrorHandler(error: error)
         }
     }
     
     //  模型数组响应
-    private static func responseArrayCallbackHandler<T: Mappable>(response: DataResponse<[T]>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
+    private static func responseArrayCallbackHandler<T: Mappable>(responseArray: DataResponse<[T]>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
-        if interceptHandle.onDataInterceptHandler(data: response.data, httpResponse: response.response) {
+        if interceptHandle.onDataInterceptHandler(data: responseArray.data, httpResponse: responseArray.response) {
             return
         }
         
+        //  data -> jsonString
+        let jsonString: String?
+        if let data = responseArray.data {
+            jsonString = String(data: data, encoding: .utf8)
+        }else {
+            jsonString = nil
+        }
+        
         //  响应请求结果回调
-        switch response.result {
+        switch responseArray.result {
             
         //  响应成功
         case .success(let value):
-            callbackHandler.success?(nil, value, response.response)
+            callbackHandler.success?(nil, value, responseArray.data, jsonString, responseArray.response)
         //  响应失败
         case .failure(let error):
-            callbackHandler.failure?(response.data, error, response.response)
+            callbackHandler.failure?(responseArray.data, error, responseArray.response)
             interceptHandle.onResponseErrorHandler(error: error)
         }
     }
@@ -135,14 +151,14 @@ public class HttpUtils {
             //  目前保存的data是包含所有的JSON信息的 即data保存的是Top格式 所以转换需要一点小手段
             if let JSONDict = HttpCacheManager.getCacheDict(url: url), let dicts = JSONDict[MappingTable.share.result] as? [[String: Any]] {
                 let cache = Mapper<T>().mapArray(JSONArray: dicts)
-                callbackHandler.success?(nil, cache, nil)
+                callbackHandler.success?(nil, cache, nil, nil, nil)
             }else {
                 callbackHandler.message?("读取缓存失败")
             }
         }else {
             if let JSONString = HttpCacheManager.getCacheString(url: url) {
                 let cache = T(JSONString: JSONString)
-                callbackHandler.success?(cache, nil, nil)
+                callbackHandler.success?(cache, nil, nil, nil, nil)
             }else {
                 callbackHandler.message?("读取缓存失败")
             }

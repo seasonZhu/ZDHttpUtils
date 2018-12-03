@@ -14,7 +14,7 @@ protocol CallbackHandlerProtocol {
     
     associatedtype M: Mappable
     
-    var success: ((M?, [M]?, HTTPURLResponse?)-> ())? { get set }
+    var success: ((M?, [M]?, Data?, String?, HTTPURLResponse?)-> ())? { get set }
     
     var failure: ((Data?, Error?, HTTPURLResponse?) -> ())? { get set }
     
@@ -31,7 +31,7 @@ public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     
     typealias M = T
     
-    public var success: ((T?, [T]?, HTTPURLResponse?) -> ())?
+    public var success: ((T?, [T]?, Data?, String?, HTTPURLResponse?) -> ())?
     
     public var failure: ((Data?, Error?, HTTPURLResponse?) -> ())?
     
@@ -48,6 +48,16 @@ public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     
     public func setIsArray(_ isArray: Bool) -> Self {
         self.isArray = isArray
+        return self
+    }
+    
+    public func onSuccess(_ success: ((T?, [T]?, Data?, String?, HTTPURLResponse?) -> ())?) -> Self {
+        self.success = success
+        return self
+    }
+    
+    public func onFailure(_ failure: ((Data?, Error?, HTTPURLResponse?) -> ())?)  -> Self {
+        self.failure = failure
         return self
     }
 }

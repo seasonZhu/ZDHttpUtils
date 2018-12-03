@@ -12,7 +12,7 @@ import ObjectMapper
 
 class CheckoutViewModel: BaseViewModel {
     //MARK:- 对象方法使用
-    private lazy var dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).isNeedSign(true).constructor, sessionManager: SessionManager.timeout30s)
+    private lazy var dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeout(15).isNeedSign(true).constructor)
     
     override var interceptHandle: InterceptHandle {
         return InterceptHandle.Builder().setIsShowToast(false).setIsShowLoading(true).setLoadingText("wait...").constructor
@@ -24,7 +24,7 @@ class CheckoutViewModel: BaseViewModel {
     
     //MARK:- 类方法使用
     static func getList<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle? = nil, callbackHandler: CallbackHandler<T>) {
-        let dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeOut(15).constructor, sessionManager: SessionManager.timeout30s)
+        let dao = CheckoutDao(httpConfig: HttpConfig.Builder().setTimeout(15).constructor)
         dao.getList(parameters: parameters, interceptHandle: interceptHandle ?? InterceptHandle(), callbackHandler: callbackHandler)
     }
 }

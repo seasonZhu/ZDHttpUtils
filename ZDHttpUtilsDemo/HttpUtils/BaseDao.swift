@@ -15,15 +15,17 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     
     let userAgentInfo: String = UIWebView(frame: CGRect.zero).stringByEvaluatingJavaScript(from: "navigator.userAgent") ?? "Unknown"
     
-    var sessionManager: SessionManager
+    let sessionManager: SessionManager
     
     var headers = ["Content-Type": "application/json"]
     
-    init(httpConfig: HttpConfig, sessionManager: SessionManager? = nil) {
+    init(httpConfig: HttpConfig) {
         
         self.httpConfig = httpConfig
         
         //  headers的处理
+        var headers = ["Content-Type": "application/json"]
+        headers.merge(httpConfig.addHeads) { (current, new) -> String in return new }
         
         //  这个方法不仅可以更新 也可以进行键值对的添加
         headers.updateValue(userAgentInfo, forKey: "User-Agent")
@@ -35,22 +37,30 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         }
         
         //  处理Header merge的用法 点进去看详细的
-        headers.merge(SessionManager.defaultHTTPHeaders) { (current, new) -> String in return current }
+        headers.merge(SessionManager.defaultHTTPHeaders) { (current, new) -> String in return new }
         
-        //print("defaultHTTPHeaders: \(SessionManager.defaultHTTPHeaders)")
+        self.headers = headers
+        
         #if DEBUG
         print("headers: \(headers)")
         #endif
         
-        //  赋值sessionManager
-        self.sessionManager = sessionManager ?? BaseDao.getSesssion(timeOut: httpConfig.timeOut)
+        //  处理SessionManager
+        let manager: SessionManager = {
+            let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForRequest = httpConfig.timeout
+            configuration.httpAdditionalHeaders = headers
+            return SessionManager(configuration: configuration)
+        }()
+        SessionManager.custom = manager
+        self.sessionManager = SessionManager.custom
         
         /*----------- 下面是坑爹的点 ----------*/
         /*
         //  配置Session
         let config = URLSessionConfiguration.default
         //  配置超时时间
-        config.timeoutIntervalForRequest = httpConfig.timeOut
+        config.timeoutIntervalForRequest = httpConfig.timeout
         
         let unuserableSesssionManager = SessionManager(configuration: config)
         
@@ -69,7 +79,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         
         let manager: SessionManager = {
             let configuration = URLSessionConfiguration.default
-            configuration.timeoutIntervalForRequest = httpConfig.timeOut
+            configuration.timeoutIntervalForRequest = httpConfig.timeout
             configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
             return SessionManager(configuration: configuration)
         }()
@@ -130,15 +140,15 @@ extension BaseDao {
     }
 }
 
-// MARK: -针对httpConfig中timeOut进行配置化请求超时时间
+// MARK: -针对httpConfig中timeout进行配置化请求超时时间
 extension BaseDao {
     
-    /// 针对httpConfig中timeOut进行配置化请求超时时间,主要是对区间进行了判断
+    /// 针对httpConfig中timeout进行配置化请求超时时间,主要是对区间进行了判断
     ///
-    /// - Parameter timeOut: 超时时间
+    /// - Parameter timeout: 超时时间
     /// - Returns: SessionManager
-    static func getSesssion(timeOut: TimeInterval) -> SessionManager {
-        switch timeOut {
+    static func getSesssion(timeout: TimeInterval) -> SessionManager {
+        switch timeout {
         case 0...5:
             return SessionManager.timeout5s
         case 6...15:
@@ -158,6 +168,17 @@ extension BaseDao {
 // MARK: - SessionManager实例的静态写法
 extension SessionManager {
     
+    /// 写一个全局的自定义SessionManager,然后每次自定了一个SessionManager都赋值给它,这样就保证了自定义的SessionManager能够一直活着,请求也就是正常的
+    static var custom: SessionManager = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 15
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        return SessionManager(configuration: configuration)
+    }()
+}
+
+// MARK: - 常用的一些超时设置
+extension SessionManager {
     static let timeout5s: SessionManager = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 5
