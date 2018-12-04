@@ -53,6 +53,30 @@ class ViewController: UIViewController {
         basicButton.addTarget(self, action: #selector(requesJSONStringToModel), for: .touchUpInside)
         view.addSubview(basicButton)
         
+        let uploadButton = UIButton(frame: CGRect(x:  0, y: 396, width: view.bounds.width, height: 44))
+        uploadButton.setTitle("文件通过[String: Data]格式进行上传", for: .normal)
+        uploadButton.backgroundColor = UIColor.lightGray
+        uploadButton.addTarget(self, action: #selector(requestUpload), for: .touchUpInside)
+        view.addSubview(uploadButton)
+        
+        let uploadByfilePathButton = UIButton(frame: CGRect(x:  0, y: 484, width: view.bounds.width, height: 44))
+        uploadByfilePathButton.setTitle("文件路径进行上传", for: .normal)
+        uploadByfilePathButton.backgroundColor = UIColor.lightGray
+        uploadByfilePathButton.addTarget(self, action: #selector(requestUploadByFilePath), for: .touchUpInside)
+        view.addSubview(uploadByfilePathButton)
+        
+        let downloadPDFButton = UIButton(frame: CGRect(x:  0, y: 572, width: view.bounds.width, height: 44))
+        downloadPDFButton.setTitle("PDF下载", for: .normal)
+        downloadPDFButton.backgroundColor = UIColor.lightGray
+        downloadPDFButton.addTarget(self, action: #selector(requestDownloadPDF), for: .touchUpInside)
+        view.addSubview(downloadPDFButton)
+        
+        let downloadQQDmgButton = UIButton(frame: CGRect(x:  0, y: 660, width: view.bounds.width, height: 44))
+        downloadQQDmgButton.setTitle("QQDmg下载", for: .normal)
+        downloadQQDmgButton.backgroundColor = UIColor.lightGray
+        downloadQQDmgButton.addTarget(self, action: #selector(requestDownloadQQDmg), for: .touchUpInside)
+        view.addSubview(downloadQQDmgButton)
+        
     }
     
     //MARK:- 设置请求服务的key
@@ -82,7 +106,7 @@ class ViewController: UIViewController {
         msg = "release"
         #endif
         
-        let modelLabel = UILabel(frame: CGRect(x: 0, y: 396, width: view.bounds.width, height: 44))
+        let modelLabel = UILabel(frame: CGRect(x: 0, y: 700, width: view.bounds.width, height: 44))
         modelLabel.textAlignment = .center
         modelLabel.textColor = UIColor.black
         modelLabel.text = msg
@@ -181,6 +205,67 @@ extension ViewController {
         let basicModel = Mapper<ResponseBase<Bool>>().map(JSONString: JSONString)
         
         print(basicModel)
+    }
+    
+    @objc
+    func requestUpload() {
+        
+        let parameters = [
+            "vin": "",
+            "userId": "",
+            "question": "测试数据",
+            "scene": "其他问题",
+            "contact": "123456"
+        ]
+        
+        let data = UIImageJPEGRepresentation(UIImage(named: "weibo_icon")!, 1.0)!
+        let uploadStream = ["weibo_icon": data]
+        
+        RequestUtils.init(httpConfig: HttpConfig.Builder().constructor).upload(url: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", uploadStream: uploadStream, parameters: parameters, size: nil, mimeType: .image("jpg"), callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
+            print("上传\(isSuccess ? "成功" : "失败")了")
+        }).onUploadProgress({ (url, progress) in
+            print(progress)
+        }))
+    }
+    
+    @objc
+    func requestUploadByFilePath() {
+        RequestUtils(httpConfig: HttpConfig.Builder().constructor).uploadFromeFilePath(filePath: HttpCacheManager.getFilePath(url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew"), to: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
+            print(dict)
+            print("上传\(isSuccess ? "成功" : "失败")了")
+        }).onUploadProgress({ (url, progress) in
+            print(progress)
+        }))
+    }
+    
+    @objc
+    func requestDownloadPDF() {
+        let downloadTask = RequestUtils(httpConfig: HttpConfig.Builder().constructor)
+        
+        downloadTask.download(url: "https://dssp.dstsp.com/ow/static/manual/usermanual.pdf", callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
+            
+            print("fileUrl: \(fileUrl)")
+            print("data: \(data)")
+        }).onFailure({ (data, tempUrl, error, statusCode) in
+            print("tempUrl: \(tempUrl)")
+        }).onDownloadProgress({ (progress) in
+            print(progress)
+        }))
+    }
+    
+    @objc
+    func requestDownloadQQDmg() {
+        let downloadTask = RequestUtils(httpConfig: HttpConfig.Builder().constructor)
+        
+        downloadTask.download(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg", callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
+            print("tempUrl: \(tempUrl)")
+            print("fileUrl: \(fileUrl)")
+            print("data: \(data)")
+        }).onFailure({ (data, tempUrl, error, statusCode) in
+            print("tempUrl: \(tempUrl)")
+        }).onDownloadProgress({ (progress) in
+            print(progress)
+        }))
     }
 }
 

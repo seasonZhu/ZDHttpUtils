@@ -159,18 +159,6 @@ extension BaseDao {
     }
 }
 
-// MARK: - SessionManager实例的静态写法
-extension SessionManager {
-    
-    /// 写一个全局的自定义SessionManager,然后每次自定了一个SessionManager都赋值给它,这样就保证了自定义的SessionManager能够一直活着,请求也就是正常的
-    static var custom: SessionManager = {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 15
-        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
-        return SessionManager(configuration: configuration)
-    }()
-}
-
 // MARK: - 常用的一些超时设置
 extension SessionManager {
     static let timeout5s: SessionManager = {

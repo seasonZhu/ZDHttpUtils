@@ -195,7 +195,7 @@ extension HttpUtils {
     // 文件上传
     ///
     /// - Parameters:
-    ///   - sessionManage: Alamofire.SessionManage
+    ///   - sessionManage: Alamofire.SessionManager
     ///   - url: 请求网址
     ///   - uploadStream: 上传的数据流
     ///   - parameters: 请求字段
@@ -203,7 +203,7 @@ extension HttpUtils {
     ///   - size: 文件的size 长宽
     ///   - mimeType: 文件类型 详细看FawMimeType枚举
     ///   - callbackHandler: 上传回调
-    class func uploadData(sessionManager: SessionManager = SessionManager.default,
+    public static func uploadData(sessionManager: SessionManager = SessionManager.default,
                           url: String,
                           uploadStream: UploadStream,
                           parameters: Parameters? = nil,
@@ -281,6 +281,41 @@ extension HttpUtils {
         
     }
     
+    /// 通过文件路径进行上传
+    ///
+    /// - Parameters:
+    ///   - sessionManager: Alamofire.SessionManager
+    ///   - filePath: 文件路径字符串
+    ///   - url: 请求网址
+    ///   - method: 请求方法
+    ///   - headers: 请求头
+    ///   - callbackHandler: 上传回调
+    public static func uploadFromeFilePath(sessionManager: SessionManager = SessionManager.default,
+                                           filePath: String,
+                                           to url: String,
+                                           method: HTTPMethod = .post,
+                                           headers: HTTPHeaders? = nil,
+                                           callbackHandler: UploadCallbackHandler) {
+        let fileUrl = URL(fileURLWithPath: filePath)
+        
+        let uploadRequest = Alamofire.upload(fileUrl, to: url)
+        
+        //  上传进度
+        uploadRequest.uploadProgress(queue: DispatchQueue.global(qos: .utility)) { (progress) in
+            callbackHandler.progress?(fileUrl, progress)
+        }
+        
+        //  上传结果
+        uploadRequest.responseJSON(completionHandler: { (response) in
+            switch response.result {
+            case .success(let value):
+                callbackHandler.result?(fileUrl, true, nil, value as? [String: Any])
+            case .failure(let error):
+                callbackHandler.result?(fileUrl, false, error ,nil)
+            }
+        })
+    }
+    
 }
 
 // MARK: - 下载的网络请求
@@ -293,11 +328,11 @@ extension HttpUtils {
     ///   - parameters: 请求字段
     ///   - headers: 请求头
     ///   - callbackHandler: 下载回调
-    class func downloadData(sessionManager: SessionManager = SessionManager.default,
-                            url: String,
-                            parameters: Parameters? = nil,
-                            headers: HTTPHeaders? = nil,
-                            callbackHandler: DownloadCallbackHandler) {
+    public static func downloadData(sessionManager: SessionManager = SessionManager.default,
+                                    url: String,
+                                    parameters: Parameters? = nil,
+                                    headers: HTTPHeaders? = nil,
+                                    callbackHandler: DownloadCallbackHandler) {
         //  创建路径
         let destination: DownloadRequest.DownloadFileDestination = { temporaryURL, response in
             let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -310,6 +345,35 @@ extension HttpUtils {
         indicatorRun()
         
         print("HttpUtils ## API Request ## \(url) ## parameters = \(String(describing: parameters))")
+        
+        //  如果有临时数据那么就断点下载
+        if let resumData = HttpCacheManager.getResumeData(url: url) {
+            sessionManager.download(resumingWith: resumData, to: destination).responseData { (responseData) in
+                
+                //  状态栏的菊花转结束
+                indicatorStop()
+                
+                print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: responseData))")
+                
+                //  响应请求结果
+                switch responseData.result {
+                case .success(let value):
+                    callbackHandler.success?(responseData.temporaryURL, responseData.destinationURL, value)
+                    try? FileManager.default.removeItem(atPath: HttpCacheManager.getFilePath(url: url))
+                case .failure(let error):
+                    callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
+                    
+                    //  将请求失败而下载的部分数据存下来,下次进行
+                    HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
+                        print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
+                    })
+                }
+                }.downloadProgress { (progress) in
+                    callbackHandler.progress?(progress)
+            }
+            
+            return
+        }
         
         sessionManager.download(url, parameters: parameters, to: destination).responseData { (responseData) in
             
@@ -324,9 +388,14 @@ extension HttpUtils {
                 callbackHandler.success?(responseData.temporaryURL, responseData.destinationURL, value)
             case .failure(let error):
                 callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
+                
+                //  将请求失败而下载的部分数据存下来,下次进行
+                HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
+                    print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
+                })
             }
-            }.downloadProgress { (progress) in
-                callbackHandler.progress?(progress)
+        }.downloadProgress { (progress) in
+            callbackHandler.progress?(progress)
         }
     }
 }

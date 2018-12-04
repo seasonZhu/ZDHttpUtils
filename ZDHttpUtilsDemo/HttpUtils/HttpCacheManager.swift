@@ -60,6 +60,16 @@ public class HttpCacheManager {
         return string
     }
     
+    /// 通过url获取断点续传需要的数据
+    ///
+    /// - Parameter url: url
+    /// - Returns: 数据
+    static func getResumeData(url: String) -> Data? {
+        let pathUrl = URL.init(fileURLWithPath: getFilePath(url: url))
+        let data = try? Data.init(contentsOf: pathUrl)
+        return data
+    }
+    
     /// 通过传递的路径判断 文件或者文件夹, 如果不存在就进行创建, 这个方法一定要调用呀
     ///
     /// - Parameter path: 路径
@@ -81,9 +91,9 @@ public class HttpCacheManager {
                     #endif
                 }
             }else {
-                #if DEBUG
+                //#if DEBUG
                 print("The \(path) is Exist ")
-                #endif
+                //#endif
             }
         }
     }
