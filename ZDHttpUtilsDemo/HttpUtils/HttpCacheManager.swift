@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - 网络请求缓存本地化处理
-class HttpCacheManager {
+public class HttpCacheManager {
     
     /// 写数据
     ///
@@ -63,7 +63,7 @@ class HttpCacheManager {
     /// 通过传递的路径判断 文件或者文件夹, 如果不存在就进行创建, 这个方法一定要调用呀
     ///
     /// - Parameter path: 路径
-    static func checkDirectory(path: String = httpUtilsCachePath) {
+    public static func checkDirectory(path: String = httpUtilsCachePath) {
         let fileManager = FileManager.default
         
         //  是否是文件夹
@@ -89,7 +89,7 @@ class HttpCacheManager {
     }
     
     /// 缓存文件夹路径
-    class var httpUtilsCachePath: String {
+    public class var httpUtilsCachePath: String {
         let path = NSHomeDirectory() + "/Library/HttpUtilsCache"
         #if DEBUG
         print("path: \(path)")
@@ -117,7 +117,7 @@ class HttpCacheManager {
     }
     
     /// 清理本地缓存的json数据
-    class func clearDiskCache() {
+    public class func clearDiskCache() {
         DispatchQueue.global().async {
             do {
                 try FileManager.default.removeItem(atPath: httpUtilsCachePath)

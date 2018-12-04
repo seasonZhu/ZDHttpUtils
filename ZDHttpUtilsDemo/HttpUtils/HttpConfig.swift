@@ -8,10 +8,9 @@
 
 import UIKit
 import Alamofire
-import Toast_Swift
 
 /// 网络请求配置项
-class HttpConfig {
+public class HttpConfig {
     
     //MARK:- 配置可以根据需求进行增删
     
@@ -36,7 +35,7 @@ class HttpConfig {
     }
     
     /// 详细构造器
-    class Builder {
+    public class Builder {
         
         /// 超时时间
         var timeout: TimeInterval = 15
@@ -50,37 +49,57 @@ class HttpConfig {
         /// 请求方式
         var requestType: HTTPMethod = .get
         
+        /// 设置超时时间
+        ///
+        /// - Parameter timeout: 超时时间
+        /// - Returns: 对象自己
         @discardableResult
-        func setTimeout(_ timeout: TimeInterval) -> Self {
+        public func setTimeout(_ timeout: TimeInterval) -> Self {
             self.timeout = timeout
             return self
         }
         
+        /// 设置是否需要签名
+        ///
+        /// - Parameter isNeedSign: 是否需要签名
+        /// - Returns: 对象自己
         @discardableResult
-        func isNeedSign(_ isNeedSign: Bool) -> Self {
+        public func isNeedSign(_ isNeedSign: Bool) -> Self {
             self.isNeedSign = isNeedSign
             return self
         }
         
+        /// 设置是否需要添加headers
+        ///
+        /// - Parameter addHeads: headers
+        /// - Returns: 对象自己
         @discardableResult
-        func addHeads(_ addHeads: HTTPHeaders) -> Self {
+        public func addHeads(_ addHeads: HTTPHeaders) -> Self {
             addHeads.forEach { (key, value) in
                 self.addHeads[key] = value
             }
             return self
         }
         
+        /// 设置请求类型
+        ///
+        /// - Parameter requestType: 请求类型
+        /// - Returns: 对象自己
         @discardableResult
         public func setRequestType(_ requestType: HTTPMethod) -> Self {
             self.requestType = requestType
             return self
         }
         
-        func construction() -> HttpConfig {
+        /// 配置构造器
+        ///
+        /// - Returns: 配置对象
+        public func construction() -> HttpConfig {
             return HttpConfig(builder: self)
         }
         
-        var constructor: HttpConfig {
+        /// 配置构造器的计算属性
+        public var constructor: HttpConfig {
             return HttpConfig(builder: self)
         }
     }

@@ -13,6 +13,17 @@ import Alamofire_SwiftyJSON
 import ObjectMapper
 
 public class HttpUtils {
+    
+    /// 基于ObjectMapper泛型返回的网络请求
+    ///
+    /// - Parameters:
+    ///   - sessionManage: Alamofire.SessionManage
+    ///   - method: 请求方式
+    ///   - url: 请求网址
+    ///   - parameters: 请求字段
+    ///   - headers: 请求头
+    ///   - interceptHandle: 拦截回调
+    ///   - callbackHandler: 结果回调
     public static func request<T: Mappable>(sessionManage: SessionManager = SessionManager.default,
                                             method: HTTPMethod,
                                             url: String,
@@ -88,7 +99,11 @@ public class HttpUtils {
         
     }
     
-    //  模型响应
+    /// 响应模型处理
+    ///
+    /// - Parameters:
+    ///   - responseObject: 响应对象
+    ///   - callbackHandler: 回调
     private static func responseObjectCallbackHandler<T: Mappable>(responseObject: DataResponse<T>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
         //  如果对数据进行拦截,那么直接return 不会回调数据
@@ -117,7 +132,11 @@ public class HttpUtils {
         }
     }
     
-    //  模型数组响应
+    /// 响应模型数组处理
+    ///
+    /// - Parameters:
+    ///   - responseObject: 响应对象
+    ///   - callbackHandler: 回调
     private static func responseArrayCallbackHandler<T: Mappable>(responseArray: DataResponse<[T]>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         
         if interceptHandle.onDataInterceptHandler(data: responseArray.data, httpResponse: responseArray.response) {
@@ -145,7 +164,12 @@ public class HttpUtils {
         }
     }
     
-    //  缓存响应 没有网络的时候触发
+    
+    /// 响应缓存回调
+    ///
+    /// - Parameters:
+    ///   - url: 请求网址
+    ///   - callbackHandler: 回调
     private static func responseCache<T: Mappable>(url: String, callbackHandler: CallbackHandler<T>) {
         if callbackHandler.isArray {
             //  目前保存的data是包含所有的JSON信息的 即data保存的是Top格式 所以转换需要一点小手段
@@ -166,53 +190,53 @@ public class HttpUtils {
     }
 }
 
-/// 上传闭包
-typealias UploadResult = (_ uploadUrl: URL?, _ isSuccess: Bool, _ resultDict: [String: Any]?) -> ()
-
-/// 上传进度闭包
-typealias UploadProgress = (_ uploadUrl: URL?, _ progress: Progress) -> ()
-
-/// 上传数据流
-typealias UploadStream = [String: Data]
-
-//MARK:- 上传的网络请求
+// MARK: - 上传的网络请求
 extension HttpUtils {
-    
-    /// 文件上传
+    // 文件上传
     ///
     /// - Parameters:
-    ///   - url: 请求的url
-    ///   - uploadStream: 上传流
-    ///   - params: 请求字段
-    ///   - size: 如果是图片 图片大小
-    ///   - mimeType: 媒体类型
-    ///   - uploadResult: 上传结果回调
-    ///   - uploadProgress: 上传进度回调
-    class func uploadData(url: String,
+    ///   - sessionManage: Alamofire.SessionManage
+    ///   - url: 请求网址
+    ///   - uploadStream: 上传的数据流
+    ///   - parameters: 请求字段
+    ///   - headers: 请求头
+    ///   - size: 文件的size 长宽
+    ///   - mimeType: 文件类型 详细看FawMimeType枚举
+    ///   - callbackHandler: 上传回调
+    class func uploadData(sessionManager: SessionManager = SessionManager.default,
+                          url: String,
                           uploadStream: UploadStream,
                           parameters: Parameters? = nil,
+                          headers: HTTPHeaders? = nil,
                           size: CGSize?,
                           mimeType: MimeType,
-                          uploadResult: @escaping UploadResult,
-                          uploadProgress: @escaping UploadProgress) {
+                          callbackHandler: UploadCallbackHandler) {
+        
+        print("HttpUtils ## API Request ## post ## \(url) ## parameters = \(String(describing: parameters))")
+        
         //  请求头的设置
-        var headers = ["Content-Type": "multipart/form-data;charset=UTF-8"]
+        var uploadHeaders = ["Content-Type": "multipart/form-data;charset=UTF-8"]
+        if let unwappedHeaders = headers {
+            uploadHeaders.merge(unwappedHeaders) { (current, new) -> String in return current }
+        }
         
         //  如果有多媒体的宽高信息,就加入headers中
         if let mediaSize = size {
-            headers.updateValue("\(mediaSize.width)", forKey: "width")
-            headers.updateValue("\(mediaSize.height)", forKey: "height")
+            uploadHeaders.updateValue("\(mediaSize.width)", forKey: "width")
+            uploadHeaders.updateValue("\(mediaSize.height)", forKey: "height")
         }
         
         //  菊花转
         indicatorRun()
         
         //  开始请求
-        Alamofire.upload(multipartFormData: { multipartFormData in
+        sessionManager.upload(multipartFormData: { multipartFormData in
+            
+            //  表单处理
             
             //  是否有请求字段
-            if let dict = parameters as? [String: String]{
-                for (key, value) in dict {
+            if let params = parameters as? [String: String] {
+                for (key, value) in params {
                     if let data = value.data(using: .utf8) {
                         multipartFormData.append(data, withName: key)
                     }
@@ -221,39 +245,89 @@ extension HttpUtils {
             
             //  数据上传
             for (key, value) in uploadStream {
-                multipartFormData.append(value, withName: key, fileName: key + mimeType.getDefaultFileName(), mimeType: mimeType.getMimeTypeString())
+                multipartFormData.append(value, withName: key, fileName: key + mimeType.fileName, mimeType: mimeType.type)
             }
         },
-                         to: url,
-                         headers: headers,
-                         encodingCompletion: { encodingResult in
-                            
-                            //  菊花转结束
-                            indicatorStop()
-                            
-                            //  响应请求结果
-                            switch encodingResult {
-                            case .success(let uploadRequest, _ , let streamFileURL):
+                              to: url,
+                              headers: uploadHeaders,
+                              encodingCompletion: { encodingResult in
                                 
-                                uploadRequest.responseJSON(completionHandler: { (response) in
-                                    switch response.result {
-                                    case .success(let value):
-                                        uploadResult(streamFileURL, true, value as? [String: Any])
-                                    case .failure(_):
-                                        uploadResult(streamFileURL, false ,nil)
+                                //  菊花转结束
+                                indicatorStop()
+                                
+                                print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: encodingResult))")
+                                
+                                //  响应请求结果
+                                switch encodingResult {
+                                case .success(let uploadRequest, _ , let streamFileURL):
+                                    
+                                    uploadRequest.responseJSON(completionHandler: { (response) in
+                                        switch response.result {
+                                        case .success(let value):
+                                            callbackHandler.result?(streamFileURL, true, nil, value as? [String: Any])
+                                        case .failure(let error):
+                                            callbackHandler.result?(streamFileURL, false, error ,nil)
+                                        }
+                                    })
+                                    
+                                    uploadRequest.uploadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
+                                        callbackHandler.progress?(streamFileURL, progress)
                                     }
-                                })
-                                
-                                uploadRequest.uploadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
-                                    uploadProgress(streamFileURL, progress)
+                                    
+                                case .failure(let error):
+                                    callbackHandler.result?(nil, false, error, nil)
                                 }
-                                
-                            case .failure(_):
-                                uploadResult(nil, false, nil)
-                                
-                            }
         })
         
+    }
+    
+}
+
+// MARK: - 下载的网络请求
+extension HttpUtils {
+    /// 文件下载
+    ///
+    /// - Parameters:
+    ///   - sessionManager: Alamofire.SessionManage
+    ///   - url: 请求网址
+    ///   - parameters: 请求字段
+    ///   - headers: 请求头
+    ///   - callbackHandler: 下载回调
+    class func downloadData(sessionManager: SessionManager = SessionManager.default,
+                            url: String,
+                            parameters: Parameters? = nil,
+                            headers: HTTPHeaders? = nil,
+                            callbackHandler: DownloadCallbackHandler) {
+        //  创建路径
+        let destination: DownloadRequest.DownloadFileDestination = { temporaryURL, response in
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let fileURL = documentsURL.appendingPathComponent(response.suggestedFilename ?? "temp.tmp")
+            //两个参数表示如果有同名文件则会覆盖，如果路径中文件夹不存在则会自动创建
+            return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
+        }
+        
+        //  状态栏的菊花转开始
+        indicatorRun()
+        
+        print("HttpUtils ## API Request ## \(url) ## parameters = \(String(describing: parameters))")
+        
+        sessionManager.download(url, parameters: parameters, to: destination).responseData { (responseData) in
+            
+            //  状态栏的菊花转结束
+            indicatorStop()
+            
+            print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: responseData))")
+            
+            //  响应请求结果
+            switch responseData.result {
+            case .success(let value):
+                callbackHandler.success?(responseData.temporaryURL, responseData.destinationURL, value)
+            case .failure(let error):
+                callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
+            }
+            }.downloadProgress { (progress) in
+                callbackHandler.progress?(progress)
+        }
     }
 }
 

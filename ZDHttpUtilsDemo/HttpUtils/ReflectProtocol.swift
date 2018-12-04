@@ -15,11 +15,15 @@ import Foundation
  */
 
 /// 反射协议
-protocol ReflectProtocol {
+public protocol ReflectProtocol {
     func reflectToDictionary() -> [String: Any]
 }
 
 extension ReflectProtocol {
+    
+    /// 反射为字典
+    ///
+    /// - Returns: 字典
     func reflectToDictionary() -> [String: Any] {
         let mirror = Mirror(reflecting: self)
         var dictionary = [String: Any]()

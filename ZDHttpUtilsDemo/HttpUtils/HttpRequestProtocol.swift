@@ -8,4 +8,5 @@
 
 import Foundation
 
+/// 请求协议
 protocol HttpRequestProtocol { }

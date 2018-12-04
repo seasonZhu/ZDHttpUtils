@@ -38,12 +38,8 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
         
         //  处理Header merge的用法 点进去看详细的
         headers.merge(SessionManager.defaultHTTPHeaders) { (current, new) -> String in return new }
-        
         self.headers = headers
-        
-        #if DEBUG
         print("headers: \(headers)")
-        #endif
         
         //  处理SessionManager
         let manager: SessionManager = {
@@ -87,9 +83,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     }
     
     deinit {
-        #if DEBUG
         print("\(String(describing: type(of: BaseDao.self))) 销毁了")
-        #endif
     }
 }
 

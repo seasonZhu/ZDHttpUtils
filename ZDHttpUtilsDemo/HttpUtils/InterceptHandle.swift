@@ -12,6 +12,7 @@ import ObjectMapper
 import SwiftyJSON
 import NVActivityIndicatorView
 
+/// 拦截回调协议
 protocol InterceptHandleProtocol {
     
     func onNetworkIsNotReachableHandler(type: NetworkType)
@@ -64,8 +65,19 @@ public class InterceptHandle: InterceptHandleProtocol {
         self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isShowLoading: true, loadingText: nil, isShowToast: true, isCache: true,tag: nil)
     }
     
-    /// 如果需要进行配置 请使用这个
-    init(isBeforeHandler: Bool = false,
+    
+    /// 自定义拦截配置初始化
+    ///
+    /// - Parameters:
+    ///   - isBeforeHandler: 前置拦截
+    ///   - isAfterHandler: 后置拦截
+    ///   - isDataIntercept: 数据拦截
+    ///   - isShowLoading: 是否显示菊花转
+    ///   - loadingText: 菊花转的时候是否显示文字
+    ///   - isShowToast: 是否启用toast
+    ///   - isCache: 是否缓存json数据
+    ///   - tag: 标签
+    public init(isBeforeHandler: Bool = false,
          isAfterHandler: Bool = false,
          isDataIntercept: Bool = false,
          isShowLoading: Bool = false,
@@ -288,10 +300,15 @@ extension InterceptHandle {
         }
         
         //MARK:- 两种构造器方法
+        
+        /// 构造器
+        ///
+        /// - Returns: 拦截器
         func construction() -> InterceptHandle {
             return InterceptHandle(builder: self)
         }
         
+        /// 拦截器计算属性
         var constructor: InterceptHandle {
             return InterceptHandle(builder: self)
         }

@@ -12,6 +12,10 @@ import Toast_Swift
 let kHubTag = 10001
 
 //MARK:- 吐司显示
+
+/// 吐司显示
+///
+/// - Parameter message: 信息
 func showToast(_ message: String) {
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
         return
@@ -21,6 +25,10 @@ func showToast(_ message: String) {
 }
 
 //MARK:- 吐司菊花转显示
+
+/// 吐司菊花转
+///
+/// - Parameter backgroundColor: 背景色
 func showActivity(backgroundColor: UIColor? = nil) {
     guard let topVC = UIApplication.topViewController() else {
         return
@@ -34,6 +42,8 @@ func showActivity(backgroundColor: UIColor? = nil) {
 }
 
 //MARK:- 吐司菊花转隐藏
+
+/// 吐司菊花转隐藏
 func hideActivity() {
     
     guard let topVC = UIApplication.topViewController() else {

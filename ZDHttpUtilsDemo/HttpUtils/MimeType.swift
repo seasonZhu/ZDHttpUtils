@@ -8,15 +8,19 @@
 
 import Foundation
 
-/// 网络上传多媒体类型
-enum MimeType {
+/// 上传多媒体类型
+///
+/// - image: 图片 jpg/png
+/// - gif: 动图
+/// - video: 视频
+public enum MimeType {
     
-    case
-    image(String?),
-    gif(String?),
-    video(String?)
+    case image(_ fileName: String?)
+    case gif(_ fileName: String?)
+    case video(_ fileName: String?)
     
-    func getMimeTypeString() -> String {
+    /// 文件类型
+    public var type: String {
         switch self {
         case .image:
             return "image/*"
@@ -27,15 +31,15 @@ enum MimeType {
         }
     }
     
-    /// 获取默认的上传名字
-    func getDefaultFileName() -> String {
+    /// 获取上传文件的名称
+    public var fileName: String {
         switch self {
-        case .image(let name):
-            return name ?? ".jpg"
-        case .gif(let name):
-            return name ?? ".gif"
-        case .video(let name):
-            return name ?? ".mp4"
+        case .image(let fileName):
+            return "." + (fileName ?? "jpg")
+        case .gif(let fileName):
+            return "." + (fileName ?? "gif")
+        case .video(let fileName):
+            return "." + (fileName ?? "mp4")
         }
     }
 }

@@ -9,15 +9,21 @@
 import Foundation
 import Alamofire
 
+/// 网络类型枚举
+///
+/// - unknown: 未知
+/// - notReachable: 没有网络
+/// - wifi: wifi信号
+/// - mobile: 手机信号
 public enum NetworkType {
     
-    case
-    unknown,
-    notReachable,
-    wifi,
-    mobile
+    case unknown
+    case notReachable
+    case wifi
+    case mobile
 }
 
+// MARK: -网络类型枚举描述
 extension NetworkType: CustomStringConvertible {
     public var description: String {
         switch self {
@@ -29,8 +35,13 @@ extension NetworkType: CustomStringConvertible {
     }
 }
 
+// MARK: - 获取网络状态
 extension NetworkType {
-    //MARK:- 获取网络状态
+    
+    /// 获取网络状态
+    ///
+    /// - Parameter reachabilityStatus: Alamofire.NetworkReachabilityManager中的网络状态
+    /// - Returns: 自己定义的网络状态
     fileprivate static func getType(by reachabilityStatus: NetworkReachabilityManager.NetworkReachabilityStatus) -> NetworkType {
         let status: NetworkType
         switch reachabilityStatus {
@@ -48,40 +59,48 @@ extension NetworkType {
 }
 
 /// 网络监听器
-class NetworkListener {
+public class NetworkListener {
     
     //MARK:- 属性设置
     
-    //  监听管理器
+    /// 监听管理器
     private let manager = NetworkReachabilityManager()!
     
-    //  是否在监听
+    /// 是否在监听
     private var isListening = false
     
-    //  单例
-    static let shared = NetworkListener()
+    /// 单例
+    public static let shared = NetworkListener()
     private init() {}
     
     //MARK:- 监听状态
+    
+    /// 是否有网络
     public var isReachable: Bool {
         return manager.isReachable
     }
     
+    /// 是否是手机信号
     public var isMobile: Bool {
         return manager.isReachableOnWWAN
     }
     
+    /// 是否是wifi信号
     public var isWifi: Bool {
         return manager.isReachableOnEthernetOrWiFi
     }
     
     //MARK:- 开始监听
+    
+    /// 开始监听
     public func startListen() {
         if isListening { return }
         isListening = manager.startListening()
     }
     
     //MARK:- 结束监听
+    
+    /// 结束监听
     public func stopListen() {
         if !isListening { return }
         manager.stopListening()
@@ -89,12 +108,18 @@ class NetworkListener {
     }
     
     //MARK:- 获取监听的网络状态
+    
+    /// 获取监听的网络状态
     public var  status: NetworkType {
         let reachabilityStatus = manager.networkReachabilityStatus
         return NetworkType.getType(by: reachabilityStatus)
     }
     
-    //MARK:- 刷新状态
+    //MARK:- 刷新网络状态
+    
+    /// 刷新网络状态
+    ///
+    /// - Returns: 网络状态
     @discardableResult
     public func refreshStatus() -> NetworkType {
         let reachabilityStatus = manager.networkReachabilityStatus
@@ -103,6 +128,7 @@ class NetworkListener {
     }
     
     //MARK:- 闭包形式的状态回调
+    
     /// 获取网络状态,一旦改变就会进行回调,可以说是全局的监听
     ///
     /// - Parameter callback: 回调
