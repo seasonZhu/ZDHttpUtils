@@ -328,11 +328,12 @@ extension HttpUtils {
     ///   - parameters: 请求字段
     ///   - headers: 请求头
     ///   - callbackHandler: 下载回调
+    /// - Returns: 下载任务字典
     public static func downloadData(sessionManager: SessionManager = SessionManager.default,
                                     url: String,
                                     parameters: Parameters? = nil,
                                     headers: HTTPHeaders? = nil,
-                                    callbackHandler: DownloadCallbackHandler) {
+                                    callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
         //  创建路径
         let destination: DownloadRequest.DownloadFileDestination = { temporaryURL, response in
             let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -348,34 +349,10 @@ extension HttpUtils {
         
         //  如果有临时数据那么就断点下载
         if let resumData = HttpCacheManager.getResumeData(url: url) {
-            sessionManager.download(resumingWith: resumData, to: destination).responseData { (responseData) in
-                
-                //  状态栏的菊花转结束
-                indicatorStop()
-                
-                print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: responseData))")
-                
-                //  响应请求结果
-                switch responseData.result {
-                case .success(let value):
-                    callbackHandler.success?(responseData.temporaryURL, responseData.destinationURL, value)
-                    try? FileManager.default.removeItem(atPath: HttpCacheManager.getFilePath(url: url))
-                case .failure(let error):
-                    callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
-                    
-                    //  将请求失败而下载的部分数据存下来,下次进行
-                    HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
-                        print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
-                    })
-                }
-                }.downloadProgress { (progress) in
-                    callbackHandler.progress?(progress)
-            }
-            
-            return
+            return downloadResumData(sessionManager: sessionManager, url: url, resumData: resumData, to: destination, callbackHandler: callbackHandler)
         }
         
-        sessionManager.download(url, parameters: parameters, to: destination).responseData { (responseData) in
+        let downloadRequest = sessionManager.download(url, parameters: parameters, to: destination).responseData { (responseData) in
             
             //  状态栏的菊花转结束
             indicatorStop()
@@ -394,9 +371,99 @@ extension HttpUtils {
                     print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
                 })
             }
+            
+            //  回调有响应,将任务移除
+            downloadRequestTask.removeValue(forKey: url)
         }.downloadProgress { (progress) in
             callbackHandler.progress?(progress)
         }
+        
+        downloadRequestTask.updateValue(downloadRequest, forKey: url)
+        return [url: downloadRequest]
+    }
+    
+    /// 断点续下载的方法
+    /// 这个方法更多的是配合上面的方法进行使用
+    /// - Parameters:
+    ///   - sessionManager: Alamofire.SessionManage
+    ///   - url: 请求网址
+    ///   - resumData: 续下载的数据
+    ///   - destination: 目的路径
+    ///   - callbackHandler: 下载回调
+    /// - Returns: 下载任务字典
+    @discardableResult
+    static func downloadResumData(sessionManager: SessionManager = SessionManager.default,
+                                         url: String,
+                                         resumData: Data,
+                                         to destination: DownloadRequest.DownloadFileDestination? = nil,
+                                         callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+        let downloadRequest = sessionManager.download(resumingWith: resumData, to: destination).responseData { (responseData) in
+            
+            //  状态栏的菊花转结束
+            indicatorStop()
+            
+            print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: responseData))")
+            
+            //  响应请求结果
+            switch responseData.result {
+            case .success(let value):
+                callbackHandler.success?(responseData.temporaryURL, responseData.destinationURL, value)
+                try? FileManager.default.removeItem(atPath: HttpCacheManager.getFilePath(url: url))
+            case .failure(let error):
+                callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
+                
+                //  将请求失败而下载的部分数据存下来,下次进行
+                HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
+                    print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
+                })
+            }
+            
+            //  回调有响应,将任务移除
+            downloadRequestTask.removeValue(forKey: url)
+            
+        }.downloadProgress { (progress) in
+            callbackHandler.progress?(progress)
+        }
+        
+        downloadRequestTask.updateValue(downloadRequest, forKey: url)
+        return [url: downloadRequest]
+    }
+}
+
+// MARK: - 存储下载任务的字典 用于通过url获取下载任务 进而进行暂停/恢复/取消等操作
+public typealias DownloadRequestTask = [String: DownloadRequest]
+extension HttpUtils {
+    
+    public static var downloadRequestTask = DownloadRequestTask()
+    
+    /// 通过url暂停下载任务
+    ///
+    /// - Parameter url: 请求网址
+    public static func suspendDownloadRequest(url: String) {
+        guard let downloadRequest = downloadRequestTask[url] else {
+            return
+        }
+        downloadRequest.suspend()
+    }
+    
+    /// 通过url继续下载任务
+    ///
+    /// - Parameter url: 请求网址
+    public static func resumeDownloadRequest(url: String) {
+        guard let downloadRequest = downloadRequestTask[url] else {
+            return
+        }
+        downloadRequest.resume()
+    }
+    
+    /// 通过url取消下载任务
+    ///
+    /// - Parameter url: 请求网址
+    public static func cancelDownloadRequest(url: String) {
+        guard let downloadRequest = downloadRequestTask[url] else {
+            return
+        }
+        downloadRequest.cancel()
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import ObjectMapper
 
-/// 网络请求FawNetUtils
+/// 网络请求RequestUtils
 public class RequestUtils {
     
     /// 请求参数设置
@@ -22,20 +22,15 @@ public class RequestUtils {
     /// 请求头
     var headers: HTTPHeaders = [:]
     
-    /// 默认的网络请求实体,设置的默认超时时间为15s,仅添加了在FawSdk类中添加的公共请求头,没有传入api.
-    /// 不要使用以下方法进行请求!!!
-    /// request(parameters: Parameters? = nil, callbackHandler: CallbackHandler)
-    /// requestByObjectMapper<T: Mappable>(parameters: Parameters? = nil, callbackHandler: MappableCallbackHandler<T>)进行请求!
-    /// upload(uploadStream: UploadStream, parameters: Parameters? = nil, size: CGSize?, mimeType: MimeType, callbackHandler: UploadCallbackHandler)
-    /// download(parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler)
+    /// 默认的网络请求实体
     public static let `default`: RequestUtils = {
-        let netUtils = RequestUtils(httpConfig: HttpConfig.Builder().constructor)
+        let netUtils = RequestUtils()
         return netUtils
     }()
     
-    /// 初始化方法
-    ///
-    /// - Parameter FawHttpConfig: 请求参数设置
+    /// 自定义的初始化方法
+    /// 对外
+    /// - Parameter HttpConfig: 请求参数设置
     public init(httpConfig: HttpConfig) {
         
         self.httpConfig = httpConfig
@@ -55,7 +50,13 @@ public class RequestUtils {
             return SessionManager(configuration: configuration)
         }()
         SessionManager.custom = manager
-        self.sessionManager = SessionManager.custom
+        sessionManager = SessionManager.custom
+    }
+    
+    /// RequestUtils.default的初始化方法,私有初始化方法
+    private init() {
+        self.httpConfig = HttpConfig.Builder().constructor
+        self.sessionManager = SessionManager.default
     }
     
     deinit {
@@ -151,8 +152,31 @@ extension RequestUtils {
     ///   - url: 请求网址
     ///   - parameters: 请求参数
     ///   - callbackHandler: 结果回调
-    public func download(url: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) {
-        HttpUtils.downloadData(sessionManager: sessionManager, url: url, parameters: parameters, headers: headers, callbackHandler: callbackHandler)
+    /// - Returns: 下载任务字典
+    @discardableResult
+    public func download(url: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+        return HttpUtils.downloadData(sessionManager: sessionManager, url: url, parameters: parameters, headers: headers, callbackHandler: callbackHandler)
+    }
+    
+    /// 通过url暂停下载任务
+    ///
+    /// - Parameter url: 请求网址
+    public static func suspendDownloadRequest(url: String) {
+        HttpUtils.suspendDownloadRequest(url: url)
+    }
+    
+    /// 通过url继续下载任务
+    ///
+    /// - Parameter url: 请求网址
+    public static func resumeDownloadRequest(url: String) {
+        HttpUtils.resumeDownloadRequest(url: url)
+    }
+    
+    /// 通过url取消下载任务
+    ///
+    /// - Parameter url: 请求网址
+    public static func cancelDownloadRequest(url: String) {
+        HttpUtils.cancelDownloadRequest(url: url)
     }
 }
 

@@ -20,6 +20,6 @@ protocol CheckoutRequest: HttpRequestProtocol {
 
 class CheckoutDao: BaseDao<CheckoutUrl>, CheckoutRequest {
     func getList<T: Mappable>(parameters: Parameters? = nil, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
-        post(moduleUrl: CheckoutUrl.checkoutApi, parameters: nil, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+        post(api: CheckoutUrl.checkoutApi, parameters: nil, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
 }

@@ -16,7 +16,7 @@ class BaseViewModel {
     }
     
     deinit {
-        print("\(String(describing: type(of: BaseViewModel.self))) 销毁了")
+        print("\(String(describing: type(of: self))) 销毁了")
     }
 }
 

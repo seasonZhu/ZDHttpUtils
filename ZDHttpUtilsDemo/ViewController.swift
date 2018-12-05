@@ -35,48 +35,82 @@ class ViewController: UIViewController {
         requestToTopButton.addTarget(self, action: #selector(requestToTop), for: .touchUpInside)
         view.addSubview(requestToTopButton)
         
-        let requestToRootButton = UIButton(frame: CGRect(x:  0, y: 132, width: view.bounds.width, height: 44))
+        let requestToRootButton = UIButton(frame: CGRect(x:  0, y: 88, width: view.bounds.width, height: 44))
         requestToRootButton.setTitle("请求到底层", for: .normal)
         requestToRootButton.backgroundColor = UIColor.lightGray
         requestToRootButton.addTarget(self, action: #selector(requestToRoot), for: .touchUpInside)
         view.addSubview(requestToRootButton)
         
-        let u17Button = UIButton(frame: CGRect(x:  0, y: 220, width: view.bounds.width, height: 44))
+        let u17Button = UIButton(frame: CGRect(x:  0, y: 132, width: view.bounds.width, height: 44))
         u17Button.setTitle("有妖气请求", for: .normal)
         u17Button.backgroundColor = UIColor.lightGray
         u17Button.addTarget(self, action: #selector(requestU17), for: .touchUpInside)
         view.addSubview(u17Button)
         
-        let basicButton = UIButton(frame: CGRect(x:  0, y: 308, width: view.bounds.width, height: 44))
+        let basicButton = UIButton(frame: CGRect(x:  0, y: 176, width: view.bounds.width, height: 44))
         basicButton.setTitle("基本类型使用本地字符串JSON尝试", for: .normal)
         basicButton.backgroundColor = UIColor.lightGray
         basicButton.addTarget(self, action: #selector(requesJSONStringToModel), for: .touchUpInside)
         view.addSubview(basicButton)
         
-        let uploadButton = UIButton(frame: CGRect(x:  0, y: 396, width: view.bounds.width, height: 44))
+        let uploadButton = UIButton(frame: CGRect(x:  0, y: 220, width: view.bounds.width, height: 44))
         uploadButton.setTitle("文件通过[String: Data]格式进行上传", for: .normal)
         uploadButton.backgroundColor = UIColor.lightGray
         uploadButton.addTarget(self, action: #selector(requestUpload), for: .touchUpInside)
         view.addSubview(uploadButton)
         
-        let uploadByfilePathButton = UIButton(frame: CGRect(x:  0, y: 484, width: view.bounds.width, height: 44))
+        let uploadByfilePathButton = UIButton(frame: CGRect(x:  0, y: 264, width: view.bounds.width, height: 44))
         uploadByfilePathButton.setTitle("文件路径进行上传", for: .normal)
         uploadByfilePathButton.backgroundColor = UIColor.lightGray
         uploadByfilePathButton.addTarget(self, action: #selector(requestUploadByFilePath), for: .touchUpInside)
         view.addSubview(uploadByfilePathButton)
         
-        let downloadPDFButton = UIButton(frame: CGRect(x:  0, y: 572, width: view.bounds.width, height: 44))
+        let downloadPDFButton = UIButton(frame: CGRect(x:  0, y: 308, width: view.bounds.width, height: 44))
         downloadPDFButton.setTitle("PDF下载", for: .normal)
         downloadPDFButton.backgroundColor = UIColor.lightGray
         downloadPDFButton.addTarget(self, action: #selector(requestDownloadPDF), for: .touchUpInside)
         view.addSubview(downloadPDFButton)
         
-        let downloadQQDmgButton = UIButton(frame: CGRect(x:  0, y: 660, width: view.bounds.width, height: 44))
+        let downloadQQDmgButton = UIButton(frame: CGRect(x:  0, y: 352, width: view.bounds.width, height: 44))
         downloadQQDmgButton.setTitle("QQDmg下载", for: .normal)
         downloadQQDmgButton.backgroundColor = UIColor.lightGray
         downloadQQDmgButton.addTarget(self, action: #selector(requestDownloadQQDmg), for: .touchUpInside)
         view.addSubview(downloadQQDmgButton)
         
+        let margin: CGFloat = 10
+        let buttonTitles = ["暂停QQ.dmg下载", "恢复QQ.dmg下载", "取消QQ.dmg下载"]
+        let buttonCount = CGFloat(buttonTitles.count)
+        let buttonWidth = (view.bounds.width - (buttonCount + 1) * margin) / buttonCount
+        
+        for (index, title) in buttonTitles.enumerated() {
+            let button = UIButton(frame: CGRect(x: CGFloat(index + 1) * margin + CGFloat(index) * buttonWidth, y: 400, width: buttonWidth, height: 30))
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+            button.setTitleColor(UIColor.white, for: .normal)
+            button.tag = index + 1000
+            button.backgroundColor = UIColor.lightGray
+            button.addTarget(self, action: #selector(buttonAction(_:)), for: .touchUpInside)
+            view.addSubview(button)
+        }
+        
+    }
+    
+    /// 下载的暂停/继续/取消
+    ///
+    /// - Parameter button: 按钮
+    @objc
+    func buttonAction(_ button: UIButton) {
+        if button.tag == 1000 {
+            RequestUtils.suspendDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
+        }
+        
+        if button.tag == 1001 {
+            RequestUtils.resumeDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
+        }
+        
+        if button.tag == 1002 {
+            RequestUtils.cancelDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
+        }
     }
     
     //MARK:- 设置请求服务的key
@@ -221,7 +255,8 @@ extension ViewController {
         let data = UIImageJPEGRepresentation(UIImage(named: "weibo_icon")!, 1.0)!
         let uploadStream = ["weibo_icon": data]
         
-        RequestUtils.init(httpConfig: HttpConfig.Builder().constructor).upload(url: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", uploadStream: uploadStream, parameters: parameters, size: nil, mimeType: .image("jpg"), callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
+        RequestUtils(httpConfig: HttpConfig.Builder().constructor).upload(url: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", uploadStream: uploadStream, parameters: parameters, size: nil, mimeType: .image("jpg"), callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
+            print(dict)
             print("上传\(isSuccess ? "成功" : "失败")了")
         }).onUploadProgress({ (url, progress) in
             print(progress)
@@ -240,7 +275,7 @@ extension ViewController {
     
     @objc
     func requestDownloadPDF() {
-        let downloadTask = RequestUtils(httpConfig: HttpConfig.Builder().constructor)
+        let downloadTask = RequestUtils.default
         
         downloadTask.download(url: "https://dssp.dstsp.com/ow/static/manual/usermanual.pdf", callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
             
