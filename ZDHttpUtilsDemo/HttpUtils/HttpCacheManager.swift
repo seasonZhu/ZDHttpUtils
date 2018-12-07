@@ -46,7 +46,7 @@ public class HttpCacheManager {
     static func getCacheDict(url: String) -> [String: Any]? {
         let pathUrl = URL.init(fileURLWithPath: getFilePath(url: url))
         let data = try? Data.init(contentsOf: pathUrl)
-        let dict = data?.toDict
+        let dict = data?.toDictionary
         return dict
     }
     
@@ -142,7 +142,7 @@ public class HttpCacheManager {
 }
 
 private extension Data {
-    var toDict: [String: Any]? {
+    var toDictionary: [String: Any]? {
         do{
             let json = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
             
