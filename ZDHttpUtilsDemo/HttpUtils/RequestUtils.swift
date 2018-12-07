@@ -53,7 +53,7 @@ public class RequestUtils {
         sessionManager = SessionManager.custom
     }
     
-    /// RequestUtils.default的初始化方法,私有初始化方法
+    /// RequestUtils.default的初始化方法,私有的初始化方法
     private init() {
         self.httpConfig = HttpConfig.Builder().constructor
         self.sessionManager = SessionManager.default

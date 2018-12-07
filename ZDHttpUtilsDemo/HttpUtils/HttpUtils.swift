@@ -12,6 +12,7 @@ import AlamofireObjectMapper
 import Alamofire_SwiftyJSON
 import ObjectMapper
 
+/// 网络请求单元
 public class HttpUtils {
     
     /// 基于ObjectMapper泛型返回的网络请求
@@ -81,12 +82,17 @@ public class HttpUtils {
         }
         
         //  结果进行回调
+        
+        //  是否直达底层
         if let keyPath = callbackHandler.keyPath {
+            
+            //  底层是模型数组
             if callbackHandler.isArray {
                 dataRequset.responseArray(keyPath: keyPath) { (responseArray: DataResponse<[T]>) in
                     responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
                 }
             }else {
+            //  底层不是模型
                 dataRequset.responseObject(keyPath: keyPath) { (responseObject: DataResponse<T>) in
                     responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
                 }
@@ -480,3 +486,140 @@ extension HttpUtils {
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
 }
+
+// MARK: - 处理CA证书相关
+extension HttpUtils {
+    
+    /// 定义认证错误
+    ///
+    /// - pathError: 路径错误
+    /// - passwordError: 密码错误
+    /// - unknownError: 未知错误
+    enum IdentityError: Error, CustomStringConvertible {
+        case pathError
+        case passwordError
+        case unknownError
+        
+        var description: String {
+            switch self {
+            case .pathError:
+                return "路径错误"
+            case .passwordError:
+                return "密码错误"
+            case .unknownError:
+                return "未知错误"
+            }
+        }
+    }
+    
+    /// 存储认证相关信息的结构体
+    struct IdentityAndTrust {
+        var identityRef: SecIdentity
+        var trust: SecTrust
+        var certArray: AnyObject
+    }
+    
+    /// 设置CA证书
+    ///
+    /// - Parameters:
+    ///   - cerPath: cer证书路径
+    ///   - p12Path: p12证书路径
+    ///   - password: p12证书的密码
+    public static func challenge(cerPath: String, p12Path: String, p12password: String) {
+        /// 设置主sessionManager的验证回调
+        SessionManager.custom.delegate.sessionDidReceiveChallenge = { session, challenge in
+            return sessionDidReceiveChallenge(session: session, challenge: challenge)
+        }
+        
+        /// 设置自定义sessionManager的验证回调
+        SessionManager.default.delegate.sessionDidReceiveChallenge = { session, challenge in
+            return sessionDidReceiveChallenge(session: session, challenge: challenge)
+        }
+        
+        ///  内部用公共函数
+        func sessionDidReceiveChallenge(session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+            /// 服务器证书认证
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
+                let serverTrust: SecTrust = challenge.protectionSpace.serverTrust!
+                let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0)!
+                let remoteCertificateData = CFBridgingRetain(SecCertificateCopyData(certificate))!
+                
+                let cerUrl = URL(fileURLWithPath: cerPath)
+                guard let localCertificateData = try? Data(contentsOf: cerUrl) else {
+                    return (.cancelAuthenticationChallenge, nil)
+                }
+                
+                if remoteCertificateData.isEqual(localCertificateData) {
+                    let credential = URLCredential(trust: serverTrust)
+                    challenge.sender?.use(credential, for: challenge)
+                    
+                    return(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+                } else {
+                    return (.cancelAuthenticationChallenge, nil)
+                }
+                
+            }
+                /// 客户端证书验证
+            else if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+                
+                guard let identityAndTrust: IdentityAndTrust = try? self.extractIdentity(p12Path: p12Path, p12password: p12password) else {
+                    return (.cancelAuthenticationChallenge, nil)
+                }
+                
+                let urlCredential = URLCredential(identity: identityAndTrust.identityRef, certificates: identityAndTrust.certArray as? [Any], persistence: URLCredential.Persistence.forSession)
+                
+                return (.useCredential, urlCredential)
+                
+            }
+            
+            return (.cancelAuthenticationChallenge, nil)
+        }
+    }
+    
+    
+    /// 存储认证相关信息
+    ///
+    /// - Parameters:
+    ///   - p12Path: p12证书路径
+    ///   - password: p12证书密码
+    /// - Returns: 认证相关信息
+    /// - Throws: 抛出异常
+    static func extractIdentity(p12Path: String, p12password: String) throws -> IdentityAndTrust {
+        
+        var identityAndTrust: IdentityAndTrust!
+        var securityError: OSStatus = errSecSuccess
+        
+        guard let PKCS12Data = try? Data(contentsOf: URL(fileURLWithPath: p12Path)) else {
+            throw IdentityError.pathError
+        }
+        
+        let key: NSString = kSecImportExportPassphrase as NSString
+        let options = [key: p12password]
+        
+        var items: CFArray?
+        securityError = SecPKCS12Import(PKCS12Data as CFData, options as CFDictionary, &items)
+        
+        if securityError == errSecSuccess {
+            let certItems: CFArray = items!
+            let certItemsArray: Array = certItems as Array
+            let dict: AnyObject? = certItemsArray.first
+            if let certEntry: Dictionary = dict as? Dictionary<String, AnyObject> {
+                
+                let identityPointer: AnyObject? = certEntry["identity"]
+                let secIdentityRef: SecIdentity = identityPointer as! SecIdentity
+                
+                let trustPointer: AnyObject? = certEntry["trust"]
+                let trustRef: SecTrust = trustPointer as! SecTrust
+                
+                let chainPointer = certEntry["chain"]
+                identityAndTrust = IdentityAndTrust(identityRef: secIdentityRef, trust: trustRef, certArray: chainPointer!)
+                
+            }
+        } else {
+            throw IdentityError.passwordError
+        }
+        
+        return identityAndTrust
+    }
+}
+

@@ -113,21 +113,21 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     /// 通过url暂停下载任务
     ///
     /// - Parameter api: 业务接口
-    public static func suspendDownloadRequest(api: String) {
+    public func suspendDownloadRequest(api: String) {
         RequestUtils.suspendDownloadRequest(url: ApiUrl.base + api)
     }
     
     /// 通过url继续下载任务
     ///
     /// - Parameter api: 业务接口
-    public static func resumeDownloadRequest(api: String) {
+    public func resumeDownloadRequest(api: String) {
         RequestUtils.resumeDownloadRequest(url: ApiUrl.base + api)
     }
     
     /// 通过url取消下载任务
     ///
     /// - Parameter api: 业务接口
-    public static func cancelDownloadRequest(api: String) {
+    public func cancelDownloadRequest(api: String) {
         RequestUtils.cancelDownloadRequest(url: ApiUrl.base + api)
     }
     

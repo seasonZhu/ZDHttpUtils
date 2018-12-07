@@ -19,6 +19,7 @@ public protocol ReflectProtocol {
     func reflectToDictionary() -> [String: Any]
 }
 
+// MARK: - 反射协议的默认实现
 extension ReflectProtocol {
     
     /// 反射为字典

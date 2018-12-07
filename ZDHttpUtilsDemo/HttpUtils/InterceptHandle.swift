@@ -62,7 +62,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     
     /// 便利构造函数
     public convenience init() {
-        self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isShowLoading: true, loadingText: nil, isShowToast: true, isCache: true,tag: nil)
+        self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isShowLoading: true, loadingText: nil, isShowToast: true, isCache: true, tag: nil)
     }
     
     
@@ -109,7 +109,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     func onBeforeHandler(method: HTTPMethod, url: String, parameters: Parameters?) -> Bool {
         if isShowLoading && !isBeforeHandler {
             //let data: ActivityData
-            if let text = loadingText {
+            if let _ = loadingText {
                 //data = ActivityData(message: text, type: .lineSpinFadeLoader, textColor: nil)
                 //带文字的菊花转
             } else {
@@ -224,7 +224,7 @@ extension InterceptHandle {
     }
     
     //MARK:- 配置化文件
-    class Builder {
+    public class Builder {
         ///  是否进行前置拦截, 默认是false 不进行前置拦截,可配置
         var isBeforeHandler = false
         
@@ -252,49 +252,57 @@ extension InterceptHandle {
         //MARK:- 链式编程
         
         ///  是否数据拦截
-        func setIsDataIntercept(_ isDataIntercept: Bool) -> Self {
+        @discardableResult
+        public func setIsDataIntercept(_ isDataIntercept: Bool) -> Self {
             self.isDataIntercept = isDataIntercept
             return self
         }
         
         ///  是否显示loading画面
-        func setIsShowLoading(_ isShowLoading: Bool) -> Self {
+        @discardableResult
+        public func setIsShowLoading(_ isShowLoading: Bool) -> Self {
             self.isShowLoading = isShowLoading
             return self
         }
         
         ///  是否显示loading文字.必须使用Hud
-        func setLoadingText(_ loadingText: String?) -> Self {
+        @discardableResult
+        public func setLoadingText(_ loadingText: String?) -> Self {
             self.loadingText = loadingText
             return self
         }
         
         ///  是否前置拦截
-        func setIsBeforeHandler(_ isBeforeHandler: Bool) -> Self {
+        @discardableResult
+        public func setIsBeforeHandler(_ isBeforeHandler: Bool) -> Self {
             self.isBeforeHandler = isBeforeHandler
             return self
         }
         
         ///  是否后置拦截
-        func setIsAfterHandler(_ isAfterHandler: Bool) -> Self {
+        @discardableResult
+        public func setIsAfterHandler(_ isAfterHandler: Bool) -> Self {
             self.isAfterHandler = isAfterHandler
             return self
         }
         
         ///  是否展示吐司
-        func setIsShowToast(_ isShowToast: Bool) -> Self {
+        @discardableResult
+        public func setIsShowToast(_ isShowToast: Bool) -> Self {
             self.isShowToast = isShowToast
             return self
         }
         
         ///  是否进行缓存配置
-        func setIsCache(_ isCache: Bool) -> Self {
+        @discardableResult
+        public func setIsCache(_ isCache: Bool) -> Self {
             self.isCache = isCache
             return self
         }
         
         /// 设置请求的Tag
-        func setTag(tag: String?) -> Self{
+        @discardableResult
+        public func setTag(tag: String?) -> Self{
             self.tag = tag
             return self
         }
@@ -304,12 +312,12 @@ extension InterceptHandle {
         /// 构造器
         ///
         /// - Returns: 拦截器
-        func construction() -> InterceptHandle {
+        public func construction() -> InterceptHandle {
             return InterceptHandle(builder: self)
         }
         
         /// 拦截器计算属性
-        var constructor: InterceptHandle {
+        public var constructor: InterceptHandle {
             return InterceptHandle(builder: self)
         }
     }

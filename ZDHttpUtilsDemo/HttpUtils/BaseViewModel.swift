@@ -12,7 +12,7 @@ class BaseViewModel {
     
     /// 拦截句柄 可以子类中进行重写
     var interceptHandle: InterceptHandle {
-        return InterceptHandle()
+        return InterceptHandle.Builder().constructor
     }
     
     deinit {
@@ -22,4 +22,5 @@ class BaseViewModel {
 
 extension BaseViewModel {
     /// 如果想使用ViewModel的类方法,那么需要配置化InterceptHandle的静态变量 😁
+    static let defaultInterceptHandle = InterceptHandle.Builder().constructor
 }

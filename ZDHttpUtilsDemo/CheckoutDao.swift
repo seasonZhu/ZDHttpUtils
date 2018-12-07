@@ -11,6 +11,10 @@ import Alamofire
 import ObjectMapper
 
 struct CheckoutUrl: HttpUrlProtocol {
+    static var base: String {
+        return "http://sun.topray-media.cn"
+    }
+    
     static let checkoutApi = "/tz_inf/api/topics"
 }
 

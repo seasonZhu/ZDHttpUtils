@@ -12,10 +12,3 @@ import Foundation
 protocol HttpUrlProtocol {
     static var base: String { get }
 }
-
-// MARK: - 默认实现
-extension HttpUrlProtocol {
-    static var base: String {
-        return "http://sun.topray-media.cn"
-    }
-}

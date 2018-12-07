@@ -25,6 +25,7 @@ protocol CallbackHandlerProtocol {
     var isArray: Bool { get set }
 }
 
+// MARK: - 请求回调
 
 /// 基本请求回调
 public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
