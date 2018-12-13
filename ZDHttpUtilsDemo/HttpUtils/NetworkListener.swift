@@ -132,7 +132,7 @@ public class NetworkListener {
     /// 获取网络状态,一旦改变就会进行回调,可以说是全局的监听
     ///
     /// - Parameter callback: 回调
-    public func listenStatus(_ callback: @escaping (_ type: NetworkType) -> ()) {
+    public func listenStatus(_ callback: @escaping (NetworkType) -> ()) {
         manager.listener = { status in
             let status = NetworkType.getType(by: status)
             callback(status)

@@ -218,6 +218,14 @@ extension HttpUtils {
                           mimeType: MimeType,
                           callbackHandler: UploadCallbackHandler) {
         
+        //  检查网络
+        guard NetworkListener.shared.isReachable else {
+            #if DEBUG
+            print("没有网络!")
+            #endif
+            return
+        }
+        
         print("HttpUtils ## API Request ## post ## \(url) ## parameters = \(String(describing: parameters))")
         
         //  请求头的设置
@@ -302,6 +310,16 @@ extension HttpUtils {
                                            method: HTTPMethod = .post,
                                            headers: HTTPHeaders? = nil,
                                            callbackHandler: UploadCallbackHandler) {
+        
+        //  检查网络
+        guard NetworkListener.shared.isReachable else {
+            #if DEBUG
+            print("没有网络!")
+            #endif
+            return
+        }
+        
+        //  文件路径
         let fileUrl = URL(fileURLWithPath: filePath)
         
         let uploadRequest = Alamofire.upload(fileUrl, to: url)
@@ -339,7 +357,16 @@ extension HttpUtils {
                                     url: String,
                                     parameters: Parameters? = nil,
                                     headers: HTTPHeaders? = nil,
-                                    callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+                                    callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask? {
+        
+        //  检查网络
+        guard NetworkListener.shared.isReachable else {
+            #if DEBUG
+            print("没有网络!")
+            #endif
+            return nil
+        }
+        
         //  创建路径
         let destination: DownloadRequest.DownloadFileDestination = { temporaryURL, response in
             let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
