@@ -45,6 +45,7 @@ public class HttpUtils {
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
+            callbackHandler.message?(.networkNotReachable)
             #endif
             
             //  没有网络的拦截
@@ -76,6 +77,9 @@ public class HttpUtils {
                 HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
                     #if DEBUG
                     print("写入JSON缓存\(isOK ? "成功" : "失败")")
+                    if !isOK {
+                        callbackHandler.message?(.writeJSONCacheFailed)
+                    }
                     #endif
                 })
             }
@@ -183,14 +187,14 @@ public class HttpUtils {
                 let cache = Mapper<T>().mapArray(JSONArray: dicts)
                 callbackHandler.success?(nil, cache, nil, nil, nil)
             }else {
-                callbackHandler.message?("读取缓存失败")
+                callbackHandler.message?(.readJSONCacheFailed)
             }
         }else {
             if let JSONString = HttpCacheManager.getCacheString(url: url) {
                 let cache = T(JSONString: JSONString)
                 callbackHandler.success?(cache, nil, nil, nil, nil)
             }else {
-                callbackHandler.message?("读取缓存失败")
+                callbackHandler.message?(.readJSONCacheFailed)
             }
         }
     }
@@ -222,6 +226,7 @@ extension HttpUtils {
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
+            callbackHandler.message?(.networkNotReachable)
             #endif
             return
         }
@@ -315,6 +320,7 @@ extension HttpUtils {
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
+            callbackHandler.message?(.networkNotReachable)
             #endif
             return
         }
@@ -363,6 +369,7 @@ extension HttpUtils {
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
+            callbackHandler.message?(.networkNotReachable)
             #endif
             return nil
         }
@@ -402,6 +409,9 @@ extension HttpUtils {
                 //  将请求失败而下载的部分数据存下来,下次进行
                 HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
                     print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
+                    if !isOK {
+                        callbackHandler.message?(.writeDownloadResumeDataFailed)
+                    }
                 })
             }
             
@@ -448,6 +458,9 @@ extension HttpUtils {
                 //  将请求失败而下载的部分数据存下来,下次进行
                 HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
                     print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
+                    if !isOK {
+                        callbackHandler.message?(.writeDownloadResumeDataFailed)
+                    }
                 })
             }
             

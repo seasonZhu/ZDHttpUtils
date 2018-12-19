@@ -10,15 +10,26 @@ import Foundation
 import ObjectMapper
 
 /// 基本请求回调协议
+
+/// 请求响应成功的回调, 回调的结果是遵守Mappable协议的模型,模型数组,响应的原始数据,响应原始数据的json字符串,以及HTTPURLResponse
+public typealias ResponseSuccessCallback<MODEL: Mappable> = (MODEL?, [MODEL]?, Data?, String?, HTTPURLResponse?) -> ()
+
+/// 请求响应失败的回调,回调的结果是响应的原始数据,Error,以及HTTPURLResponse
+public typealias ResponseFailureCallback = (Data?, Error?, HTTPURLResponse?) -> ()
+
+/// 请求响应的信息回调,回调的结果是字符串,其实我觉得这里应该定义一个错误枚举,返回错误类型
+public typealias ResponseMessageCallback = (MessageTyep?) -> ()
+
+/// 响应回调的协议
 protocol CallbackHandlerProtocol {
     
     associatedtype M: Mappable
     
-    var success: ((M?, [M]?, Data?, String?, HTTPURLResponse?)-> ())? { get set }
+    var success: ResponseSuccessCallback<M>? { get set }
     
-    var failure: ((Data?, Error?, HTTPURLResponse?) -> ())? { get set }
+    var failure: ResponseFailureCallback? { get set }
     
-    var message: ((String?) -> ())? { get set }
+    var message: ResponseMessageCallback? { get set }
     
     var keyPath: String? { get set }
     
@@ -60,7 +71,7 @@ public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     /// - Parameter callback: 回调的数据
     /// - Returns: 对象自己
     @discardableResult
-    public func onSuccess(_ success: ((T?, [T]?, Data?, String?, HTTPURLResponse?) -> ())?) -> Self {
+    public func onSuccess(_ success: ResponseSuccessCallback<T>?) -> Self {
         self.success = success
         return self
     }
@@ -70,19 +81,28 @@ public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     /// - Parameter callback: 回调数据
     /// - Returns: 对象自己
     @discardableResult
-    public func onFailure(_ failure: ((Data?, Error?, HTTPURLResponse?) -> ())?)  -> Self {
+    public func onFailure(_ failure: ResponseFailureCallback?)  -> Self {
         self.failure = failure
         return self
     }
     
+    /// 信息的回调
+    ///
+    /// - Parameter message: 回调信息
+    /// - Returns: 对象自己
+    public func onMessage(_ message: ResponseMessageCallback?) -> Self {
+        self.message = message
+        return self
+    }
+    
     /// 成功回调属性
-    var success: ((T?, [T]?, Data?, String?, HTTPURLResponse?) -> ())?
+    var success: ResponseSuccessCallback<T>?
     
     /// 失败回调属性
-    var failure: ((Data?, Error?, HTTPURLResponse?) -> ())?
+    var failure: ResponseFailureCallback?
     
     /// 信息
-    var message: ((String?) -> ())?
+    var message: ResponseMessageCallback?
     
     /// 路径
     var keyPath: String?
@@ -126,11 +146,23 @@ public class UploadCallbackHandler {
         return self
     }
     
+    /// 信息的回调
+    ///
+    /// - Parameter message: 回调信息
+    /// - Returns: 对象自己
+    public func onMessage(_ message: ResponseMessageCallback?) -> Self {
+        self.message = message
+        return self
+    }
+    
     /// 上传结果回调属性
     var result: UploadResultCallback?
     
     /// 上传进度回调属性
     var progress: UploadProgressCallback?
+    
+    /// 信息
+    var message: ResponseMessageCallback?
 }
 
 // MARK: - 下载回调
@@ -168,6 +200,15 @@ public class DownloadCallbackHandler {
         return self
     }
     
+    /// 信息的回调
+    ///
+    /// - Parameter message: 回调信息
+    /// - Returns: 对象自己
+    public func onMessage(_ message: ResponseMessageCallback?) -> Self {
+        self.message = message
+        return self
+    }
+    
     /// 下载进度的回调
     ///
     /// - Parameter callback: 回调数据
@@ -185,5 +226,8 @@ public class DownloadCallbackHandler {
     
     /// 下载进度回调属性
     var progress: DownloadProgressCallback?
+    
+    /// 信息
+    var message: ResponseMessageCallback?
 }
 

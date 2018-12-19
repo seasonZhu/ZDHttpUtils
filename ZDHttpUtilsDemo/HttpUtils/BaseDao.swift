@@ -106,7 +106,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     ///   - callbackHandler: 结果回调
     /// - Returns: 下载任务字典
     @discardableResult
-    public func download(api: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+    public func download(api: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask? {
         return requestUtils.download(url: ApiUrl.base + api, parameters: parameters, callbackHandler: callbackHandler)
     }
     

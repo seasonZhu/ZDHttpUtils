@@ -25,6 +25,8 @@ class ViewController: UIViewController {
         print(person.reflectToDictionary())
         
         modelChangeByFastlane()
+        
+        URLComponentsUse()
     }
     
     //MARK:- 搭建界面
@@ -146,6 +148,19 @@ class ViewController: UIViewController {
         modelLabel.text = msg
         view.addSubview(modelLabel)
     }
+    
+    //MARK:- URLComponents的简单实用
+    private func URLComponentsUse() {
+        let urlComponents = URLComponents(url: URL.init(string: "tz_inf/api/topics")!, resolvingAgainstBaseURL: true)
+        let url = urlComponents?.url(relativeTo: URL.init(string: "http://sun.topray-media.cn/"))
+        //  这个不能打断点在这里看url是啥 要去控制台打po看url?.absoluteString是完整的网址, 而且这个url是没什么卵用的,要用其absoluteString
+        print(url)
+        print(url?.absoluteString)
+        
+        Alamofire.request(url!.absoluteString, method: .post).responseJSON { (responseJSON) in
+            print(responseJSON)
+        }
+    }
 }
 
 extension ViewController {
@@ -157,15 +172,14 @@ extension ViewController {
         
         //  直接到顶层路径进行转换
         let callbackHandler = CallbackHandler<ResponseArray<Item>>()
-        
-        callbackHandler.success = { model, models, data, jsonString, httpResponse in
-            // 其实一旦回调成功, model或者models中有一个必然有值,因为走success的条件是 Alamofire中.success (let value) 所以这里,知道后台返回的是JSON或者是JSON数组的话,这里完全可以隐式解包,当然使用guard守护也是不错
-            guard let unwrapedModel = model else { return }
-            print(unwrapedModel)
-        }
-        
-        callbackHandler.failure = { data, error, _ in
-            print(String(describing: data), String(describing: error))
+            .onSuccess { (model, models, data, jsonString, httpResponse) in
+                // 其实一旦回调成功, model或者models中有一个必然有值,因为走success的条件是 Alamofire中.success (let value) 所以这里,知道后台返回的是JSON或者是JSON数组的话,这里完全可以隐式解包,当然使用guard守护也是不错
+                guard let unwrapedModel = model else { return }
+                print(unwrapedModel)
+            }.onFailure { (data, error, _) in
+                print(String(describing: data), String(describing: error))
+            }.onMessage { (message) in
+                print(message)
         }
         
         //HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
@@ -182,18 +196,20 @@ extension ViewController {
         configMappingTable()
         
         //  直接到目的路径 所以泛型的类型需要进行更改
-        let callbackHandler = CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
-        
-        callbackHandler.success = { model, models, data, jsonString, httpResponse in
-            guard let unwrapedModels = models else { return }
-            print(unwrapedModels)
-        }
-        
-        callbackHandler.failure = { data, error, _ in
+        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics",
+                          parameters: nil,
+                          interceptHandle: InterceptHandle(),
+                          callbackHandler: CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
+                            .onSuccess({ (model, models, data, jsonString, httpResponse) in
+                                guard let unwrapedModels = models else { return }
+                                print(unwrapedModels)
+        })
+                            .onFailure({ (data, error, _ ) in
             print(String(describing: data), String(describing: error))
-        }
-        
-        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
+        })
+                            .onMessage({ (message) in
+            print(message)
+        }))
         
     }
     

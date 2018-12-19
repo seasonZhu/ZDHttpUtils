@@ -154,7 +154,7 @@ extension RequestUtils {
     ///   - callbackHandler: 结果回调
     /// - Returns: 下载任务字典
     @discardableResult
-    public func download(url: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+    public func download(url: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask? {
         return HttpUtils.downloadData(sessionManager: sessionManager, url: url, parameters: parameters, headers: headers, callbackHandler: callbackHandler)
     }
     

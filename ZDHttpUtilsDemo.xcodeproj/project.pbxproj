@@ -33,6 +33,7 @@
 		61950484214B887700C838C5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61950482214B887700C838C5 /* Main.storyboard */; };
 		61950486214B887700C838C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61950485214B887700C838C5 /* Assets.xcassets */; };
 		61950489214B887700C838C5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61950487214B887700C838C5 /* LaunchScreen.storyboard */; };
+		61DDC0FD21C9E8050088B51C /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC0FC21C9E8050088B51C /* MessageType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		61950485214B887700C838C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		61950488214B887700C838C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6195048A214B887700C838C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61DDC0FC21C9E8050088B51C /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
 		A681F4C7D858A18C9910FE5F /* Pods-ZDHttpUtilsDemo.sit-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZDHttpUtilsDemo.sit-release.xcconfig"; path = "Pods/Target Support Files/Pods-ZDHttpUtilsDemo/Pods-ZDHttpUtilsDemo.sit-release.xcconfig"; sourceTree = "<group>"; };
 		A91DF57461A145915EBD766A /* Pods-ZDHttpUtilsDemo.sit.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZDHttpUtilsDemo.sit.xcconfig"; path = "Pods/Target Support Files/Pods-ZDHttpUtilsDemo/Pods-ZDHttpUtilsDemo.sit.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,6 +100,7 @@
 			children = (
 				615124372153764C005C15A9 /* MD5.swift */,
 				615124472154C0AE005C15A9 /* MimeType.swift */,
+				61DDC0FC21C9E8050088B51C /* MessageType.swift */,
 				6116D244214FAD5000B5595D /* NetworkListener.swift */,
 				6151242B21524059005C15A9 /* CallbackHandler.swift */,
 				6151242D21524204005C15A9 /* InterceptHandle.swift */,
@@ -292,6 +295,7 @@
 				615124482154C0AE005C15A9 /* MimeType.swift in Sources */,
 				6151243A215376A0005C15A9 /* HttpCacheManager.swift in Sources */,
 				612937F2216B29F40020B969 /* HttpToast.swift in Sources */,
+				61DDC0FD21C9E8050088B51C /* MessageType.swift in Sources */,
 				6151244421548828005C15A9 /* CheckoutDao.swift in Sources */,
 				6151243021524577005C15A9 /* HttpConfig.swift in Sources */,
 				6116D245214FAD5000B5595D /* NetworkListener.swift in Sources */,
