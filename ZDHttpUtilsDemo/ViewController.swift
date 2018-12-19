@@ -156,9 +156,14 @@ class ViewController: UIViewController {
         //  这个不能打断点在这里看url是啥 要去控制台打po看url?.absoluteString是完整的网址, 而且这个url是没什么卵用的,要用其absoluteString
         print(url)
         print(url?.absoluteString)
+        configMappingTable()
         
         Alamofire.request(url!.absoluteString, method: .post).responseJSON { (responseJSON) in
-            print(responseJSON)
+            let response = responseJSON.flatMap({ (json) -> ResponseArray<Item>? in
+                let response = ResponseArray<Item>(JSON: json as! [String: Any])
+                return response
+            })
+            print(response)
         }
     }
 }
