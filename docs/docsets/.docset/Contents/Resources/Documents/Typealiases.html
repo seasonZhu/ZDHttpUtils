@@ -14,7 +14,7 @@
     <a title="Type Aliases  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html"> Docs</a> (26% documented)</p>
+        <p><a href="index.html"> Docs</a> (85% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -34,16 +34,46 @@
                 <a href="Classes/CallbackHandler.html">CallbackHandler</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/DownloadCallbackHandler.html">DownloadCallbackHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HttpCacheManager.html">HttpCacheManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HttpConfig.html">HttpConfig</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HttpConfig/Builder.html">– Builder</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/HttpUtils.html">HttpUtils</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/InterceptHandle.html">InterceptHandle</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/InterceptHandle/Builder.html">– Builder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/NetworkListener.html">NetworkListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RequestUtils.html">RequestUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/UploadCallbackHandler.html">UploadCallbackHandler</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/MessageTyep.html">MessageTyep</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/MimeType.html">MimeType</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Enums/NetworkType.html">NetworkType</a>
               </li>
@@ -54,6 +84,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Protocols.html#/s:15ZDHttpUtilsDemo19BasicStructProtocolP">BasicStructProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/ReflectProtocol.html">ReflectProtocol</a>
               </li>
             </ul>
           </li>
@@ -71,6 +104,36 @@
               <li class="nav-group-task">
                 <a href="Typealiases.html#/s:15ZDHttpUtilsDemo4Bytea">Byte</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo23DownloadFailureCallbacka">DownloadFailureCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo24DownloadProgressCallbacka">DownloadProgressCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/DownloadRequestTask">DownloadRequestTask</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo23DownloadSuccessCallbacka">DownloadSuccessCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseFailureCallbacka">ResponseFailureCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka">ResponseMessageCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseSuccessCallbacka">ResponseSuccessCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo22UploadProgressCallbacka">UploadProgressCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo20UploadResultCallbacka">UploadResultCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:15ZDHttpUtilsDemo12UploadStreama">UploadStream</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -83,6 +146,314 @@
 
           </section>
           <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo23ResponseSuccessCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/ResponseSuccessCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo23ResponseSuccessCallbacka">ResponseSuccessCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>基本请求回调协议
+请求响应成功的回调, 回调的结果是遵守Mappable协议的模型,模型数组,响应的原始数据,响应原始数据的json字符串,以及HTTPURLResponse</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ResponseSuccessCallback</span><span class="o">&lt;</span><span class="kt">MODEL</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="kt">MODEL</span><span class="p">?,</span> <span class="p">[</span><span class="kt">MODEL</span><span class="p">]?,</span> <span class="kt">Data</span><span class="p">?,</span> <span class="kt">String</span><span class="p">?,</span> <span class="kt">HTTPURLResponse</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo23ResponseFailureCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/ResponseFailureCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo23ResponseFailureCallbacka">ResponseFailureCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>请求响应失败的回调,回调的结果是响应的原始数据,Error,以及HTTPURLResponse</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ResponseFailureCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Data</span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?,</span> <span class="kt">HTTPURLResponse</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/ResponseMessageCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka">ResponseMessageCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>请求响应的信息回调,回调的是一个错误枚举,返回错误类型</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ResponseMessageCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="Enums/MessageTyep.html">MessageTyep</a></span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/%E4%B8%8A%E4%BC%A0%E5%9B%9E%E8%B0%83"></a>
+                <a name="//apple_ref/swift/Section/上传回调" class="dashAnchor"></a>
+                <a href="#/%E4%B8%8A%E4%BC%A0%E5%9B%9E%E8%B0%83">
+                  <h3 class="section-name">上传回调</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo12UploadStreama"></a>
+                    <a name="//apple_ref/swift/Alias/UploadStream" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo12UploadStreama">UploadStream</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>上传数据流 [文件名: 数据]的字典</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">UploadStream</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Data</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo20UploadResultCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/UploadResultCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo20UploadResultCallbacka">UploadResultCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>上传结果的回调,回调的是上传的网址,上传是否成功true表示成功,false表示失败, error和[String: Any]?</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">UploadResultCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt">URL</span><span class="p">?,</span> <span class="kt">Bool</span><span class="p">,</span> <span class="kt">Error</span><span class="p">?,</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo22UploadProgressCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/UploadProgressCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo22UploadProgressCallbacka">UploadProgressCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>上传进度的回调,回调的是上传的网址,上传进度</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">UploadProgressCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt">URL</span><span class="p">?,</span> <span class="kt">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/%E4%B8%8B%E8%BD%BD%E5%9B%9E%E8%B0%83"></a>
+                <a name="//apple_ref/swift/Section/下载回调" class="dashAnchor"></a>
+                <a href="#/%E4%B8%8B%E8%BD%BD%E5%9B%9E%E8%B0%83">
+                  <h3 class="section-name">下载回调</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo23DownloadSuccessCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/DownloadSuccessCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo23DownloadSuccessCallbacka">DownloadSuccessCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>下载成功结果的回调,回调的是文件临时路径(临时路径一般没有使用),文件保存路径和下载文件的二进制</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">DownloadSuccessCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt">URL</span><span class="p">?,</span> <span class="kt">URL</span><span class="p">?,</span> <span class="kt">Data</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo23DownloadFailureCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/DownloadFailureCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo23DownloadFailureCallbacka">DownloadFailureCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>下载失败结果的回调,回调的是文件临时数据 文件临时路径(临时路径一般没有使用),Error和statusCode</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">DownloadFailureCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Data</span><span class="p">?,</span> <span class="kt">URL</span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?,</span> <span class="kt">Int</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo24DownloadProgressCallbacka"></a>
+                    <a name="//apple_ref/swift/Alias/DownloadProgressCallback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo24DownloadProgressCallbacka">DownloadProgressCallback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>下载进度的回调,回调的是下载进度</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">DownloadProgressCallback</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/%E5%AD%98%E5%82%A8%E4%B8%8B%E8%BD%BD%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%AD%97%E5%85%B8%20%E7%94%A8%E4%BA%8E%E9%80%9A%E8%BF%87url%E8%8E%B7%E5%8F%96%E4%B8%8B%E8%BD%BD%E4%BB%BB%E5%8A%A1%20%E8%BF%9B%E8%80%8C%E8%BF%9B%E8%A1%8C%E6%9A%82%E5%81%9C/%E6%81%A2%E5%A4%8D/%E5%8F%96%E6%B6%88%E7%AD%89%E6%93%8D%E4%BD%9C"></a>
+                <a name="//apple_ref/swift/Section/存储下载任务的字典 用于通过url获取下载任务 进而进行暂停/恢复/取消等操作" class="dashAnchor"></a>
+                <a href="#/%E5%AD%98%E5%82%A8%E4%B8%8B%E8%BD%BD%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%AD%97%E5%85%B8%20%E7%94%A8%E4%BA%8E%E9%80%9A%E8%BF%87url%E8%8E%B7%E5%8F%96%E4%B8%8B%E8%BD%BD%E4%BB%BB%E5%8A%A1%20%E8%BF%9B%E8%80%8C%E8%BF%9B%E8%A1%8C%E6%9A%82%E5%81%9C/%E6%81%A2%E5%A4%8D/%E5%8F%96%E6%B6%88%E7%AD%89%E6%93%8D%E4%BD%9C">
+                  <h3 class="section-name">存储下载任务的字典 用于通过url获取下载任务 进而进行暂停/恢复/取消等操作</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Alias/DownloadRequestTask" class="dashAnchor"></a>
+                    <a class="token" href="#/">DownloadRequestTask</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">DownloadRequestTask</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">DownloadRequest</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
             <div class="task-group">
               <ul>
                 <li class="item">
@@ -117,7 +488,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2018-11-26)</p>
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2018-12-20)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

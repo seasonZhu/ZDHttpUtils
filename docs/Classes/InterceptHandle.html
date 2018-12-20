@@ -14,7 +14,7 @@
     <a title="InterceptHandle Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (26% documented)</p>
+        <p><a href="../index.html"> Docs</a> (85% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -34,16 +34,46 @@
                 <a href="../Classes/CallbackHandler.html">CallbackHandler</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/DownloadCallbackHandler.html">DownloadCallbackHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HttpCacheManager.html">HttpCacheManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HttpConfig.html">HttpConfig</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HttpConfig/Builder.html">– Builder</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/HttpUtils.html">HttpUtils</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/InterceptHandle.html">InterceptHandle</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InterceptHandle/Builder.html">– Builder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetworkListener.html">NetworkListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RequestUtils.html">RequestUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UploadCallbackHandler.html">UploadCallbackHandler</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/MessageTyep.html">MessageTyep</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MimeType.html">MimeType</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Enums/NetworkType.html">NetworkType</a>
               </li>
@@ -54,6 +84,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Protocols.html#/s:15ZDHttpUtilsDemo19BasicStructProtocolP">BasicStructProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ReflectProtocol.html">ReflectProtocol</a>
               </li>
             </ul>
           </li>
@@ -70,6 +103,36 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo4Bytea">Byte</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23DownloadFailureCallbacka">DownloadFailureCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo24DownloadProgressCallbacka">DownloadProgressCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/DownloadRequestTask">DownloadRequestTask</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23DownloadSuccessCallbacka">DownloadSuccessCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseFailureCallbacka">ResponseFailureCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka">ResponseMessageCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseSuccessCallbacka">ResponseSuccessCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo22UploadProgressCallbacka">UploadProgressCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo20UploadResultCallbacka">UploadResultCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo12UploadStreama">UploadStream</a>
               </li>
             </ul>
           </li>
@@ -118,12 +181,181 @@
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo15InterceptHandleC15isBeforeHandler0f5AfterH00f4DataD00F11ShowLoading11loadingText0fK5Toast0F5Cache3tagACSb_S3bSSSgS2bALtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(isBeforeHandler:isAfterHandler:isDataIntercept:isShowLoading:loadingText:isShowToast:isCache:tag:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo15InterceptHandleC15isBeforeHandler0f5AfterH00f4DataD00F11ShowLoading11loadingText0fK5Toast0F5Cache3tagACSb_S3bSSSgS2bALtcfc">init(isBeforeHandler:isAfterHandler:isDataIntercept:isShowLoading:loadingText:isShowToast:isCache:tag:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>自定义拦截配置初始化</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">isBeforeHandler</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="nv">isAfterHandler</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="nv">isDataIntercept</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="nv">isShowLoading</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+     <span class="nv">loadingText</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+     <span class="nv">isShowToast</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+     <span class="nv">isCache</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+     <span class="nv">tag</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isBeforeHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>前置拦截</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isAfterHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>后置拦截</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isDataIntercept</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>数据拦截</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isShowLoading</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>是否显示菊花转</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>loadingText</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>菊花转的时候是否显示文字</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isShowToast</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>是否启用toast</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isCache</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>是否缓存json数据</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>tag</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>标签</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo15InterceptHandleC7BuilderC"></a>
+                    <a name="//apple_ref/swift/Class/Builder" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo15InterceptHandleC7BuilderC">Builder</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/InterceptHandle/Builder.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Builder</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2018-11-26)</p>
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2018-12-20)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

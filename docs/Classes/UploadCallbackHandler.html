@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>NetworkType Enumeration Reference</title>
+    <title>UploadCallbackHandler Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/NetworkType" class="dashAnchor"></a>
-    <a title="NetworkType Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Class/UploadCallbackHandler" class="dashAnchor"></a>
+    <a title="UploadCallbackHandler Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html"> Docs</a> (85% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html"> Reference</a>
         <img id="carat" src="../img/carat.png" />
-        NetworkType Enumeration Reference
+        UploadCallbackHandler Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -141,21 +141,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>NetworkType</h1>
+            <h1>UploadCallbackHandler</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">NetworkType</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">UploadCallbackHandler</span></code></pre>
 
                 </div>
               </div>
-            <p>网络类型枚举</p>
-
-<ul>
-<li>unknown: 未知</li>
-<li>notReachable: 没有网络</li>
-<li>wifi: wifi信号</li>
-<li>mobile: 手机信号</li>
-</ul>
+            <p>上传的回调</p>
 
           </section>
           <section class="section task-group-section">
@@ -164,9 +157,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15ZDHttpUtilsDemo11NetworkTypeO7unknownyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/unknown" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo11NetworkTypeO7unknownyA2CmF">unknown</a>
+                    <a name="/s:15ZDHttpUtilsDemo21UploadCallbackHandlerCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo21UploadCallbackHandlerCACycfc">init()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -174,14 +167,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>初始化方法</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">unknown</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -191,9 +184,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15ZDHttpUtilsDemo11NetworkTypeO12notReachableyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/notReachable" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo11NetworkTypeO12notReachableyA2CmF">notReachable</a>
+                    <a name="/s:15ZDHttpUtilsDemo21UploadCallbackHandlerC02onD6ResultyACXDy10Foundation3URLVSg_Sbs5Error_pSgSDySSypGSgtcF"></a>
+                    <a name="//apple_ref/swift/Method/onUploadResult(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo21UploadCallbackHandlerC02onD6ResultyACXDy10Foundation3URLVSg_Sbs5Error_pSgSDySSypGSgtcF">onUploadResult(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -201,16 +194,40 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>上传结果的回调</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">notReachable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">onUploadResult</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:15ZDHttpUtilsDemo20UploadResultCallbacka">UploadResultCallback</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>callback</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>回调的数据</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
                       </div>
                     </section>
                   </div>
@@ -218,9 +235,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15ZDHttpUtilsDemo11NetworkTypeO4wifiyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/wifi" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo11NetworkTypeO4wifiyA2CmF">wifi</a>
+                    <a name="/s:15ZDHttpUtilsDemo21UploadCallbackHandlerC02onD8ProgressyACXDy10Foundation3URLVSg_So10NSProgressCtcF"></a>
+                    <a name="//apple_ref/swift/Method/onUploadProgress(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo21UploadCallbackHandlerC02onD8ProgressyACXDy10Foundation3URLVSg_So10NSProgressCtcF">onUploadProgress(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -228,16 +245,39 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>上传进度的回调</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">wifi</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">onUploadProgress</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:15ZDHttpUtilsDemo22UploadProgressCallbacka">UploadProgressCallback</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>callback</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>回调数据</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
                       </div>
                     </section>
                   </div>
@@ -245,9 +285,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15ZDHttpUtilsDemo11NetworkTypeO6mobileyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/mobile" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo11NetworkTypeO6mobileyA2CmF">mobile</a>
+                    <a name="/s:15ZDHttpUtilsDemo21UploadCallbackHandlerC9onMessageyACXDyAA0H4TyepOSgcSgF"></a>
+                    <a name="//apple_ref/swift/Method/onMessage(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo21UploadCallbackHandlerC9onMessageyACXDyAA0H4TyepOSgcSgF">onMessage(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -255,53 +295,39 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>信息的回调</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">mobile</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">onMessage</span><span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka">ResponseMessageCallback</a></span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
 
                         </div>
                       </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/-%E7%BD%91%E7%BB%9C%E7%B1%BB%E5%9E%8B%E6%9E%9A%E4%B8%BE%E6%8F%8F%E8%BF%B0"></a>
-                <a name="//apple_ref/swift/Section/-网络类型枚举描述" class="dashAnchor"></a>
-                <a href="#/-%E7%BD%91%E7%BB%9C%E7%B1%BB%E5%9E%8B%E6%9E%9A%E4%B8%BE%E6%8F%8F%E8%BF%B0">
-                  <h3 class="section-name">-网络类型枚举描述</h3>
-                </a>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:s23CustomStringConvertibleP11descriptionSSvp"></a>
-                    <a name="//apple_ref/swift/Property/description" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s23CustomStringConvertibleP11descriptionSSvp">description</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>回调信息</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
                       </div>
                     </section>
                   </div>

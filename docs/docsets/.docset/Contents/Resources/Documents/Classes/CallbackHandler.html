@@ -14,7 +14,7 @@
     <a title="CallbackHandler Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (26% documented)</p>
+        <p><a href="../index.html"> Docs</a> (85% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -34,16 +34,46 @@
                 <a href="../Classes/CallbackHandler.html">CallbackHandler</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/DownloadCallbackHandler.html">DownloadCallbackHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HttpCacheManager.html">HttpCacheManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HttpConfig.html">HttpConfig</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HttpConfig/Builder.html">– Builder</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/HttpUtils.html">HttpUtils</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/InterceptHandle.html">InterceptHandle</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InterceptHandle/Builder.html">– Builder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetworkListener.html">NetworkListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RequestUtils.html">RequestUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UploadCallbackHandler.html">UploadCallbackHandler</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/MessageTyep.html">MessageTyep</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MimeType.html">MimeType</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Enums/NetworkType.html">NetworkType</a>
               </li>
@@ -54,6 +84,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Protocols.html#/s:15ZDHttpUtilsDemo19BasicStructProtocolP">BasicStructProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ReflectProtocol.html">ReflectProtocol</a>
               </li>
             </ul>
           </li>
@@ -71,6 +104,36 @@
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo4Bytea">Byte</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23DownloadFailureCallbacka">DownloadFailureCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo24DownloadProgressCallbacka">DownloadProgressCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/DownloadRequestTask">DownloadRequestTask</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23DownloadSuccessCallbacka">DownloadSuccessCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseFailureCallbacka">ResponseFailureCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka">ResponseMessageCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseSuccessCallbacka">ResponseSuccessCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo22UploadProgressCallbacka">UploadProgressCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo20UploadResultCallbacka">UploadResultCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:15ZDHttpUtilsDemo12UploadStreama">UploadStream</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -85,7 +148,7 @@
 
                 </div>
               </div>
-            <p>结果回调句柄</p>
+            <p>基本请求回调</p>
 
           </section>
           <section class="section task-group-section">
@@ -94,9 +157,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/success" class="dashAnchor"></a>
-                    <a class="token" href="#/">success</a>
+                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerCACyxGycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerCACyxGycfc">init()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -104,122 +167,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>初始化方法</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">success</span><span class="p">:</span> <span class="p">((</span><span class="kt">Mappable</span><span class="p">?,</span> <span class="p">[</span><span class="kt">Mappable</span><span class="p">]?,</span> <span class="kt">HTTPURLResponse</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">())?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC7failurey10Foundation4DataVSg_s5Error_pSgSo17NSHTTPURLResponseCSgtcSgvp"></a>
-                    <a name="//apple_ref/swift/Property/failure" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC7failurey10Foundation4DataVSg_s5Error_pSgSo17NSHTTPURLResponseCSgtcSgvp">failure</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">failure</span><span class="p">:</span> <span class="p">((</span><span class="kt">Data</span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?,</span> <span class="kt">HTTPURLResponse</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">())?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC7messageySSSgcSgvp"></a>
-                    <a name="//apple_ref/swift/Property/message" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC7messageySSSgcSgvp">message</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">message</span><span class="p">:</span> <span class="p">((</span><span class="kt">String</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">())?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC7keyPathSSSgvp"></a>
-                    <a name="//apple_ref/swift/Property/keyPath" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC7keyPathSSSgvp">keyPath</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC7isArraySbvp"></a>
-                    <a name="//apple_ref/swift/Property/isArray" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC7isArraySbvp">isArray</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isArray</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -239,16 +194,40 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>设置直达路径,需要在两个on方法前进行设置,否则结果会有误</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setKeyPath</span><span class="p">(</span><span class="n">_</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">setKeyPath</span><span class="p">(</span><span class="n">_</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>keyPath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>直达路径</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
                       </div>
                     </section>
                   </div>
@@ -266,16 +245,193 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>获取的是否是模型数组,需要在两个on方法前进行设置,否则结果会有误
+由于ObjectMapper解析的原因,必须告诉它你解析的是模型数组还是模型</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setIsArray</span><span class="p">(</span><span class="n">_</span> <span class="nv">isArray</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">setIsArray</span><span class="p">(</span><span class="n">_</span> <span class="nv">isArray</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isArray</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>是否是模型数组</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC9onSuccessyACyxGXDyxSg_SayxGSg10Foundation4DataVSgSSSgSo17NSHTTPURLResponseCSgtcSgF"></a>
+                    <a name="//apple_ref/swift/Method/onSuccess(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC9onSuccessyACyxGXDyxSg_SayxGSg10Foundation4DataVSgSSSgSo17NSHTTPURLResponseCSgtcSgF">onSuccess(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>成功的回调</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">onSuccess</span><span class="p">(</span><span class="n">_</span> <span class="nv">success</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseSuccessCallbacka">ResponseSuccessCallback</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>callback</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>回调的数据</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC9onFailureyACyxGXDy10Foundation4DataVSg_s5Error_pSgSo17NSHTTPURLResponseCSgtcSgF"></a>
+                    <a name="//apple_ref/swift/Method/onFailure(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC9onFailureyACyxGXDy10Foundation4DataVSg_s5Error_pSgSo17NSHTTPURLResponseCSgtcSgF">onFailure(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>失败的回调</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">onFailure</span><span class="p">(</span><span class="n">_</span> <span class="nv">failure</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseFailureCallbacka">ResponseFailureCallback</a></span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>callback</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>回调数据</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15ZDHttpUtilsDemo15CallbackHandlerC9onMessageyACyxGXDyAA0G4TyepOSgcSgF"></a>
+                    <a name="//apple_ref/swift/Method/onMessage(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15ZDHttpUtilsDemo15CallbackHandlerC9onMessageyACyxGXDyAA0G4TyepOSgcSgF">onMessage(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>信息的回调</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">onMessage</span><span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:15ZDHttpUtilsDemo23ResponseMessageCallbacka">ResponseMessageCallback</a></span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>回调信息</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>对象自己</p>
                       </div>
                     </section>
                   </div>
@@ -285,7 +441,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2018-11-26)</p>
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2018-12-20)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

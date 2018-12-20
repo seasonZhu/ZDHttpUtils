@@ -1,66 +1,31 @@
 {
   "warnings": [
     {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 29,
-      "symbol": "CallbackHandler.success",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 31,
-      "symbol": "CallbackHandler.failure",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 33,
-      "symbol": "CallbackHandler.message",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 35,
-      "symbol": "CallbackHandler.keyPath",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 37,
-      "symbol": "CallbackHandler.isArray",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 39,
-      "symbol": "CallbackHandler.setKeyPath(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/CallbackHandler.swift",
-      "line": 44,
-      "symbol": "CallbackHandler.setIsArray(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/HttpUtils.swift",
-      "line": 15,
-      "symbol": "HttpUtils",
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/HttpCacheManager.swift",
+      "line": 12,
+      "symbol": "HttpCacheManager",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/HttpUtils.swift",
-      "line": 16,
-      "symbol": "HttpUtils.request(sessionManage:method:url:parameters:headers:interceptHandle:callbackHandler:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "line": 480,
+      "symbol": "DownloadRequestTask",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/HttpUtils.swift",
+      "line": 483,
+      "symbol": "HttpUtils.downloadRequestTask",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/InterceptHandle.swift",
+      "line": 228,
+      "symbol": "InterceptHandle.Builder",
+      "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
@@ -78,45 +43,87 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/NetworkListener.swift",
-      "line": null,
-      "symbol": "NetworkType",
-      "symbol_kind": "source.lang.swift.decl.extension",
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MessageType.swift",
+      "line": 18,
+      "symbol": "MessageTyep.networkNotReachable",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MessageType.swift",
+      "line": 19,
+      "symbol": "MessageTyep.writeJSONCacheFailed",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MessageType.swift",
+      "line": 20,
+      "symbol": "MessageTyep.readJSONCacheFailed",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MessageType.swift",
+      "line": 21,
+      "symbol": "MessageTyep.writeDownloadResumeDataFailed",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MimeType.swift",
+      "line": 18,
+      "symbol": "MimeType.image(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MimeType.swift",
+      "line": 19,
+      "symbol": "MimeType.gif(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/MimeType.swift",
+      "line": 20,
+      "symbol": "MimeType.video(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/NetworkListener.swift",
-      "line": 12,
-      "symbol": "NetworkType",
-      "symbol_kind": "source.lang.swift.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/NetworkListener.swift",
-      "line": 15,
+      "line": 20,
       "symbol": "NetworkType.unknown",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/NetworkListener.swift",
-      "line": 16,
+      "line": 21,
       "symbol": "NetworkType.notReachable",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/NetworkListener.swift",
-      "line": 17,
+      "line": 22,
       "symbol": "NetworkType.wifi",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/NetworkListener.swift",
-      "line": 18,
+      "line": 23,
       "symbol": "NetworkType.mobile",
       "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/season/Documents/Swift Git/ZDHttpUtils/ZDHttpUtilsDemo/HttpUtils/ReflectProtocol.swift",
+      "line": 19,
+      "symbol": "ReflectProtocol.reflectToDictionary()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }
   ],
