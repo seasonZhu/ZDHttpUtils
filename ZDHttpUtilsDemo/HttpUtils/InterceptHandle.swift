@@ -151,6 +151,7 @@ public class InterceptHandle: InterceptHandleProtocol {
         guard let response = httpResponse else {
             return isDataIntercept
         }
+        
         if !SuccessCodes.nums.contains(response.statusCode) {
             //  statusCode -> 转描述
         }

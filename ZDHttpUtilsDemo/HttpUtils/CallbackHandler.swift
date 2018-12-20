@@ -17,7 +17,7 @@ public typealias ResponseSuccessCallback<MODEL: Mappable> = (MODEL?, [MODEL]?, D
 /// 请求响应失败的回调,回调的结果是响应的原始数据,Error,以及HTTPURLResponse
 public typealias ResponseFailureCallback = (Data?, Error?, HTTPURLResponse?) -> ()
 
-/// 请求响应的信息回调,回调的结果是字符串,其实我觉得这里应该定义一个错误枚举,返回错误类型
+/// 请求响应的信息回调,回调的是一个错误枚举,返回错误类型
 public typealias ResponseMessageCallback = (MessageTyep?) -> ()
 
 /// 响应回调的协议

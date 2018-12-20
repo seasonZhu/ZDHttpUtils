@@ -233,7 +233,7 @@ struct ResponseGeneric<Code, Status, Total, Reslut: Mappable, Message>: Response
 }
 
 //MARK:- 响应全泛型 模型数组类型协议
-protocol ResponseGenericsProtocol {
+protocol ResponseArrayGenericProtocol {
     
     associatedtype C
     associatedtype S
@@ -249,7 +249,7 @@ protocol ResponseGenericsProtocol {
 }
 
 //MARK:- 泛型模型数组装配 泛型类型系列
-struct ResponseGenerics<Code, Status, Total, Reslut: Mappable, Message>: ResponseGenericsProtocol, Mappable {
+struct ResponseArrayGeneric<Code, Status, Total, Reslut: Mappable, Message>: ResponseArrayGenericProtocol, Mappable {
     
     typealias C = Code
     typealias S = Status
