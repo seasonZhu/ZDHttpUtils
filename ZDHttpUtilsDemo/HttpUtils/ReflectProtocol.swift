@@ -22,6 +22,11 @@ public protocol ReflectProtocol {
 // MARK: - 反射协议的默认实现
 extension ReflectProtocol {
     
+    /// 反射为字典的计算属性
+    var toDictionary: [String: Any] {
+        return reflectToDictionary()
+    }
+    
     /// 反射为字典
     ///
     /// - Returns: 字典

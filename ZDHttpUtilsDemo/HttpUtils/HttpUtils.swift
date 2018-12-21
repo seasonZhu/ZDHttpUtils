@@ -663,3 +663,96 @@ extension HttpUtils {
     }
 }
 
+
+// MARK:- 基于HttpRequestConvertible的网络请求单元
+extension HttpUtils {
+    /// 基于HttpRequestConvertible的ObjectMapper泛型返回的网络请求
+    /// 该请求方法还有待验证
+    /// - Parameters:
+    ///   - request: 遵守HttpRequestConvertible的枚举类型
+    ///   - interceptHandle: 拦截回调
+    ///   - callbackHandler: 结果回调
+    public static func request<T: Mappable>(request: HttpRequestConvertible,
+                                            interceptHandle: InterceptHandle,
+                                            callbackHandler: CallbackHandler<T>) {
+        
+        guard let urlRequest = try? request.asURLRequest(), let url = urlRequest.url?.absoluteString else {
+            return
+        }
+        
+        //  前置拦截 如果没有前置拦截,打印请求Api
+        if interceptHandle.onBeforeHandler(method: request.method, url: url, parameters: nil) {
+            #if DEBUG
+            print("前置拦截,无法进行网络请求")
+            #endif
+            return
+        }
+        
+        //  检查网络
+        guard NetworkListener.shared.isReachable else {
+            #if DEBUG
+            print("没有网络!")
+            callbackHandler.message?(.networkNotReachable)
+            #endif
+            
+            //  没有网络的拦截
+            interceptHandle.onNetworkIsNotReachableHandler(type: NetworkListener.shared.status)
+            
+            //  响应缓存
+            if interceptHandle.onCacheHandler() {
+                responseCache(url: url, callbackHandler: callbackHandler)
+            }
+            
+            return
+        }
+        
+        //  菊花转
+        HttpUtils.indicatorRun()
+        
+        let dataRequset = Alamofire.request(request)
+        
+        //  如果里面设置了后置拦截 就不进行打印
+        dataRequset.responseSwiftyJSON { (response) in
+            //  菊花转结束
+            HttpUtils.indicatorStop()
+            
+            //  后置拦截 打印漂亮的Json
+            interceptHandle.onAfterHandler(url: url, response: response)
+            
+            //  缓存数据
+            if interceptHandle.onCacheHandler() {
+                HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
+                    #if DEBUG
+                    print("写入JSON缓存\(isOK ? "成功" : "失败")")
+                    if !isOK {
+                        callbackHandler.message?(.writeJSONCacheFailed)
+                    }
+                    #endif
+                })
+            }
+        }
+        
+        //  结果进行回调
+        
+        //  是否直达底层
+        if let keyPath = callbackHandler.keyPath {
+            
+            //  底层是模型数组
+            if callbackHandler.isArray {
+                dataRequset.responseArray(keyPath: keyPath) { (responseArray: DataResponse<[T]>) in
+                    responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+                }
+            }else {
+                //  底层不是模型
+                dataRequset.responseObject(keyPath: keyPath) { (responseObject: DataResponse<T>) in
+                    responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+                }
+            }
+        }else {
+            dataRequset.responseObject { (responseObject: DataResponse<T>) in
+                responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+            }
+        }
+        
+    }
+}

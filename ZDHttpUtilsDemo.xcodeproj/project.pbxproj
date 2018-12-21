@@ -34,6 +34,8 @@
 		61950486214B887700C838C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61950485214B887700C838C5 /* Assets.xcassets */; };
 		61950489214B887700C838C5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61950487214B887700C838C5 /* LaunchScreen.storyboard */; };
 		61DDC0FD21C9E8050088B51C /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC0FC21C9E8050088B51C /* MessageType.swift */; };
+		61DDC10421CC7A960088B51C /* HttpRequestConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC10321CC7A960088B51C /* HttpRequestConvertible.swift */; };
+		61DDC10621CC7B760088B51C /* U17Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC10521CC7B760088B51C /* U17Request.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,8 @@
 		61950488214B887700C838C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6195048A214B887700C838C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61DDC0FC21C9E8050088B51C /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		61DDC10321CC7A960088B51C /* HttpRequestConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpRequestConvertible.swift; sourceTree = "<group>"; };
+		61DDC10521CC7B760088B51C /* U17Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = U17Request.swift; sourceTree = "<group>"; };
 		A681F4C7D858A18C9910FE5F /* Pods-ZDHttpUtilsDemo.sit-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZDHttpUtilsDemo.sit-release.xcconfig"; path = "Pods/Target Support Files/Pods-ZDHttpUtilsDemo/Pods-ZDHttpUtilsDemo.sit-release.xcconfig"; sourceTree = "<group>"; };
 		A91DF57461A145915EBD766A /* Pods-ZDHttpUtilsDemo.sit.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZDHttpUtilsDemo.sit.xcconfig"; path = "Pods/Target Support Files/Pods-ZDHttpUtilsDemo/Pods-ZDHttpUtilsDemo.sit.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -109,6 +113,7 @@
 				61512439215376A0005C15A9 /* HttpCacheManager.swift */,
 				6151243B21548028005C15A9 /* HttpUrlProtocol.swift */,
 				6151243D2154821F005C15A9 /* HttpRequestProtocol.swift */,
+				61DDC10321CC7A960088B51C /* HttpRequestConvertible.swift */,
 				61512431215245C7005C15A9 /* HttpUtils.swift */,
 				616B119621B658100031D51A /* RequestUtils.swift */,
 				6114B340218BDF94002FF421 /* ReflectProtocol.swift */,
@@ -145,6 +150,7 @@
 				61950480214B887700C838C5 /* ViewController.swift */,
 				6151244321548828005C15A9 /* CheckoutDao.swift */,
 				6151244521548A20005C15A9 /* CheckoutViewModel.swift */,
+				61DDC10521CC7B760088B51C /* U17Request.swift */,
 				6151243521533699005C15A9 /* Model.swift */,
 				6138ADA5216F2AD4006B5CFA /* Entity.swift */,
 				61950482214B887700C838C5 /* Main.storyboard */,
@@ -290,8 +296,10 @@
 				6151243621533699005C15A9 /* Model.swift in Sources */,
 				6151243C21548029005C15A9 /* HttpUrlProtocol.swift in Sources */,
 				61512432215245C7005C15A9 /* HttpUtils.swift in Sources */,
+				61DDC10621CC7B760088B51C /* U17Request.swift in Sources */,
 				615124402154828C005C15A9 /* BaseDao.swift in Sources */,
 				61950481214B887700C838C5 /* ViewController.swift in Sources */,
+				61DDC10421CC7A960088B51C /* HttpRequestConvertible.swift in Sources */,
 				615124482154C0AE005C15A9 /* MimeType.swift in Sources */,
 				6151243A215376A0005C15A9 /* HttpCacheManager.swift in Sources */,
 				612937F2216B29F40020B969 /* HttpToast.swift in Sources */,

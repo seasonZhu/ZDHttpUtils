@@ -141,7 +141,7 @@ public class HttpCacheManager {
     }
 }
 
-private extension Data {
+extension Data {
     var toDictionary: [String: Any]? {
         do{
             let json = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
