@@ -65,12 +65,18 @@ enum U17Request: HttpRequestConvertible {
             }
         }
         
-        switch self {
-        case .home(let model):
-            urlRequest = try encoding.encode(urlRequest, with: model.toDictionary)
-        }
+        urlRequest = try encoding.encode(urlRequest, with: parameters)
         
         return urlRequest
+    }
+    
+    ///  这个其实可以集成到协议中 也可以不集成, 这里我没有集成 因为这个值是通过枚举中的model转换而成的
+    
+    var parameters: Parameters? {
+        switch self {
+        case .home(let model):
+            return model.toDictionary
+        }
     }
 }
 
