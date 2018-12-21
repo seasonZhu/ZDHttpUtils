@@ -1,5 +1,5 @@
 # ZDHttpUtils
-# ZDHttpUtils的使用
+
 ZDHttpUtils是我个人针对的Alamofire和ObjectMapper封装.
 其中我也使用了SwiftJSON,主要是为了在控制台上打印漂亮的JSON
 里面自带了一个拦截器InterceptHandle主要是针对数据进行处理和界面的loading的简单展示,这其中我使用了Toast,其实Toast功能并不是特别强大,我正在考虑使用自己写的SwiftHud进行替换.
@@ -27,7 +27,7 @@ HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/top
 
 当然,以上是一个最简单的用法,你完全可以通过业务进行更细化的网络请求,我提供一个一般的写法和一个比较类似于Moya的写法,至于怎么选择,各位自己用就行.
 
-##以下封装的业务层:
+## 以下封装的业务层:
 遵守HttpUrlProtocol协议,将baseUrl和每个详细的api进行拆分.
 遵守HttpRequestProtocol协议,将业务的每个请求进行拆分,然后进行请求.BaseDao请详细的参看源码.
 
@@ -82,7 +82,7 @@ let callbackHandler = CallbackHandler<ResponseArray<Item>>()
 CheckoutViewModel().getList(callbackHandler: callbackHandler)
 ```
 
-##另一种是类似于Moya的风格的业务层封装,当然我可没有Moya那么牛X啦
+## 另一种是类似于Moya的风格的业务层封装,当然我可没有Moya那么牛X啦
 写一个遵守HttpRequestConvertible协议的枚举类型,然后详细的封装每个Api需要传入的请求方式,编码格式,请求头,和请求Api,那么这些计算属性会根据枚举的switch而后配置化,通过func asURLRequest() throws -> URLRequest的实现,得到一个你需要的urlRequest,然后直接进行请求就可以了
 
 ReflectProtocol是我自己写的一个协议,其目的是将单层的模型转为单层的字典,一般请求的json也是单层吧.
