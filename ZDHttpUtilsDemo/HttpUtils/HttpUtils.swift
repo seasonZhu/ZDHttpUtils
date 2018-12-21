@@ -680,14 +680,17 @@ extension HttpUtils {
             return
         }
         
-        //  解析httpBody
+        //  解析httpBody 基本都支持了 PropertyListEncoding仅支持了xml格式
+        var format = PropertyListSerialization.PropertyListFormat.xml
         let parameters: Any
         if let data = urlRequest.httpBody, let dict = data.toDictionary {
             parameters = dict
         }else if let data = urlRequest.httpBody, let queryString = String.init(data: data, encoding: .utf8) {
             parameters = queryString
+        }else if let data = urlRequest.httpBody, let xml = try? PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format), let dict = xml as? Parameters {
+            parameters = dict
         }else {
-            parameters = "null"
+            parameters = "null, or analyzing not support"
         }
         
         //  前置拦截 如果没有前置拦截,打印请求Api
