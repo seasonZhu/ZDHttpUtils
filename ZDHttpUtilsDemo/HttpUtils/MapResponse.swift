@@ -20,15 +20,15 @@ protocol MappingTableProtocol{
 }
 
 //MARK:- 映射表
-class MappingTable: MappingTableProtocol {
-    static let share = MappingTable()
+public class MappingTable: MappingTableProtocol {
+    public static let share = MappingTable()
     private init() {}
     
-    var code = "code"
-    var status = "status"
-    var total = "total"
-    var result = "result"
-    var message = "message"
+    public var code = "code"
+    public var status = "status"
+    public var total = "total"
+    public var result = "result"
+    public var message = "message"
 }
 
 // MARK:- 基本结构体类型协议

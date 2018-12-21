@@ -21,8 +21,8 @@ class ViewController: UIViewController {
         //student.age = 18
         
         let person = Person(sex: "man", name: "sola")
-        print(student.reflectToDictionary())
-        print(person.reflectToDictionary())
+        print(student.toDictionary)
+        print(person.toDictionary)
         
         modelChangeByFastlane()
         
@@ -289,13 +289,18 @@ extension ViewController {
         
         let JSONString = "{\"list\": \"-1\", \"code\": 200, \"message\": \"hello\"}"
         
+        // 字符串映射为Bool类型
         let boolModel = Mapper<ResponseBase<Bool>>().map(JSONString: JSONString)
-        
         print(boolModel)
         
+        // 字符串还是映射为String类型
         let stringModel = Mapper<ResponseBase<String>>().map(JSONString: JSONString)
-        
         print(stringModel)
+        
+        // 转为Int类型
+        let JSONIntString = "{\"list\": -1, \"code\": 200, \"message\": \"hello\"}"
+        let intModel = Mapper<ResponseBase<Int>>().map(JSONString: JSONIntString)
+        print(intModel)
     }
     
     @objc
