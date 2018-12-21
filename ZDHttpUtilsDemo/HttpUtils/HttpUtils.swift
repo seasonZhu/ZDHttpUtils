@@ -675,13 +675,23 @@ extension HttpUtils {
     public static func request<T: Mappable>(request: HttpRequestConvertible,
                                             interceptHandle: InterceptHandle,
                                             callbackHandler: CallbackHandler<T>) {
-        
+        //  验证request的合法性
         guard let urlRequest = try? request.asURLRequest(), let url = urlRequest.url?.absoluteString else {
             return
         }
         
+        //  解析httpBody
+        let parameters: Any
+        if let data = urlRequest.httpBody, let dict = data.toDictionary {
+            parameters = dict
+        }else if let data = urlRequest.httpBody, let queryString = String.init(data: data, encoding: .utf8) {
+            parameters = queryString
+        }else {
+            parameters = "null"
+        }
+        
         //  前置拦截 如果没有前置拦截,打印请求Api
-        if interceptHandle.onBeforeHandler(method: request.method, url: url, parameters: nil) {
+        if interceptHandle.onBeforeHandler(method: request.method, url: url, parameters: parameters) {
             #if DEBUG
             print("前置拦截,无法进行网络请求")
             #endif
@@ -707,14 +717,14 @@ extension HttpUtils {
         }
         
         //  菊花转
-        HttpUtils.indicatorRun()
+        indicatorRun()
         
         let dataRequset = Alamofire.request(request)
         
         //  如果里面设置了后置拦截 就不进行打印
         dataRequset.responseSwiftyJSON { (response) in
             //  菊花转结束
-            HttpUtils.indicatorStop()
+            indicatorStop()
             
             //  后置拦截 打印漂亮的Json
             interceptHandle.onAfterHandler(url: url, response: response)

@@ -17,7 +17,7 @@ protocol InterceptHandleProtocol {
     
     func onNetworkIsNotReachableHandler(type: NetworkType)
     
-    func onBeforeHandler(method: HTTPMethod, url: String, parameters: Parameters?) -> Bool
+    func onBeforeHandler(method: HTTPMethod, url: String, parameters: Any) -> Bool
     
     func onAfterHandler(url: String, response: DataResponse<JSON>?)
     
@@ -106,7 +106,7 @@ public class InterceptHandle: InterceptHandleProtocol {
     }
     
     //MARK:- 前置拦截
-    func onBeforeHandler(method: HTTPMethod, url: String, parameters: Parameters?) -> Bool {
+    func onBeforeHandler(method: HTTPMethod, url: String, parameters: Any) -> Bool {
         if isShowLoading && !isBeforeHandler {
             //let data: ActivityData
             if let _ = loadingText {

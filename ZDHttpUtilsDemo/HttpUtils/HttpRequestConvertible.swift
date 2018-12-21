@@ -18,9 +18,15 @@ public protocol RequestConvertible {
     /// 请求方式
     var method: HTTPMethod { get }
     
+    /// 编码方式
+    var encoding: ParameterEncoding { get }
+    
+    /// 请求头
+    var header: HTTPHeaders? { get }
+    
     /// api
     var api: String { get }
 }
 
-/// Http请求转换器 (协议合成) 该协议给枚举使用 详细例子请看U17Request
+/// Http请求转换器 (协议合成) 该协议必须由枚举遵守 详细例子请看U17Request
 public typealias HttpRequestConvertible = RequestConvertible & URLRequestConvertible
