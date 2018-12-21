@@ -17,7 +17,7 @@ let callbackHandler = CallbackHandler<ResponseArray<Item>>()
                 				print(String(describing: data), String(describing: error))
             				}.onMessage { (message) in
                 				print(message)
-        					}
+        				}
         
 HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
 ```
@@ -77,7 +77,7 @@ let callbackHandler = CallbackHandler<ResponseArray<Item>>()
                 				print(String(describing: data), String(describing: error))
             				}.onMessage { (message) in
                 				print(message)
-        					}
+        				}
         					
 CheckoutViewModel().getList(callbackHandler: callbackHandler)
 ```
