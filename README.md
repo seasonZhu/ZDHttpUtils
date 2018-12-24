@@ -1,10 +1,14 @@
 # ZDHttpUtils
 
 ZDHttpUtils是我个人针对的Alamofire和ObjectMapper封装.
-其中我也使用了SwiftJSON,主要是为了在控制台上打印漂亮的JSON
+
+其中我也使用了SwiftJSON,主要是为了在控制台上打印漂亮的JSON.
+
 里面自带了一个拦截器InterceptHandle主要是针对数据进行处理和界面的loading的简单展示,这其中我使用了Toast,其实Toast功能并不是特别强大,我正在考虑使用自己写的SwiftHud进行替换.
 
 好了,说了这么多,我就想说说我这个ZDHttpUtils的用法.
+
+
 ##输入请求的接口,请求参数,以及遵守Mappable协议的模型,那么你就可以拿到数据了
 
 
