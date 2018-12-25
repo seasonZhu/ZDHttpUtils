@@ -26,12 +26,24 @@ public class HttpConfig {
     /// 请求方式
     let requestType: HTTPMethod
     
+    /// cer证书路径
+    var cerPath: String?
+    
+    /// p12证书路径
+    var p12Path: String?
+    
+    /// p12证书的密码
+    var p12password: String?
+    
     //MARK:- 配置构造器
     private init(builder: Builder) {
         self.timeout = builder.timeout
         self.isNeedSign = builder.isNeedSign
         self.addHeads = builder.addHeads
         self.requestType = builder.requestType
+        self.cerPath = builder.cerPath
+        self.p12Path = builder.p12Path
+        self.p12password = builder.p12password
     }
     
     /// 详细构造器
@@ -48,6 +60,15 @@ public class HttpConfig {
         
         /// 请求方式
         var requestType: HTTPMethod = .get
+        
+        /// cer证书路径
+        var cerPath: String?
+        
+        /// p12证书路径
+        var p12Path: String?
+        
+        /// p12证书的密码
+        var p12password: String?
         
         /// 设置超时时间
         ///
@@ -88,6 +109,21 @@ public class HttpConfig {
         @discardableResult
         public func setRequestType(_ requestType: HTTPMethod) -> Self {
             self.requestType = requestType
+            return self
+        }
+        
+        /// 设置CA证书
+        /// 因为 cerPath/p12Path/p12password 三个是关联的,所以并没有进行单个的链式,而是一次性链式,这样比较统一
+        /// - Parameters:
+        ///   - cerPath: cer证书路径
+        ///   - p12Path: p12证书路径
+        ///   - p12password: p12证书的密码
+        /// - Returns: 对象自己
+        @discardableResult
+        public func setCertification(cerPath: String?, p12Path: String?, p12password: String?) -> Builder {
+            self.cerPath = cerPath
+            self.p12Path = p12Path
+            self.p12password = p12password
             return self
         }
         

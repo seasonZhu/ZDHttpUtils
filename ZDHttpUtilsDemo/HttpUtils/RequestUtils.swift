@@ -49,6 +49,15 @@ public class RequestUtils {
             configuration.httpAdditionalHeaders = headers
             return SessionManager(configuration: configuration)
         }()
+        
+        //  处理CA证书相关
+        if let cerPath = httpConfig.cerPath, let p12Path = httpConfig.p12Path, let p12password = httpConfig.p12password {
+            /// 设置创建的manager的验证回调
+            manager.delegate.sessionDidReceiveChallenge = { session, challenge in
+                return HttpUtils.sessionDidReceiveChallenge(cerPath: cerPath, p12Path: p12Path, p12password: p12password, session: session, challenge: challenge)
+            }
+        }
+        
         SessionManager.custom = manager
         sessionManager = SessionManager.custom
     }

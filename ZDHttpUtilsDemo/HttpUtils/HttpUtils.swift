@@ -559,7 +559,7 @@ extension HttpUtils {
         var certArray: AnyObject
     }
     
-    /// 设置CA证书
+    /// 设置SessionManager.main的CA证书
     ///
     /// - Parameters:
     ///   - cerPath: cer证书路径
@@ -567,55 +567,86 @@ extension HttpUtils {
     ///   - password: p12证书的密码
     public static func challenge(cerPath: String, p12Path: String, p12password: String) {
         /// 设置主sessionManager的验证回调
-        SessionManager.custom.delegate.sessionDidReceiveChallenge = { session, challenge in
-            return sessionDidReceiveChallenge(session: session, challenge: challenge)
-        }
-        
-        /// 设置自定义sessionManager的验证回调
         SessionManager.default.delegate.sessionDidReceiveChallenge = { session, challenge in
-            return sessionDidReceiveChallenge(session: session, challenge: challenge)
-        }
-        
-        ///  内部用公共函数
-        func sessionDidReceiveChallenge(session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-            /// 服务器证书认证
-            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
-                let serverTrust: SecTrust = challenge.protectionSpace.serverTrust!
-                let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0)!
-                let remoteCertificateData = CFBridgingRetain(SecCertificateCopyData(certificate))!
-                
-                let cerUrl = URL(fileURLWithPath: cerPath)
-                guard let localCertificateData = try? Data(contentsOf: cerUrl) else {
-                    return (.cancelAuthenticationChallenge, nil)
-                }
-                
-                if remoteCertificateData.isEqual(localCertificateData) {
-                    let credential = URLCredential(trust: serverTrust)
-                    challenge.sender?.use(credential, for: challenge)
-                    
-                    return(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
-                } else {
-                    return (.cancelAuthenticationChallenge, nil)
-                }
-                
-            }
-                /// 客户端证书验证
-            else if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
-                
-                guard let identityAndTrust: IdentityAndTrust = try? self.extractIdentity(p12Path: p12Path, p12password: p12password) else {
-                    return (.cancelAuthenticationChallenge, nil)
-                }
-                
-                let urlCredential = URLCredential(identity: identityAndTrust.identityRef, certificates: identityAndTrust.certArray as? [Any], persistence: URLCredential.Persistence.forSession)
-                
-                return (.useCredential, urlCredential)
-                
-            }
-            
-            return (.cancelAuthenticationChallenge, nil)
+            return sessionDidReceiveChallenge(cerPath: cerPath, p12Path: p12Path, p12password: p12password, session: session, challenge: challenge)
         }
     }
     
+    /// sessionDidReceiveChallenge的回调
+    ///
+    /// - Parameters:
+    ///   - cerPath: cer证书路径
+    ///   - p12Path: p12证书路径
+    ///   - password: p12证书的密码
+    ///   - session: URLSession
+    ///   - challenge: URLAuthenticationChallenge
+    /// - Returns: 回调结果
+    public static func sessionDidReceiveChallenge(cerPath: String, p12Path: String, p12password: String, session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        /// 服务器证书认证
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
+            print("服务器证书认证")
+            
+            //  获取服务器证书数据数组
+            guard let serverTrust: SecTrust = challenge.protectionSpace.serverTrust else {
+                return (.cancelAuthenticationChallenge, nil)
+            }
+            let remoteCertificateDatas = getRemoteCertificateDatas(serverTrust: serverTrust)
+            
+            //  读取本地证书数据
+            let cerUrl = URL(fileURLWithPath: cerPath)
+            guard let localCertificateData = try? Data(contentsOf: cerUrl) else {
+                return (.cancelAuthenticationChallenge, nil)
+            }
+            
+            //var localCertificates = ServerTrustPolicy.certificates()
+            //let localCertificateDatas = localCertificates.map { SecCertificateCopyData($0) as Data }
+            
+            var result = false
+            
+            //  只要服务器证书数据数组中有和本地证书数据相同,说明认证成功,退出循环
+            outerLoop: for remoteData in remoteCertificateDatas where localCertificateData == remoteData {
+                result = true
+                break outerLoop
+            }
+            
+            if result {
+                let credential = URLCredential(trust: serverTrust)
+                challenge.sender?.use(credential, for: challenge)
+                return(.useCredential, URLCredential(trust: serverTrust))
+            } else {
+                return (.cancelAuthenticationChallenge, nil)
+            }
+        }
+        /// 客户端证书验证
+        else if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            print("客户端证书验证")
+            
+            guard let identityAndTrust = try? self.extractIdentity(p12Path: p12Path, p12password: p12password) else {
+                return (.cancelAuthenticationChallenge, nil)
+            }
+            
+            let urlCredential = URLCredential(identity: identityAndTrust.identityRef, certificates: identityAndTrust.certArray as? [Any], persistence: URLCredential.Persistence.forSession)
+            
+            return (.useCredential, urlCredential)
+            
+        }
+        
+        return (.cancelAuthenticationChallenge, nil)
+    }
+    
+    /// 获取服务器证书数据数组
+    ///
+    /// - Parameter serverTrust: SecTrust
+    /// - Returns: 数据数组
+    static func getRemoteCertificateDatas(serverTrust: SecTrust) -> [Data] {
+        var certificates: [SecCertificate] = []
+        for index in 0..<SecTrustGetCertificateCount(serverTrust) {
+            if let certificate = SecTrustGetCertificateAtIndex(serverTrust, index) {
+                certificates.append(certificate)
+            }
+        }
+        return certificates.map { SecCertificateCopyData($0) as Data }
+    }
     
     /// 存储认证相关信息
     ///
@@ -633,28 +664,23 @@ extension HttpUtils {
             throw IdentityError.pathError
         }
         
-        let key: NSString = kSecImportExportPassphrase as NSString
+        let key = kSecImportExportPassphrase as NSString
         let options = [key: p12password]
         
         var items: CFArray?
         securityError = SecPKCS12Import(PKCS12Data as CFData, options as CFDictionary, &items)
         
-        if securityError == errSecSuccess {
-            let certItems: CFArray = items!
-            let certItemsArray: Array = certItems as Array
-            let dict: AnyObject? = certItemsArray.first
-            if let certEntry: Dictionary = dict as? Dictionary<String, AnyObject> {
-                
-                let identityPointer: AnyObject? = certEntry["identity"]
-                let secIdentityRef: SecIdentity = identityPointer as! SecIdentity
-                
-                let trustPointer: AnyObject? = certEntry["trust"]
-                let trustRef: SecTrust = trustPointer as! SecTrust
-                
-                let chainPointer = certEntry["chain"]
-                identityAndTrust = IdentityAndTrust(identityRef: secIdentityRef, trust: trustRef, certArray: chainPointer!)
-                
-            }
+        if securityError == errSecSuccess,
+            let certItems = items,
+            let dict = (certItems as Array).first,
+            let certEntry = dict as? [String: AnyObject],
+            let identityPointer = certEntry["identity"],
+            let trustPointer = certEntry["trust"],
+            let chainPointer = certEntry["chain"] {
+            
+            let secIdentityRef = identityPointer as! SecIdentity
+            let trustRef = trustPointer as! SecTrust
+            identityAndTrust = IdentityAndTrust(identityRef: secIdentityRef, trust: trustRef, certArray: chainPointer)
         } else {
             throw IdentityError.passwordError
         }
@@ -663,6 +689,9 @@ extension HttpUtils {
     }
 }
 
+/*
+ Moya类似
+ */
 
 // MARK:- 基于HttpRequestConvertible的网络请求单元
 extension HttpUtils {
