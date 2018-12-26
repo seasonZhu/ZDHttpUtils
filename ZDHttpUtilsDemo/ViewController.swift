@@ -212,6 +212,8 @@ class ViewController: UIViewController {
         let p12path = Bundle.main.path(forResource: "client", ofType: "p12")
         let p12password = "123456"
         
+        // 需要把证书先添加进来
+        
         RequestUtils(httpConfig: HttpConfig.Builder()
             
             .addHeads(["token": "79ae449a-3d8f-43e2-b45f-6a099b070317"])
