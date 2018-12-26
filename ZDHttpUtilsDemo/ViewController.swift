@@ -29,6 +29,8 @@ class ViewController: UIViewController {
         URLComponentsUse()
         
         HttpRequestConvertibleUse()
+        
+        httpsCatificationSetting()
     }
     
     //MARK:- 搭建界面
@@ -197,6 +199,41 @@ class ViewController: UIViewController {
         
         HttpUtils.request(request: U17Request.home(requestModel), interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
         
+    }
+    
+    //MARK:- 这是一个Https的双向认证,会走HttpUtils的sessionDidReceiveChallenge的方法
+    private func httpsCatificationSetting() {
+        
+        //pre ("https://dssp.dstsp.com:443/dssp/v1/core/")
+        //pro ("https://sit-dssp.dstsp.com/dssp/v1/core/")
+        /*.setUrl("https://dssp.dstsp.com:443/dssp/v1/core/findappStartupInterfaceAvailableToApp")*/
+        /*.setUrl("https://dssp.dstsp.com:443/dssp/v1/core/login/userName")*/
+        let cerPath = Bundle.main.path(forResource: "server_formal", ofType: "cer")
+        let p12path = Bundle.main.path(forResource: "client", ofType: "p12")
+        let p12password = "123456"
+        
+        RequestUtils(httpConfig: HttpConfig.Builder()
+            
+            .addHeads(["token": "79ae449a-3d8f-43e2-b45f-6a099b070317"])
+            .setRequestType(.post)
+            .setCertification(cerPath: cerPath, p12Path: p12path, p12password: p12password)
+            .constructor)
+            .request(url: "https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition",
+                     parameters: ["phoneToken":"0","userPassword":"d0c853d570c4e428f3aec4fb3c5c6e6a","userName":"18503086824"],
+                     interceptHandle: InterceptHandle(),
+                     callbackHandler: CallbackHandler<ResponseBase<Int>>()
+                        .onSuccess({ (model, models, data, jsonString, httpResponse) in
+                            print(jsonString)
+                        }).onFailure({ (data, error, httpResponse) in
+                            guard let unwrappedData = data, let jsonString = String(data: unwrappedData, encoding: .utf8), let unwrappedError = error, let nsError = unwrappedError as? NSError else {
+                                return
+                            }
+                            //  这个地方虽然走的是失败,但是statusCode为200 其实是回传的data转的jsonString是一个xml的字符串,其实客户端与服务端是通的
+                            print(jsonString)
+                            print(unwrappedError)
+                            print(nsError)
+                            print(httpResponse?.statusCode ?? 0)
+                }))
     }
 }
 

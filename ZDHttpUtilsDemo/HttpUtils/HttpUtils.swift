@@ -34,7 +34,7 @@ public class HttpUtils {
                                             callbackHandler: CallbackHandler<T>) {
         
         //  前置拦截 如果没有前置拦截,打印请求Api
-        if interceptHandle.onBeforeHandler(method: method, url: url, parameters: parameters) {
+        if interceptHandle.onBeforeHandler(method: method, url: url, parameters: String(describing: parameters)) {
             #if DEBUG
             print("前置拦截,无法进行网络请求")
             #endif
@@ -609,6 +609,22 @@ extension HttpUtils {
                 break outerLoop
             }
             
+            /*
+            //  本地的publicKey
+            let localPublicKey = getLocalPublicKey(localCertificateData: localCertificateData)
+            
+            //  服务器的publicKey数组
+            let remotePublicKeys = getRemotePublicKeys(serverTrust: serverTrust)
+            
+            //  只要服务器证书publicKey数组中有和本地publicKey相同,说明认证成功,退出循环
+            if let key = localPublicKey {
+                outerLoop: for remotePublicKey in remotePublicKeys where key == remotePublicKey {
+                    result = true
+                    break outerLoop
+                }
+            }
+            */
+            
             if result {
                 let credential = URLCredential(trust: serverTrust)
                 challenge.sender?.use(credential, for: challenge)
@@ -646,6 +662,65 @@ extension HttpUtils {
             }
         }
         return certificates.map { SecCertificateCopyData($0) as Data }
+    }
+    
+    /// 获取服务器证书publicKey数组
+    ///
+    /// - Parameter serverTrust: SecTrust
+    /// - Returns: publicKey数组
+    static func getRemotePublicKeys(serverTrust: SecTrust) -> [SecKey] {
+        return publicKeys(for: serverTrust)
+    }
+    
+    /// 获取本地证书publicKey
+    ///
+    /// - Parameter localCertificateData: 本地证书数据
+    /// - Returns: publicKey
+    static func getLocalPublicKey(localCertificateData: Data) -> SecKey? {
+        var key: SecKey?
+        
+        if let certificate = SecCertificateCreateWithData(nil, localCertificateData as CFData) {
+            key = publicKey(for: certificate)
+        }
+        
+        return key
+    }
+    
+    /// 获取publicKey数组
+    ///
+    /// - Parameter serverTrust: SecTrust
+    /// - Returns: publicKey数组
+    private static func publicKeys(for trust: SecTrust) -> [SecKey] {
+        var publicKeys: [SecKey] = []
+        
+        for index in 0..<SecTrustGetCertificateCount(trust) {
+            if
+                let certificate = SecTrustGetCertificateAtIndex(trust, index),
+                let publicKey = publicKey(for: certificate)
+            {
+                publicKeys.append(publicKey)
+            }
+        }
+        
+        return publicKeys
+    }
+    
+    /// 获取publicKey
+    ///
+    /// - Parameter certificate: SecCertificate
+    /// - Returns: publicKey
+    private static func publicKey(for certificate: SecCertificate) -> SecKey? {
+        var publicKey: SecKey?
+        
+        let policy = SecPolicyCreateBasicX509()
+        var trust: SecTrust?
+        let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &trust)
+        
+        if let trust = trust, trustCreationStatus == errSecSuccess {
+            publicKey = SecTrustCopyPublicKey(trust)
+        }
+        
+        return publicKey
     }
     
     /// 存储认证相关信息
