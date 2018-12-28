@@ -33,6 +33,9 @@
 		61950484214B887700C838C5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61950482214B887700C838C5 /* Main.storyboard */; };
 		61950486214B887700C838C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61950485214B887700C838C5 /* Assets.xcassets */; };
 		61950489214B887700C838C5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61950487214B887700C838C5 /* LaunchScreen.storyboard */; };
+		61B69BBE21D5AF710038A2E3 /* HttpsTrustPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B69BBD21D5AF710038A2E3 /* HttpsTrustPolicy.swift */; };
+		61B69BC221D5BC320038A2E3 /* client.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 61B69BC021D5BC310038A2E3 /* client.p12 */; };
+		61B69BC321D5BC320038A2E3 /* server_formal.cer in Resources */ = {isa = PBXBuildFile; fileRef = 61B69BC121D5BC310038A2E3 /* server_formal.cer */; };
 		61DDC0FD21C9E8050088B51C /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC0FC21C9E8050088B51C /* MessageType.swift */; };
 		61DDC10421CC7A960088B51C /* HttpRequestConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC10321CC7A960088B51C /* HttpRequestConvertible.swift */; };
 		61DDC10621CC7B760088B51C /* U17Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DDC10521CC7B760088B51C /* U17Request.swift */; };
@@ -69,6 +72,9 @@
 		61950485214B887700C838C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		61950488214B887700C838C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6195048A214B887700C838C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61B69BBD21D5AF710038A2E3 /* HttpsTrustPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpsTrustPolicy.swift; sourceTree = "<group>"; };
+		61B69BC021D5BC310038A2E3 /* client.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = client.p12; sourceTree = "<group>"; };
+		61B69BC121D5BC310038A2E3 /* server_formal.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = server_formal.cer; sourceTree = "<group>"; };
 		61DDC0FC21C9E8050088B51C /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
 		61DDC10321CC7A960088B51C /* HttpRequestConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpRequestConvertible.swift; sourceTree = "<group>"; };
 		61DDC10521CC7B760088B51C /* U17Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = U17Request.swift; sourceTree = "<group>"; };
@@ -109,6 +115,7 @@
 				6151242B21524059005C15A9 /* CallbackHandler.swift */,
 				6151242D21524204005C15A9 /* InterceptHandle.swift */,
 				6151243321525109005C15A9 /* MapResponse.swift */,
+				61B69BBD21D5AF710038A2E3 /* HttpsTrustPolicy.swift */,
 				6151242F21524577005C15A9 /* HttpConfig.swift */,
 				61512439215376A0005C15A9 /* HttpCacheManager.swift */,
 				6151243B21548028005C15A9 /* HttpUrlProtocol.swift */,
@@ -157,8 +164,18 @@
 				61950485214B887700C838C5 /* Assets.xcassets */,
 				61950487214B887700C838C5 /* LaunchScreen.storyboard */,
 				6195048A214B887700C838C5 /* Info.plist */,
+				61B69BBF21D5BC310038A2E3 /* Certification */,
 			);
 			path = ZDHttpUtilsDemo;
+			sourceTree = "<group>";
+		};
+		61B69BBF21D5BC310038A2E3 /* Certification */ = {
+			isa = PBXGroup;
+			children = (
+				61B69BC021D5BC310038A2E3 /* client.p12 */,
+				61B69BC121D5BC310038A2E3 /* server_formal.cer */,
+			);
+			path = Certification;
 			sourceTree = "<group>";
 		};
 		77281DF386B03436734D02E2 /* Frameworks */ = {
@@ -231,6 +248,8 @@
 			files = (
 				61950489214B887700C838C5 /* LaunchScreen.storyboard in Resources */,
 				61950486214B887700C838C5 /* Assets.xcassets in Resources */,
+				61B69BC221D5BC320038A2E3 /* client.p12 in Resources */,
+				61B69BC321D5BC320038A2E3 /* server_formal.cer in Resources */,
 				61950484214B887700C838C5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +324,7 @@
 				612937F2216B29F40020B969 /* HttpToast.swift in Sources */,
 				61DDC0FD21C9E8050088B51C /* MessageType.swift in Sources */,
 				6151244421548828005C15A9 /* CheckoutDao.swift in Sources */,
+				61B69BBE21D5AF710038A2E3 /* HttpsTrustPolicy.swift in Sources */,
 				6151243021524577005C15A9 /* HttpConfig.swift in Sources */,
 				6116D245214FAD5000B5595D /* NetworkListener.swift in Sources */,
 				616B119721B658100031D51A /* RequestUtils.swift in Sources */,

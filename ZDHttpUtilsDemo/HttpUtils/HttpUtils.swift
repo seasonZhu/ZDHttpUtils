@@ -532,115 +532,56 @@ extension HttpUtils {
     
     static var serverTrustPolicyManager: ServerTrustPolicyManager?
     
-    
-    /// 定义认证错误
-    ///
-    /// - pathError: 路径错误
-    /// - passwordError: 密码错误
-    /// - unknownError: 未知错误
-    enum IdentityError: Error, CustomStringConvertible {
-        case pathError
-        case passwordError
-        case unknownError
-        
-        var description: String {
-            switch self {
-            case .pathError:
-                return "路径错误"
-            case .passwordError:
-                return "密码错误"
-            case .unknownError:
-                return "未知错误"
-            }
-        }
-    }
-    
-    /// 存储认证相关信息的结构体
-    struct IdentityAndTrust {
-        var identityRef: SecIdentity
-        var trust: SecTrust
-        var certArray: AnyObject
-    }
-    
     /// 设置SessionManager.main的CA证书
     ///
     /// - Parameters:
-    ///   - cerPath: cer证书路径
+    ///   - sessionManage: Alamofire.SessionManage
+    ///   - trustPolicy: 服务器的认证策略
     ///   - p12Path: p12证书路径
     ///   - password: p12证书的密码
-    public static func challenge(cerPath: String, p12Path: String, p12password: String) {
+    public static func challenge(sessionManage: SessionManager, trustPolicy: ServerTrustPolicy, p12Path: String, p12password: String) {
         /// 设置主sessionManager的验证回调
-        SessionManager.default.delegate.sessionDidReceiveChallenge = { session, challenge in
-            return sessionDidReceiveChallenge(cerPath: cerPath, p12Path: p12Path, p12password: p12password, session: session, challenge: challenge)
+        sessionManage.delegate.sessionDidReceiveChallenge = { session, challenge in
+            return sessionDidReceiveChallenge(trustPolicy: trustPolicy, p12Path: p12Path, p12password: p12password, session: session, challenge: challenge)
         }
     }
     
     /// sessionDidReceiveChallenge的回调
     ///
     /// - Parameters:
-    ///   - cerPath: cer证书路径
+    ///   - trustPolicy: 服务器的认证策略
     ///   - p12Path: p12证书路径
     ///   - password: p12证书的密码
     ///   - session: URLSession
     ///   - challenge: URLAuthenticationChallenge
     /// - Returns: 回调结果
-    public static func sessionDidReceiveChallenge(cerPath: String, p12Path: String, p12password: String, session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+    static func sessionDidReceiveChallenge(trustPolicy: ServerTrustPolicy, p12Path: String, p12password: String, session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         /// 服务器证书认证
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
             print("服务器证书认证")
             
-            //  获取服务器证书数据数组
-            guard let serverTrust: SecTrust = challenge.protectionSpace.serverTrust else {
-                return (.cancelAuthenticationChallenge, nil)
-            }
-            let remoteCertificateDatas = getRemoteCertificateDatas(serverTrust: serverTrust)
+            var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
+            var credential: URLCredential?
             
-            //  读取本地证书数据
-            let cerUrl = URL(fileURLWithPath: cerPath)
-            guard let localCertificateData = try? Data(contentsOf: cerUrl) else {
-                return (.cancelAuthenticationChallenge, nil)
-            }
+            let host = challenge.protectionSpace.host
             
-            //var localCertificates = ServerTrustPolicy.certificates()
-            //let localCertificateDatas = localCertificates.map { SecCertificateCopyData($0) as Data }
-            
-            var result = false
-            
-            //  只要服务器证书数据数组中有和本地证书数据相同,说明认证成功,退出循环
-            outerLoop: for remoteData in remoteCertificateDatas where localCertificateData == remoteData {
-                result = true
-                break outerLoop
-            }
-            
-            /*
-            //  本地的publicKey
-            let localPublicKey = getLocalPublicKey(localCertificateData: localCertificateData)
-            
-            //  服务器的publicKey数组
-            let remotePublicKeys = getRemotePublicKeys(serverTrust: serverTrust)
-            
-            //  只要服务器证书publicKey数组中有和本地publicKey相同,说明认证成功,退出循环
-            if let key = localPublicKey {
-                outerLoop: for remotePublicKey in remotePublicKeys where key == remotePublicKey {
-                    result = true
-                    break outerLoop
+            if let serverTrust = challenge.protectionSpace.serverTrust {
+                if trustPolicy.evaluate(serverTrust, forHost: host) {
+                    disposition = .useCredential
+                    credential = URLCredential(trust: serverTrust)
+                } else {
+                    disposition = .cancelAuthenticationChallenge
                 }
             }
-            */
             
-            if result {
-                let credential = URLCredential(trust: serverTrust)
-                challenge.sender?.use(credential, for: challenge)
-                return(.useCredential, URLCredential(trust: serverTrust))
-            } else {
-                return (.cancelAuthenticationChallenge, nil)
-            }
+            return (disposition, credential)
+            
         }
         /// 客户端证书验证
         else if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             print("客户端证书验证")
             
-            guard let identityAndTrust = try? self.extractIdentity(p12Path: p12Path, p12password: p12password) else {
+            guard let identityAndTrust = try? ClientTrustPolicy.extractIdentity(p12Path: p12Path, p12password: p12password) else {
                 return (.cancelAuthenticationChallenge, nil)
             }
             
@@ -651,119 +592,6 @@ extension HttpUtils {
         }
         
         return (.cancelAuthenticationChallenge, nil)
-    }
-    
-    /// 获取服务器证书数据数组
-    ///
-    /// - Parameter serverTrust: SecTrust
-    /// - Returns: 数据数组
-    static func getRemoteCertificateDatas(serverTrust: SecTrust) -> [Data] {
-        var certificates: [SecCertificate] = []
-        for index in 0..<SecTrustGetCertificateCount(serverTrust) {
-            if let certificate = SecTrustGetCertificateAtIndex(serverTrust, index) {
-                certificates.append(certificate)
-            }
-        }
-        return certificates.map { SecCertificateCopyData($0) as Data }
-    }
-    
-    /// 获取服务器证书publicKey数组
-    ///
-    /// - Parameter serverTrust: SecTrust
-    /// - Returns: publicKey数组
-    static func getRemotePublicKeys(serverTrust: SecTrust) -> [SecKey] {
-        return publicKeys(for: serverTrust)
-    }
-    
-    /// 获取本地证书publicKey
-    ///
-    /// - Parameter localCertificateData: 本地证书数据
-    /// - Returns: publicKey
-    static func getLocalPublicKey(localCertificateData: Data) -> SecKey? {
-        var key: SecKey?
-        
-        if let certificate = SecCertificateCreateWithData(nil, localCertificateData as CFData) {
-            key = publicKey(for: certificate)
-        }
-        
-        return key
-    }
-    
-    /// 获取publicKey数组
-    ///
-    /// - Parameter serverTrust: SecTrust
-    /// - Returns: publicKey数组
-    private static func publicKeys(for trust: SecTrust) -> [SecKey] {
-        var publicKeys: [SecKey] = []
-        
-        for index in 0..<SecTrustGetCertificateCount(trust) {
-            if
-                let certificate = SecTrustGetCertificateAtIndex(trust, index),
-                let publicKey = publicKey(for: certificate)
-            {
-                publicKeys.append(publicKey)
-            }
-        }
-        
-        return publicKeys
-    }
-    
-    /// 获取publicKey
-    ///
-    /// - Parameter certificate: SecCertificate
-    /// - Returns: publicKey
-    private static func publicKey(for certificate: SecCertificate) -> SecKey? {
-        var publicKey: SecKey?
-        
-        let policy = SecPolicyCreateBasicX509()
-        var trust: SecTrust?
-        let trustCreationStatus = SecTrustCreateWithCertificates(certificate, policy, &trust)
-        
-        if let trust = trust, trustCreationStatus == errSecSuccess {
-            publicKey = SecTrustCopyPublicKey(trust)
-        }
-        
-        return publicKey
-    }
-    
-    /// 存储认证相关信息
-    ///
-    /// - Parameters:
-    ///   - p12Path: p12证书路径
-    ///   - password: p12证书密码
-    /// - Returns: 认证相关信息
-    /// - Throws: 抛出异常
-    static func extractIdentity(p12Path: String, p12password: String) throws -> IdentityAndTrust {
-        
-        var identityAndTrust: IdentityAndTrust!
-        var securityError: OSStatus = errSecSuccess
-        
-        guard let PKCS12Data = try? Data(contentsOf: URL(fileURLWithPath: p12Path)) else {
-            throw IdentityError.pathError
-        }
-        
-        let key = kSecImportExportPassphrase as NSString
-        let options = [key: p12password]
-        
-        var items: CFArray?
-        securityError = SecPKCS12Import(PKCS12Data as CFData, options as CFDictionary, &items)
-        
-        if securityError == errSecSuccess,
-            let certItems = items,
-            let dict = (certItems as Array).first,
-            let certEntry = dict as? [String: AnyObject],
-            let identityPointer = certEntry["identity"],
-            let trustPointer = certEntry["trust"],
-            let chainPointer = certEntry["chain"] {
-            
-            let secIdentityRef = identityPointer as! SecIdentity
-            let trustRef = trustPointer as! SecTrust
-            identityAndTrust = IdentityAndTrust(identityRef: secIdentityRef, trust: trustRef, certArray: chainPointer)
-        } else {
-            throw IdentityError.passwordError
-        }
-        
-        return identityAndTrust
     }
 }
 

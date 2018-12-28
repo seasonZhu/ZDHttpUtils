@@ -51,11 +51,8 @@ public class RequestUtils {
         }()
         
         //  处理CA证书相关
-        if let cerPath = httpConfig.cerPath, let p12Path = httpConfig.p12Path, let p12password = httpConfig.p12password {
-            /// 设置创建的manager的验证回调
-            manager.delegate.sessionDidReceiveChallenge = { session, challenge in
-                return HttpUtils.sessionDidReceiveChallenge(cerPath: cerPath, p12Path: p12Path, p12password: p12password, session: session, challenge: challenge)
-            }
+        if let trustPolicy = httpConfig.trustPolicy, let p12Path = httpConfig.p12Path, let p12password = httpConfig.p12password {
+            HttpUtils.challenge(sessionManage: manager, trustPolicy: trustPolicy, p12Path: p12Path, p12password: p12password)
         }
         
         SessionManager.custom = manager
@@ -75,7 +72,7 @@ public class RequestUtils {
         }()
         
         SessionManager.main = manager
-        self.sessionManager = SessionManager.main
+        sessionManager = SessionManager.main
     }
     
     deinit {

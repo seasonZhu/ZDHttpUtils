@@ -27,7 +27,7 @@ public class HttpConfig {
     let requestType: HTTPMethod
     
     /// cer证书路径
-    var cerPath: String?
+    var trustPolicy: ServerTrustPolicy?
     
     /// p12证书路径
     var p12Path: String?
@@ -44,7 +44,7 @@ public class HttpConfig {
         self.isNeedSign = builder.isNeedSign
         self.addHeads = builder.addHeads
         self.requestType = builder.requestType
-        self.cerPath = builder.cerPath
+        self.trustPolicy = builder.trustPolicy
         self.p12Path = builder.p12Path
         self.p12password = builder.p12password
         self.serverTrustPolicyManager = builder.serverTrustPolicyManager
@@ -66,7 +66,7 @@ public class HttpConfig {
         var requestType: HTTPMethod = .get
         
         /// cer证书路径
-        var cerPath: String?
+        var trustPolicy: ServerTrustPolicy?
         
         /// p12证书路径
         var p12Path: String?
@@ -120,15 +120,15 @@ public class HttpConfig {
         }
         
         /// 设置CA证书 这个是自定义策略
-        /// 因为 cerPath/p12Path/p12password 三个是关联的,所以并没有进行单个的链式,而是一次性链式,这样比较统一
+        /// 因为 trustPolicy/p12Path/p12password 三个是关联的,所以并没有进行单个的链式,而是一次性链式,这样比较统一
         /// - Parameters:
-        ///   - cerPath: cer证书路径
+        ///   - trustPolicy: 服务器的认证策略
         ///   - p12Path: p12证书路径
         ///   - p12password: p12证书的密码
         /// - Returns: 对象自己
         @discardableResult
-        public func setCertification(cerPath: String?, p12Path: String?, p12password: String?) -> Builder {
-            self.cerPath = cerPath
+        public func setCertification(trustPolicy: ServerTrustPolicy?, p12Path: String?, p12password: String?) -> Builder {
+            self.trustPolicy = trustPolicy
             self.p12Path = p12Path
             self.p12password = p12password
             return self

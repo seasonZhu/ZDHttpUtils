@@ -218,7 +218,7 @@ class ViewController: UIViewController {
             
             .addHeads(["token": "79ae449a-3d8f-43e2-b45f-6a099b070317"])
             .setRequestType(.post)
-            .setCertification(cerPath: cerPath, p12Path: p12path, p12password: p12password)
+            .setCertification(trustPolicy: ServerTrustPolicy.performDefaultEvaluation(validateHost: true), p12Path: p12path, p12password: p12password)
             .constructor)
             .request(url: "https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition",
                      parameters: ["phoneToken":"0","userPassword":"d0c853d570c4e428f3aec4fb3c5c6e6a","userName":"18503086824"],
