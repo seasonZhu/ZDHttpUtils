@@ -9,10 +9,10 @@
 import Foundation
 import Alamofire
 
-/// 服务器认证策略
+/// 服务器认证策略,你没有看错,我就是从Alamofire的ServerTrustPolicy基本拷贝了一份过来,因为我需要的通过路径去找,其实完全是可以使用原来的枚举的,可惜枚举不能继承
 public enum HttpsServerTrustPolicy {
     case performDefaultEvaluation(validateHost: Bool)
-    case performRevokedEvaluation(validateHost: Bool, revocationFlags: CFOptionFlags)
+    case performRevokedEvaluation(validateHost: Bool, revocationFlags: CFOptionFlags)  //revocationFlags位置为0 崩了 1可以过
     case pinCertificates(cerPath: String, validateCertificateChain: Bool, validateHost: Bool)
     case pinPublicKeys(cerPath: String, validateCertificateChain: Bool, validateHost: Bool)
     case disableEvaluation
@@ -21,7 +21,7 @@ public enum HttpsServerTrustPolicy {
     /// 全局的服务器认证策略管理器
     static var manager: ServerTrustPolicyManager?
     
-    /// 全局的服务器认证策略
+    /// 全局的服务器默认认证策略
     static var `default`: HttpsServerTrustPolicy? = .disableEvaluation
     
     /// 获取App中的Bundle里的所有SecCertificate
@@ -38,8 +38,7 @@ public enum HttpsServerTrustPolicy {
         for path in paths {
             if
                 let certificateData = try? Data(contentsOf: URL(fileURLWithPath: path)) as CFData,
-                let certificate = SecCertificateCreateWithData(nil, certificateData)
-            {
+                let certificate = SecCertificateCreateWithData(nil, certificateData) {
                 certificates.append(certificate)
             }
         }

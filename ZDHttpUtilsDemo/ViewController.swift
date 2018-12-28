@@ -245,6 +245,12 @@ class ViewController: UIViewController {
 //                print(nsError)
 //                print(httpResponse?.statusCode ?? 0)
 //            }))
+        
+        //  我严格按照Alamofire中的文档说明进行编写认证策略,结果还是有问题,需要找找原因与反思一下
+        SessionManager.serverTrust.request("https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", method: .post).response { (response) in
+            print(response)
+            print(response.response?.statusCode ?? -9999)
+        }
     }
 }
 
@@ -427,3 +433,13 @@ struct Person {
 }
 
 extension Person: ReflectProtocol {}
+
+// MARK: - 按照文档写了一个认证策略管理器,完全都不能用
+extension SessionManager {
+    static let serverTrust: SessionManager = {
+        let configuration = URLSessionConfiguration.default
+        let serverTrustPolicyManager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.disableEvaluation])
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        return SessionManager(configuration: configuration, serverTrustPolicyManager: serverTrustPolicyManager)
+    }()
+}
