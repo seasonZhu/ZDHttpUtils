@@ -23,11 +23,8 @@ public class RequestUtils {
     var headers: HTTPHeaders = [:]
     
     /// 默认的网络请求实体
-    public static let `default`: RequestUtils = {
-        let netUtils = RequestUtils()
-        return netUtils
-    }()
-    
+    public static let `default` = RequestUtils()
+
     /// 自定义的初始化方法
     /// 对外
     /// - Parameter HttpConfig: 请求参数设置

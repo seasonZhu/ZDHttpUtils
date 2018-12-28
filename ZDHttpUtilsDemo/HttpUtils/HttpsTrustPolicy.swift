@@ -22,7 +22,7 @@ public enum HttpsServerTrustPolicy {
     static var manager: ServerTrustPolicyManager?
     
     /// 全局的服务器认证策略
-    static var `default`: HttpsServerTrustPolicy?
+    static var `default`: HttpsServerTrustPolicy? = .disableEvaluation
     
     /// 获取App中的Bundle里的所有SecCertificate
     ///
