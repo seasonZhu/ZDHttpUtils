@@ -218,7 +218,7 @@ extension HttpUtils {
                           uploadStream: UploadStream,
                           parameters: Parameters? = nil,
                           headers: HTTPHeaders? = nil,
-                          size: CGSize?,
+                          size: CGSize? = nil,
                           mimeType: MimeType,
                           callbackHandler: UploadCallbackHandler) {
         
@@ -529,6 +529,9 @@ extension HttpUtils {
 
 // MARK: - 处理CA证书相关
 extension HttpUtils {
+    
+    static var serverTrustPolicyManager: ServerTrustPolicyManager?
+    
     
     /// 定义认证错误
     ///

@@ -35,6 +35,9 @@ public class HttpConfig {
     /// p12证书的密码
     var p12password: String?
     
+    /// 设置请求安全策略管理
+    var serverTrustPolicyManager: ServerTrustPolicyManager?
+    
     //MARK:- 配置构造器
     private init(builder: Builder) {
         self.timeout = builder.timeout
@@ -44,6 +47,7 @@ public class HttpConfig {
         self.cerPath = builder.cerPath
         self.p12Path = builder.p12Path
         self.p12password = builder.p12password
+        self.serverTrustPolicyManager = builder.serverTrustPolicyManager
     }
     
     /// 详细构造器
@@ -69,6 +73,9 @@ public class HttpConfig {
         
         /// p12证书的密码
         var p12password: String?
+        
+        /// 设置请求安全策略管理
+        var serverTrustPolicyManager: ServerTrustPolicyManager?
         
         /// 设置超时时间
         ///
@@ -112,7 +119,7 @@ public class HttpConfig {
             return self
         }
         
-        /// 设置CA证书
+        /// 设置CA证书 这个是自定义策略
         /// 因为 cerPath/p12Path/p12password 三个是关联的,所以并没有进行单个的链式,而是一次性链式,这样比较统一
         /// - Parameters:
         ///   - cerPath: cer证书路径
@@ -124,6 +131,16 @@ public class HttpConfig {
             self.cerPath = cerPath
             self.p12Path = p12Path
             self.p12password = p12password
+            return self
+        }
+        
+        /// 设置Alamofire的内置的策略
+        ///
+        /// - Parameter serverTrustPolicyManager: ServerTrustPolicyManager
+        /// - Returns: 对象自己
+        @discardableResult
+        public func setServerTrustPolicyManager(_ serverTrustPolicyManager: ServerTrustPolicyManager?) -> Builder {
+            self.serverTrustPolicyManager = serverTrustPolicyManager
             return self
         }
         

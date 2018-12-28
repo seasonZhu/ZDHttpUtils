@@ -64,8 +64,18 @@ public class RequestUtils {
     
     /// RequestUtils.default的初始化方法,私有的初始化方法
     private init() {
-        self.httpConfig = HttpConfig.Builder().constructor
-        self.sessionManager = SessionManager.default
+        let httpConfig = HttpConfig.Builder().setServerTrustPolicyManager(HttpUtils.serverTrustPolicyManager).constructor
+        self.httpConfig = httpConfig
+        
+        //  为了初始化的时候加入serverTrustPolicyManager，我必须创建一个SessionManager
+        let manager: SessionManager = {
+            let configuration = URLSessionConfiguration.default
+            configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+            return SessionManager(configuration: configuration, serverTrustPolicyManager: httpConfig.serverTrustPolicyManager)
+        }()
+        
+        SessionManager.main = manager
+        self.sessionManager = SessionManager.main
     }
     
     deinit {
@@ -129,7 +139,7 @@ extension RequestUtils {
     public func upload(url: String,
                        uploadStream: UploadStream,
                        parameters: Parameters? = nil,
-                       size: CGSize?,
+                       size: CGSize? = nil,
                        mimeType: MimeType,
                        callbackHandler: UploadCallbackHandler) {
         HttpUtils.uploadData(sessionManager: sessionManager, url: url, uploadStream: uploadStream, parameters: parameters, headers: headers, size: size, mimeType: mimeType, callbackHandler: callbackHandler)
@@ -196,6 +206,13 @@ extension SessionManager {
     static var custom: SessionManager = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 30
+        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        return SessionManager(configuration: configuration)
+    }()
+    
+    /// 主要的sessionManager
+    static var main: SessionManager = {
+        let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         return SessionManager(configuration: configuration)
     }()
