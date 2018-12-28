@@ -26,9 +26,9 @@ class ViewController: UIViewController {
         
         modelChangeByFastlane()
         
-        URLComponentsUse()
+        //URLComponentsUse()
         
-        HttpRequestConvertibleUse()
+        //HttpRequestConvertibleUse()
         
         httpsCatificationSetting()
     }
@@ -215,10 +215,10 @@ class ViewController: UIViewController {
         // 需要把证书先添加进来
         
         RequestUtils(httpConfig: HttpConfig.Builder()
-            
+
             .addHeads(["token": "79ae449a-3d8f-43e2-b45f-6a099b070317"])
             .setRequestType(.post)
-            .setCertification(trustPolicy: ServerTrustPolicy.performDefaultEvaluation(validateHost: true), p12Path: p12path, p12password: p12password)
+            .setCertification(trustPolicy: HttpsServerTrustPolicy.performDefaultEvaluation(validateHost: true), p12Path: p12path, p12password: p12password)
             .constructor)
             .request(url: "https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition",
                      parameters: ["phoneToken":"0","userPassword":"d0c853d570c4e428f3aec4fb3c5c6e6a","userName":"18503086824"],
@@ -236,6 +236,24 @@ class ViewController: UIViewController {
                             print(nsError)
                             print(httpResponse?.statusCode ?? 0)
                 }))
+        
+//        HttpsServerTrustPolicy.manager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.pinCertificates(certificates: ServerTrustPolicy.certificates(), validateCertificateChain: true, validateHost: true)])
+//
+//        HttpsServerTrustPolicy.default = HttpsServerTrustPolicy.disableEvaluation
+//
+//        RequestUtils.default.post(url: "https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", interceptHandle: InterceptHandle(), callbackHandler: CallbackHandler<ResponseBase<Int>>()
+//            .onSuccess({ (model, models, data, jsonString, httpResponse) in
+//                print(jsonString)
+//            }).onFailure({ (data, error, httpResponse) in
+//                guard let unwrappedData = data, let jsonString = String(data: unwrappedData, encoding: .utf8), let unwrappedError = error, let nsError = unwrappedError as? NSError else {
+//                    return
+//                }
+//                //  这个地方虽然走的是失败,但是statusCode为200 其实是回传的data转的jsonString是一个xml的字符串,其实客户端与服务端是通的
+//                print(jsonString)
+//                print(unwrappedError)
+//                print(nsError)
+//                print(httpResponse?.statusCode ?? 0)
+//            }))
     }
 }
 

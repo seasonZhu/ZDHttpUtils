@@ -7,15 +7,22 @@
 //
 
 import Foundation
+import Alamofire
 
 /// 服务器认证策略
-public enum ServerTrustPolicy {
+public enum HttpsServerTrustPolicy {
     case performDefaultEvaluation(validateHost: Bool)
     case performRevokedEvaluation(validateHost: Bool, revocationFlags: CFOptionFlags)
     case pinCertificates(cerPath: String, validateCertificateChain: Bool, validateHost: Bool)
     case pinPublicKeys(cerPath: String, validateCertificateChain: Bool, validateHost: Bool)
     case disableEvaluation
     case customEvaluation((_ serverTrust: SecTrust, _ host: String) -> Bool)
+    
+    /// 全局的服务器认证策略管理器
+    static var manager: ServerTrustPolicyManager?
+    
+    /// 全局的服务器认证策略
+    static var `default`: HttpsServerTrustPolicy?
     
     /// 获取App中的Bundle里的所有SecCertificate
     ///
@@ -117,7 +124,7 @@ public enum ServerTrustPolicy {
             guard
                 let localCertificateData = try? Data(contentsOf: cerUrl) as CFData,
                 let pinnedCertificate = SecCertificateCreateWithData(nil, localCertificateData),
-                let pinnedPublicKey = ServerTrustPolicy.publicKey(for: pinnedCertificate) else {
+                let pinnedPublicKey = HttpsServerTrustPolicy.publicKey(for: pinnedCertificate) else {
                     return false
             }
             let pinnedPublicKeys = [pinnedPublicKey]
@@ -132,7 +139,7 @@ public enum ServerTrustPolicy {
             }
             
             if certificateChainEvaluationPassed {
-                outerLoop: for serverPublicKey in ServerTrustPolicy.publicKeys(for: serverTrust) as [AnyObject] {
+                outerLoop: for serverPublicKey in HttpsServerTrustPolicy.publicKeys(for: serverTrust) as [AnyObject] {
                     for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
                         if serverPublicKey.isEqual(pinnedPublicKey) {
                             serverTrustIsValid = true

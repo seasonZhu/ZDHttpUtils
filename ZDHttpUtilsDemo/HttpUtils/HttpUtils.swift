@@ -530,8 +530,6 @@ extension HttpUtils {
 // MARK: - 处理CA证书相关
 extension HttpUtils {
     
-    static var serverTrustPolicyManager: ServerTrustPolicyManager?
-    
     /// 设置SessionManager.main的CA证书
     ///
     /// - Parameters:
@@ -539,7 +537,7 @@ extension HttpUtils {
     ///   - trustPolicy: 服务器的认证策略
     ///   - p12Path: p12证书路径
     ///   - password: p12证书的密码
-    public static func challenge(sessionManage: SessionManager, trustPolicy: ServerTrustPolicy, p12Path: String, p12password: String) {
+    public static func challenge(sessionManage: SessionManager, trustPolicy: HttpsServerTrustPolicy, p12Path: String, p12password: String) {
         /// 设置主sessionManager的验证回调
         sessionManage.delegate.sessionDidReceiveChallenge = { session, challenge in
             return sessionDidReceiveChallenge(trustPolicy: trustPolicy, p12Path: p12Path, p12password: p12password, session: session, challenge: challenge)
@@ -555,7 +553,7 @@ extension HttpUtils {
     ///   - session: URLSession
     ///   - challenge: URLAuthenticationChallenge
     /// - Returns: 回调结果
-    static func sessionDidReceiveChallenge(trustPolicy: ServerTrustPolicy, p12Path: String, p12password: String, session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+    static func sessionDidReceiveChallenge(trustPolicy: HttpsServerTrustPolicy, p12Path: String, p12password: String, session: URLSession, challenge: URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         /// 服务器证书认证
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
             print("服务器证书认证")

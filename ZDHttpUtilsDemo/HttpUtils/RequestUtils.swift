@@ -61,7 +61,7 @@ public class RequestUtils {
     
     /// RequestUtils.default的初始化方法,私有的初始化方法
     private init() {
-        let httpConfig = HttpConfig.Builder().setServerTrustPolicyManager(HttpUtils.serverTrustPolicyManager).constructor
+        let httpConfig = HttpConfig.Builder().setServerTrustPolicyManager(HttpsServerTrustPolicy.manager).constructor
         self.httpConfig = httpConfig
         
         //  为了初始化的时候加入serverTrustPolicyManager，我必须创建一个SessionManager

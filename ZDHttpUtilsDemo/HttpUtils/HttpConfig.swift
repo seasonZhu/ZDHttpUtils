@@ -26,8 +26,8 @@ public class HttpConfig {
     /// 请求方式
     let requestType: HTTPMethod
     
-    /// cer证书路径
-    var trustPolicy: ServerTrustPolicy?
+    /// 服务器认证策略
+    var trustPolicy: HttpsServerTrustPolicy?
     
     /// p12证书路径
     var p12Path: String?
@@ -35,7 +35,7 @@ public class HttpConfig {
     /// p12证书的密码
     var p12password: String?
     
-    /// 设置请求安全策略管理
+    /// 设置服务器认证策略管理器
     var serverTrustPolicyManager: ServerTrustPolicyManager?
     
     //MARK:- 配置构造器
@@ -65,8 +65,8 @@ public class HttpConfig {
         /// 请求方式
         var requestType: HTTPMethod = .get
         
-        /// cer证书路径
-        var trustPolicy: ServerTrustPolicy?
+        /// 服务器认证策略
+        var trustPolicy: HttpsServerTrustPolicy?
         
         /// p12证书路径
         var p12Path: String?
@@ -74,7 +74,7 @@ public class HttpConfig {
         /// p12证书的密码
         var p12password: String?
         
-        /// 设置请求安全策略管理
+        /// 设置服务器认证策略管理器
         var serverTrustPolicyManager: ServerTrustPolicyManager?
         
         /// 设置超时时间
@@ -127,7 +127,7 @@ public class HttpConfig {
         ///   - p12password: p12证书的密码
         /// - Returns: 对象自己
         @discardableResult
-        public func setCertification(trustPolicy: ServerTrustPolicy?, p12Path: String?, p12password: String?) -> Builder {
+        public func setCertification(trustPolicy: HttpsServerTrustPolicy?, p12Path: String?, p12password: String?) -> Builder {
             self.trustPolicy = trustPolicy
             self.p12Path = p12Path
             self.p12password = p12password
