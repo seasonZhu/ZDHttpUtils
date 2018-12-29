@@ -23,6 +23,8 @@ protocol InterceptHandleProtocol {
     
     func onDataInterceptHandler(data: Data?, httpResponse: HTTPURLResponse?) -> Bool
     
+    func onValidationHandler(requst: DataRequest) -> DataRequest
+    
     func onResponseErrorHandler(error: Error?)
     
     func onCacheHandler() -> Bool
@@ -43,6 +45,9 @@ public class InterceptHandle: InterceptHandleProtocol {
     /// 是否进行获取到的数据拦截,默认是false,不进行数据拦截,可配置,即请求到的数据都进行第一次的处理json
     private var isDataIntercept = false
     
+    /// 是否进行acceptableStatusCodes和acceptableContentTypes的校验
+    private var isValidation = false
+    
     /// 是否显示Loading
     private var isShowLoading = false
     
@@ -58,11 +63,23 @@ public class InterceptHandle: InterceptHandleProtocol {
     ///  请求的tag
     private var tag: String?
     
+    ///  默认的状态码校验
+    private let defaultStatusCodes = Array(200..<300)
+    
+    ///  默认的ContentTypes校验
+    private let defaultContentTypes = ["*/*"]
+    
+    ///  设置的状态码校验
+    private var statusCodes: [Int]?
+    
+    ///  设置的ContentTypes校验
+    private var contentTypes: [String]?
+    
     //MARK:- 构造器
     
     /// 便利构造函数
     public convenience init() {
-        self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isShowLoading: true, loadingText: nil, isShowToast: true, isCache: true, tag: nil)
+        self.init(isBeforeHandler: false, isAfterHandler: false, isDataIntercept: false, isValidation: false, isShowLoading: true, isShowToast: true, isCache: true)
     }
     
     
@@ -80,19 +97,25 @@ public class InterceptHandle: InterceptHandleProtocol {
     public init(isBeforeHandler: Bool = false,
          isAfterHandler: Bool = false,
          isDataIntercept: Bool = false,
+         isValidation: Bool = false,
          isShowLoading: Bool = false,
          loadingText: String? = nil,
          isShowToast: Bool = true,
          isCache: Bool = true,
+         statusCodes: [Int]? = nil,
+         contentTypes: [String]? = nil,
          tag: String? = nil) {
         
         self.isBeforeHandler = isBeforeHandler
         self.isAfterHandler = isAfterHandler
         self.isDataIntercept = isDataIntercept
+        self.isValidation = isValidation
         self.isShowLoading = isShowLoading
         self.loadingText = loadingText
         self.isShowToast = isShowToast
         self.isCache = isCache
+        self.statusCodes = statusCodes
+        self.contentTypes = contentTypes
         self.tag = tag
     }
     
@@ -152,7 +175,7 @@ public class InterceptHandle: InterceptHandleProtocol {
             return isDataIntercept
         }
         
-        if !SuccessCodes.nums.contains(response.statusCode) {
+        if !SuccessCodes.nums.contains(response.statusCode) && isValidation {
             //  statusCode -> 转描述
         }
         
@@ -176,6 +199,15 @@ public class InterceptHandle: InterceptHandleProtocol {
         return isDataIntercept
     }
     
+    //MARK:- statusCode与contentTypes校验
+    func onValidationHandler(requst: DataRequest) -> DataRequest {
+        if isValidation {
+            return requst.validate(statusCode: statusCodes ?? defaultStatusCodes).validate(contentType: contentTypes ?? defaultContentTypes)
+        }else{
+            return requst
+        }
+    }
+    
     //MARK:- 缓存配置
     func onCacheHandler() -> Bool {
         return isCache
@@ -187,26 +219,6 @@ public class InterceptHandle: InterceptHandleProtocol {
             showToast(error.debugDescription)
         }
     }
-    
-    //MARK:- 链式编程
-    
-    ///  是否展示吐司
-    func setIsShowToast(_ isShowToast: Bool) -> Self {
-        self.isShowToast = isShowToast
-        return self
-    }
-    
-    ///  是否进行缓存配置
-    func setIsCache(_ isCache: Bool) -> Self {
-        self.isCache = isCache
-        return self
-    }
-    
-    /// 设置请求的Tag
-    func setTag(tag: String?) -> Self {
-        self.tag = tag
-        return self
-    }
 }
 
 //MARK:- 配置化构造方法
@@ -217,10 +229,13 @@ extension InterceptHandle {
         self.init(isBeforeHandler: builder.isBeforeHandler,
                   isAfterHandler: builder.isAfterHandler,
                   isDataIntercept: builder.isDataIntercept,
+                  isValidation: builder.isValidation,
                   isShowLoading: builder.isShowLoading,
                   loadingText: builder.loadingText,
                   isShowToast: builder.isShowToast,
                   isCache: builder.isCache,
+                  statusCodes: builder.statusCodes,
+                  contentTypes: builder.contentTypes,
                   tag: builder.tag)
     }
     
@@ -234,6 +249,9 @@ extension InterceptHandle {
         
         /// 是否进行获取到的数据拦截,默认是false,不进行数据拦截,可配置,即请求到的数据都进行第一次的处理json
         var isDataIntercept = false
+        
+        /// 是否进行acceptableStatusCodes和acceptableContentTypes的校验
+        var isValidation = false
         
         /// 是否显示Loading
         var isShowLoading = false
@@ -249,6 +267,12 @@ extension InterceptHandle {
         
         ///  请求的tag
         var tag: String?
+        
+        ///  设置的状态码校验
+        var statusCodes: [Int]?
+        
+        ///  设置的ContentTypes校验
+        var contentTypes: [String]?
         
         //MARK:- 链式编程
         
@@ -287,6 +311,13 @@ extension InterceptHandle {
             return self
         }
         
+        ///  是否进行acceptableStatusCodes和acceptableContentTypes的校验
+        @discardableResult
+        public func setIsValidation(_ isValidation: Bool) -> Self {
+            self.isValidation = isValidation
+            return self
+        }
+        
         ///  是否展示吐司
         @discardableResult
         public func setIsShowToast(_ isShowToast: Bool) -> Self {
@@ -305,6 +336,20 @@ extension InterceptHandle {
         @discardableResult
         public func setTag(tag: String?) -> Self{
             self.tag = tag
+            return self
+        }
+        
+        ///  设置的状态码校验
+        @discardableResult
+        public func setStatusCodes(statusCodes: [Int]?) -> Self{
+            self.statusCodes = statusCodes
+            return self
+        }
+        
+        ///  设置的ContentTypes校验
+        @discardableResult
+        public func setContentTypes(contentTypes: [String]?) -> Self{
+            self.contentTypes = contentTypes
             return self
         }
         

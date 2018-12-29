@@ -62,8 +62,8 @@ public class HttpUtils {
         //  菊花转
         indicatorRun()
         
-        let dataRequset =  sessionManage.request(url, method: method, parameters: parameters, headers: headers)
-        
+        let dataRequset =  interceptHandle.onValidationHandler(requst: sessionManage.request(url, method: method, parameters: parameters, headers: headers))
+
         //  如果里面设置了后置拦截 就不进行打印
         dataRequset.responseSwiftyJSON { (response) in
             //  菊花转结束
@@ -596,7 +596,8 @@ extension HttpUtils {
     ///   - request: 遵守HttpRequestConvertible的枚举类型
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    public static func request<T: Mappable>(request: HttpRequestConvertible,
+    public static func request<T: Mappable>(sessionManager: SessionManager = SessionManager.default,
+                                            request: HttpRequestConvertible,
                                             interceptHandle: InterceptHandle,
                                             callbackHandler: CallbackHandler<T>) {
         //  验证request的合法性
@@ -646,7 +647,7 @@ extension HttpUtils {
         //  菊花转
         indicatorRun()
         
-        let dataRequset = Alamofire.request(request)
+        let dataRequset = interceptHandle.onValidationHandler(requst: sessionManager.request(request))
         
         //  如果里面设置了后置拦截 就不进行打印
         dataRequset.responseSwiftyJSON { (response) in
