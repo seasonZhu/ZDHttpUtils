@@ -87,26 +87,17 @@ public class HttpUtils {
         
         //  结果进行回调
         
-        //  是否直达底层
-        if let keyPath = callbackHandler.keyPath {
-            
-            //  底层是模型数组
-            if callbackHandler.isArray {
-                dataRequset.responseArray(keyPath: keyPath) { (responseArray: DataResponse<[T]>) in
-                    responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-                }
-            }else {
-            //  底层不是模型
-                dataRequset.responseObject(keyPath: keyPath) { (responseObject: DataResponse<T>) in
-                    responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-                }
+        //  包含模型数组
+        if callbackHandler.isArray {
+            dataRequset.responseArray(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseArray: DataResponse<[T]>) in
+                responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
             }
         }else {
-            dataRequset.responseObject { (responseObject: DataResponse<T>) in
+        //  包含普通模型
+            dataRequset.responseObject(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseObject: DataResponse<T>) in
                 responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
             }
         }
-        
     }
     
     /// 响应模型处理
@@ -280,7 +271,7 @@ extension HttpUtils {
                                 switch encodingResult {
                                 case .success(let uploadRequest, _ , let streamFileURL):
                                     
-                                    uploadRequest.responseJSON(completionHandler: { (response) in
+                                    uploadRequest.responseJSON(queue: callbackHandler.queue, completionHandler: { (response) in
                                         switch response.result {
                                         case .success(let value):
                                             callbackHandler.result?(streamFileURL, true, nil, value as? [String: Any])
@@ -289,7 +280,7 @@ extension HttpUtils {
                                         }
                                     })
                                     
-                                    uploadRequest.uploadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
+                                    uploadRequest.uploadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { progress in
                                         callbackHandler.progress?(streamFileURL, progress)
                                     }
                                     
@@ -330,13 +321,8 @@ extension HttpUtils {
         
         let uploadRequest = Alamofire.upload(fileUrl, to: url)
         
-        //  上传进度
-        uploadRequest.uploadProgress(queue: DispatchQueue.global(qos: .utility)) { (progress) in
-            callbackHandler.progress?(fileUrl, progress)
-        }
-        
         //  上传结果
-        uploadRequest.responseJSON(completionHandler: { (response) in
+        uploadRequest.responseJSON(queue: callbackHandler.queue, completionHandler: { (response) in
             switch response.result {
             case .success(let value):
                 callbackHandler.result?(fileUrl, true, nil, value as? [String: Any])
@@ -344,6 +330,11 @@ extension HttpUtils {
                 callbackHandler.result?(fileUrl, false, error ,nil)
             }
         })
+        
+        //  上传进度
+        uploadRequest.uploadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
+            callbackHandler.progress?(fileUrl, progress)
+        }
     }
     
 }
@@ -392,7 +383,7 @@ extension HttpUtils {
             return downloadResumData(sessionManager: sessionManager, url: url, resumData: resumData, to: destination, callbackHandler: callbackHandler)
         }
         
-        let downloadRequest = sessionManager.download(url, parameters: parameters, to: destination).responseData { (responseData) in
+        let downloadRequest = sessionManager.download(url, parameters: parameters, to: destination).responseData(queue: callbackHandler.queue) { (responseData) in
             
             //  状态栏的菊花转结束
             indicatorStop()
@@ -417,7 +408,7 @@ extension HttpUtils {
             
             //  回调有响应,将任务移除
             downloadRequestTask.removeValue(forKey: url)
-        }.downloadProgress { (progress) in
+        }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
             callbackHandler.progress?(progress)
         }
         
@@ -440,7 +431,7 @@ extension HttpUtils {
                                          resumData: Data,
                                          to destination: DownloadRequest.DownloadFileDestination? = nil,
                                          callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
-        let downloadRequest = sessionManager.download(resumingWith: resumData, to: destination).responseData { (responseData) in
+        let downloadRequest = sessionManager.download(resumingWith: resumData, to: destination).responseData(queue: callbackHandler.queue) { (responseData) in
             
             //  状态栏的菊花转结束
             indicatorStop()
@@ -467,7 +458,7 @@ extension HttpUtils {
             //  回调有响应,将任务移除
             downloadRequestTask.removeValue(forKey: url)
             
-        }.downloadProgress { (progress) in
+        }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
             callbackHandler.progress?(progress)
         }
         
@@ -680,25 +671,18 @@ extension HttpUtils {
         
         //  结果进行回调
         
-        //  是否直达底层
-        if let keyPath = callbackHandler.keyPath {
-            
-            //  底层是模型数组
-            if callbackHandler.isArray {
-                dataRequset.responseArray(keyPath: keyPath) { (responseArray: DataResponse<[T]>) in
-                    responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-                }
-            }else {
-                //  底层不是模型
-                dataRequset.responseObject(keyPath: keyPath) { (responseObject: DataResponse<T>) in
-                    responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-                }
+        //  包含模型数组
+        if callbackHandler.isArray {
+            dataRequset.responseArray(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseArray: DataResponse<[T]>) in
+                responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
             }
         }else {
-            dataRequset.responseObject { (responseObject: DataResponse<T>) in
+            //  包含普通模型
+            dataRequset.responseObject(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseObject: DataResponse<T>) in
                 responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
             }
         }
+
         
     }
 }

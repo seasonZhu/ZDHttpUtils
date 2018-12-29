@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         
         //HttpRequestConvertibleUse()
         
-        httpsCatificationSetting()
+        //httpsCatificationSetting()
     }
     
     //MARK:- 搭建界面
@@ -116,6 +116,52 @@ class ViewController: UIViewController {
         
         if button.tag == 1002 {
             RequestUtils.cancelDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
+            
+            
+            let cerPath = Bundle.main.path(forResource: "server_formal", ofType: "cer")
+            let p12path = Bundle.main.path(forResource: "client", ofType: "p12")
+            let p12password = "123456"
+            
+            SessionManager.serverTrust.request("https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", method: .post).response { (response) in
+                print(response)
+                print(response.response?.statusCode ?? -9999)
+            }
+            
+            /*
+            //SessionManager.serverTrust.delegate.sessionDidReceiveChallenge = nil/* { (session, challenge) in
+                
+                var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
+                var credential: URLCredential?
+                
+                /*if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
+                    let host = challenge.protectionSpace.host
+                    if
+                        let serverTrustPolicy = qServerTrustPolicyManager.serverTrustPolicy(forHost: host),
+                        let serverTrust = challenge.protectionSpace.serverTrust
+                    {
+                        if serverTrustPolicy.evaluate(serverTrust, forHost: host) {
+                            disposition = .useCredential
+                            credential = URLCredential(trust: serverTrust)
+                        } else {
+                            disposition = .cancelAuthenticationChallenge
+                        }
+                    }
+                }else */if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+                    print("客户端证书验证")
+                    
+                    guard let identityAndTrust = try? ClientTrustPolicy.extractIdentity(p12Path: p12path!, p12password: p12password) else {
+                        return (.cancelAuthenticationChallenge, nil)
+                    }
+                    
+                    let urlCredential = URLCredential(identity: identityAndTrust.identityRef, certificates: identityAndTrust.certArray as? [Any], persistence: URLCredential.Persistence.forSession)
+                    
+                    return (.useCredential, urlCredential)
+                    
+                }
+                
+                return (disposition, credential)
+            }*/
+             */
         }
     }
     
@@ -438,8 +484,8 @@ extension Person: ReflectProtocol {}
 extension SessionManager {
     static let serverTrust: SessionManager = {
         let configuration = URLSessionConfiguration.default
-        let serverTrustPolicyManager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.disableEvaluation])
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
+        let serverTrustPolicyManager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.disableEvaluation])
         return SessionManager(configuration: configuration, serverTrustPolicyManager: serverTrustPolicyManager)
     }()
 }

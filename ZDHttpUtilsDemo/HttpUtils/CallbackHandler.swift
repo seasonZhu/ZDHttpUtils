@@ -34,6 +34,8 @@ protocol CallbackHandlerProtocol {
     var keyPath: String? { get set }
     
     var isArray: Bool { get set }
+    
+    var queue: DispatchQueue? { get set }
 }
 
 // MARK: - 请求回调
@@ -63,6 +65,15 @@ public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     @discardableResult
     public func setIsArray(_ isArray: Bool) -> Self {
         self.isArray = isArray
+        return self
+    }
+    
+    /// 设置回调线程
+    /// 不进行设置,Alamofire中是往主线程回调的
+    /// - Parameter queue: 回调线程
+    /// - Returns: 对象自己
+    public func setQueue(_ queue: DispatchQueue?) -> Self {
+        self.queue = queue
         return self
     }
     
@@ -109,6 +120,9 @@ public class CallbackHandler<T: Mappable>: CallbackHandlerProtocol {
     
     /// 是否是数组
     var isArray: Bool = false
+    
+    /// 回调的线程
+    var queue: DispatchQueue?
 }
 
 // MARK: - 上传回调
@@ -126,6 +140,24 @@ public typealias UploadProgressCallback = (URL?, Progress) -> ()
 public class UploadCallbackHandler {
     /// 初始化方法
     public init() {}
+    
+    /// 设置回调线程
+    /// 不进行设置,Alamofire中是往主线程回调的
+    /// - Parameter queue: 回调线程
+    /// - Returns: 对象自己
+    public func setQueue(_ queue: DispatchQueue?) -> Self {
+        self.queue = queue
+        return self
+    }
+    
+    /// 设置回调进度线程
+    /// 不进行设置,Alamofire中是往主线程回调的
+    /// - Parameter queue: 回调线程
+    /// - Returns: 对象自己
+    public func setProgressQueue(_ progressQueue: DispatchQueue?) -> Self {
+        self.progressQueue = progressQueue
+        return self
+    }
     
     /// 上传结果的回调
     ///
@@ -163,6 +195,12 @@ public class UploadCallbackHandler {
     
     /// 信息
     var message: ResponseMessageCallback?
+    
+    /// 回调的线程
+    var queue: DispatchQueue?
+    
+    /// 回调进度的线程
+    var progressQueue: DispatchQueue?
 }
 
 // MARK: - 下载回调
@@ -180,6 +218,24 @@ public typealias DownloadProgressCallback = (Progress) -> ()
 public class DownloadCallbackHandler {
     /// 初始化方法
     public init() {}
+    
+    /// 设置回调线程
+    /// 不进行设置,Alamofire中是往主线程回调的
+    /// - Parameter queue: 回调线程
+    /// - Returns: 对象自己
+    public func setQueue(_ queue: DispatchQueue?) -> Self {
+        self.queue = queue
+        return self
+    }
+    
+    /// 设置回调进度线程
+    /// 不进行设置,Alamofire中是往主线程回调的
+    /// - Parameter queue: 回调线程
+    /// - Returns: 对象自己
+    public func setProgressQueue(_ progressQueue: DispatchQueue?) -> Self {
+        self.progressQueue = progressQueue
+        return self
+    }
     
     /// 成功的回调
     ///
@@ -229,5 +285,11 @@ public class DownloadCallbackHandler {
     
     /// 信息
     var message: ResponseMessageCallback?
+    
+    /// 回调的线程
+    var queue: DispatchQueue?
+    
+    /// 回调进度的线程
+    var progressQueue: DispatchQueue?
 }
 
