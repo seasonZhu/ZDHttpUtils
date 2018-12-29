@@ -50,6 +50,24 @@ enum U17Request: HttpRequestConvertible {
         }
     }
     
+    var trustPolicy: HttpsServerTrustPolicy? {
+        switch self {
+        case .home:
+            return nil
+        default:
+            return .disableEvaluation
+        }
+    }
+    
+    var p12File: P12File? {
+        switch self {
+        case .home:
+            return nil
+        default:
+            return P12File(path: "", password: "")
+        }
+    }
+    
     /// URLRequestConvertible的具体实现
     
     func asURLRequest() throws -> URLRequest {

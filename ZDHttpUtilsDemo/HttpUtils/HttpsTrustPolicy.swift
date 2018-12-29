@@ -9,7 +9,32 @@
 import Foundation
 import Alamofire
 
-/// 服务器认证策略,你没有看错,我就是从Alamofire的ServerTrustPolicy基本拷贝了一份过来,因为我需要的通过路径去找,其实完全是可以使用原来的枚举的,可惜枚举不能继承
+/// 认证策略管理器,我就是从Alamofire的ServerTrustPolicyManager基本拷贝了一份过来
+public class TrustPolicyManager {
+    
+    /// 别名 Host -> String
+    public typealias Host = String
+    
+    /// 认证策略字典
+    public let policies: [Host: HttpsServerTrustPolicy]
+    
+    /// 初始化
+    ///
+    /// - Parameter policies: 策略字典
+    public init(policies: [Host: HttpsServerTrustPolicy]) {
+        self.policies = policies
+    }
+    
+    /// 通过host找到对应的认证策略
+    ///
+    /// - Parameter host: host
+    /// - Returns: 认证策略
+    public func serverTrustPolicy(forHost host: Host) -> HttpsServerTrustPolicy? {
+        return policies[host]
+    }
+}
+
+/// 服务器认证策略,你没有看错,我就是从Alamofire的ServerTrustPolicy基本拷贝了一份过来,因为我需要的通过路径去找CA证书,其实完全是可以使用原来的枚举的,可惜枚举不能继承
 public enum HttpsServerTrustPolicy {
     case performDefaultEvaluation(validateHost: Bool)
     case performRevokedEvaluation(validateHost: Bool, revocationFlags: CFOptionFlags)  //revocationFlags位置为0 崩了 1可以过

@@ -647,6 +647,11 @@ extension HttpUtils {
         //  菊花转
         indicatorRun()
         
+        //  认证策略设置
+        if let p12File = request.p12File, let trustPolicy = request.trustPolicy {
+            challenge(sessionManage: sessionManager, trustPolicy: trustPolicy, p12Path: p12File.path, p12password: p12File.password)
+        }
+        
         let dataRequset = interceptHandle.onValidationHandler(requst: sessionManager.request(request))
         
         //  如果里面设置了后置拦截 就不进行打印

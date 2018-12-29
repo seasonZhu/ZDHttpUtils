@@ -26,7 +26,19 @@ public protocol RequestConvertible {
     
     /// api
     var api: String { get }
+    
+    /// 认证策略
+    var trustPolicy: HttpsServerTrustPolicy? { get }
+    
+    /// p12文件
+    var p12File: P12File? { get }
 }
 
 /// Http请求转换器 (协议合成) 该协议必须由枚举遵守 详细例子请看U17Request
 public typealias HttpRequestConvertible = RequestConvertible & URLRequestConvertible
+
+/// p12文件
+public struct P12File {
+    public let path: String
+    public let password: String
+}
