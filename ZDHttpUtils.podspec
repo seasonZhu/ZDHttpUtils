@@ -138,6 +138,6 @@ Pod::Spec.new do |s|
   s.dependency 'Alamofire', '~> 4.7.3'
   s.dependency 'AlamofireObjectMapper', '~> 5.2.0'
   s.dependency 'Alamofire-SwiftyJSON', '~> 3.0.0'
-  s.dependency 'Toast-Swift', '~> 3.0.1'
+  s.dependency 'Toast-Swift', '~> 4.0.1'
 
 end

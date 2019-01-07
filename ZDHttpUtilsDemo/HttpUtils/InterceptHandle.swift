@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import ObjectMapper
 import SwiftyJSON
-import NVActivityIndicatorView
+//import NVActivityIndicatorView
 
 /// 拦截回调协议
 protocol InterceptHandleProtocol {

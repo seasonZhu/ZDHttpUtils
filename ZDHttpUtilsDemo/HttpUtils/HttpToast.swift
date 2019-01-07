@@ -17,10 +17,18 @@ let kHubTag = 10001
 ///
 /// - Parameter message: 信息
 func showToast(_ message: String) {
-    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+
+    guard let topVC = UIApplication.topViewController() else {
         return
     }
-    appDelegate.window?.rootViewController?.view.makeToast(message)
+    topVC.view.makeToast(message)
+    
+    //  cocopods集成 会说AppDelegate有问题
+    //    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+    //        return
+    //    }
+    //    appDelegate.window?.rootViewController?.view.makeToast(message)
+    
     //appDelegate.window?.rootViewController?.view.makeToast(message, position: .center, title: "哈哈", image: UIImage(named: "weibo_icon")) 可以进行多种配置
 }
 
