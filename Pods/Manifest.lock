@@ -11,14 +11,14 @@ PODS:
   - NVActivityIndicatorView/Presenter (4.4.0)
   - ObjectMapper (3.3.0)
   - SwiftyJSON (4.0.0)
-  - Toast-Swift (3.0.1)
+  - Toast-Swift (4.0.1)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
   - Alamofire-SwiftyJSON
   - AlamofireObjectMapper (~> 5.0)
   - NVActivityIndicatorView
-  - Toast-Swift
+  - Toast-Swift (~> 4.0.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -37,8 +37,8 @@ SPEC CHECKSUMS:
   NVActivityIndicatorView: ec7440a57af2450319d3a4181cca7da6fc127064
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
-  Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
+  Toast-Swift: e42a638589a2f95036b4bb7626cfbdde7daf0393
 
-PODFILE CHECKSUM: 972e691b3f374426af7699d3094d6849db554a55
+PODFILE CHECKSUM: f6328c70be18ce6544e1462668c1b6ec02348cfe
 
 COCOAPODS: 1.5.3

@@ -17,7 +17,7 @@ target 'ZDHttpUtilsDemo' do
 	pod 'AlamofireObjectMapper', '~> 5.0'
 
 	#Toast
-    pod 'Toast-Swift'
+    pod 'Toast-Swift', '~> 4.0.1'
     
     #很牛X的loading界面 也就很牛X的简单用用,这个实在是太高端了
     pod 'NVActivityIndicatorView'

@@ -53,7 +53,7 @@ public class HttpUtils {
             
             //  响应缓存
             if interceptHandle.onCacheHandler() {
-                responseCache(url: url, callbackHandler: callbackHandler)
+                responseCacheHandler(url: url, callbackHandler: callbackHandler)
             }
             
             return
@@ -171,7 +171,7 @@ public class HttpUtils {
     /// - Parameters:
     ///   - url: 请求网址
     ///   - callbackHandler: 回调
-    private static func responseCache<T: Mappable>(url: String, callbackHandler: CallbackHandler<T>) {
+    private static func responseCacheHandler<T: Mappable>(url: String, callbackHandler: CallbackHandler<T>) {
         if callbackHandler.isArray {
             //  目前保存的data是包含所有的JSON信息的 即data保存的是Top格式 所以转换需要一点小手段
             if let JSONDict = HttpCacheManager.getCacheDict(url: url), let dicts = JSONDict[MappingTable.share.result] as? [[String: Any]] {
@@ -638,7 +638,7 @@ extension HttpUtils {
             
             //  响应缓存
             if interceptHandle.onCacheHandler() {
-                responseCache(url: url, callbackHandler: callbackHandler)
+                responseCacheHandler(url: url, callbackHandler: callbackHandler)
             }
             
             return
