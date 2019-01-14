@@ -9,4 +9,4 @@
 import Foundation
 
 /// 请求协议
-protocol HttpRequestProtocol { }
+public protocol HttpRequestProtocol { }

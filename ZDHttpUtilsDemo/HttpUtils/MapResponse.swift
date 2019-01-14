@@ -11,7 +11,7 @@ import ObjectMapper
 
 
 //MARK:- 映射表协议
-protocol MappingTableProtocol{
+public protocol MappingTableProtocol{
     var code: String { set get }
     var status: String { set get }
     var total: String { set get }
@@ -20,7 +20,7 @@ protocol MappingTableProtocol{
 }
 
 //MARK:- 映射表
-public class MappingTable: MappingTableProtocol {
+class MappingTable: MappingTableProtocol {
     public static let share = MappingTable()
     private init() {}
     
@@ -44,7 +44,7 @@ public struct BoolString {
 }
 
 //MARK:- 响应模型协议
-protocol ResponseProtocol {
+public protocol ResponseProtocol {
     
     associatedtype R
     
@@ -82,7 +82,7 @@ struct Response<T: Mappable>: ResponseProtocol, Mappable {
 }
 
 //MARK:- 响应模型数组协议
-protocol ResponseArrayProtocol {
+public protocol ResponseArrayProtocol {
     
     associatedtype R
     
@@ -118,7 +118,7 @@ struct ResponseArray<T: Mappable>: ResponseArrayProtocol, Mappable {
 }
 
 //MARK:- 响应基本类型协议
-protocol ResponseBaseProtocol {
+public protocol ResponseBaseProtocol {
     
     associatedtype R
     

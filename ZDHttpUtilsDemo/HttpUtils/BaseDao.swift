@@ -16,7 +16,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     /// 初始化方法
     ///
     /// - Parameter httpConfig: 请求配置 如果传入有值,就是自定义的请求 如果没有传入就使用default
-    init(httpConfig: HttpConfig? = nil) {
+    public init(httpConfig: HttpConfig? = nil) {
         if let config = httpConfig {
             requestUtils = RequestUtils(httpConfig: config)
         }else {
@@ -32,7 +32,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     ///   - parameters: 请求参数
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    func request<T: Mappable>(method: HTTPMethod, api: String, parameters: Parameters? = nil, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
+    public func request<T: Mappable>(method: HTTPMethod, api: String, parameters: Parameters? = nil, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
         requestUtils.request(method: method, url: ApiUrl.base + api, parameters: parameters, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
     }
     
@@ -43,7 +43,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     ///   - parameters: 请求参数
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    func get<T: Mappable>(api: String,
+    public func get<T: Mappable>(api: String,
                           parameters: Parameters? = nil,
                           interceptHandle: InterceptHandle,
                           callbackHandler: CallbackHandler<T>) {
@@ -57,7 +57,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     ///   - parameters: 请求参数
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    func post<T: Mappable>(api: String,
+    public func post<T: Mappable>(api: String,
                            parameters: Parameters? = nil,
                            interceptHandle: InterceptHandle,
                            callbackHandler: CallbackHandler<T>) {
@@ -73,7 +73,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     ///   - size: 文件的长宽
     ///   - mimeType: 文件类型
     ///   - callbackHandler: 结果回调
-    func upload(api: String,
+    public func upload(api: String,
                 uploadStream: UploadStream,
                 parameters: Parameters? = nil,
                 size: CGSize?,
@@ -90,7 +90,7 @@ class BaseDao<ApiUrl: HttpUrlProtocol> {
     ///   - method: 请求方式,默认是post
     ///   - headers: 请求头
     ///   - callbackHandler: 上传回调
-    func uploadFromeFilePath(filePath: String,
+    public func uploadFromeFilePath(filePath: String,
                              to api: String,
                              method: HTTPMethod = .post,
                              headers: HTTPHeaders? = nil,

@@ -67,7 +67,7 @@ func hideActivity() {
 
 // MARK: - 获取顶层的控制器
 extension UIApplication {
-    class func topViewController(_ rootVC: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+    static func topViewController(_ rootVC: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
         if let nav = rootVC as? UINavigationController {
             return topViewController(nav.visibleViewController)
         }

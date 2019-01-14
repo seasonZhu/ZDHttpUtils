@@ -16,6 +16,8 @@ import Foundation
 
 /// 反射协议
 public protocol ReflectProtocol {
+    var toDictionary: [String: Any] { get }
+    
     func reflectToDictionary() -> [String: Any]
 }
 
