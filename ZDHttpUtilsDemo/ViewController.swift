@@ -31,6 +31,11 @@ class ViewController: UIViewController {
         //HttpRequestConvertibleUse()
         
         //httpsCatificationSetting()
+        
+        /*
+         打包脚本
+         fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:1 changelog:打包测试
+         */
     }
     
     //MARK:- 搭建界面
