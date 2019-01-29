@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         
         /*
          打包脚本
-         fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:1 changelog:打包测试
+         fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:Debug/Release changelog:打包测试
          */
     }
     
@@ -419,7 +419,7 @@ extension ViewController {
             "contact": "123456"
         ]
         
-        let data = UIImageJPEGRepresentation(UIImage(named: "weibo_icon")!, 1.0)!
+        let data = UIImage(named: "weibo_icon")!.jpegData(compressionQuality: 1.0)!
         let uploadStream = ["weibo_icon": data]
         
         RequestUtils(httpConfig: HttpConfig.Builder().constructor).upload(url: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", uploadStream: uploadStream, parameters: parameters, size: nil, mimeType: .image("jpg"), callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
