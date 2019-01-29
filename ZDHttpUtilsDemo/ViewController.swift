@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         
         /*
          打包脚本
-         fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:Debug/Release changelog:打包测试
+         fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:Debug/Release/Sit/Sit-Release changelog:打包测试
          */
     }
     
@@ -197,7 +197,7 @@ class ViewController: UIViewController {
         msg = "release"
         #endif
         
-        let modelLabel = UILabel(frame: CGRect(x: 0, y: 700, width: view.bounds.width, height: 44))
+        let modelLabel = UILabel(frame: CGRect(x: 0, y: UIScreen.main.bounds.height - 100, width: view.bounds.width, height: 44))
         modelLabel.textAlignment = .center
         modelLabel.textColor = UIColor.black
         modelLabel.text = msg
