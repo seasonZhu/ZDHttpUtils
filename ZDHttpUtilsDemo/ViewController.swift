@@ -204,7 +204,7 @@ class ViewController: UIViewController {
         view.addSubview(modelLabel)
     }
     
-    //MARK:- URLComponents的简单实用
+    //MARK:- URLComponents的简单使用
     private func URLComponentsUse() {
         let urlComponents = URLComponents(url: URL.init(string: "tz_inf/api/topics")!, resolvingAgainstBaseURL: true)
         let url = urlComponents?.url(relativeTo: URL.init(string: "http://sun.topray-media.cn/"))

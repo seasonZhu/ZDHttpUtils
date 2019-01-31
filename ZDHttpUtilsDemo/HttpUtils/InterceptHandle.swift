@@ -95,16 +95,16 @@ public class InterceptHandle: InterceptHandleProtocol {
     ///   - isCache: 是否缓存json数据
     ///   - tag: 标签
     public init(isBeforeHandler: Bool = false,
-         isAfterHandler: Bool = false,
-         isDataIntercept: Bool = false,
-         isValidation: Bool = false,
-         isShowLoading: Bool = false,
-         loadingText: String? = nil,
-         isShowToast: Bool = true,
-         isCache: Bool = true,
-         statusCodes: [Int]? = nil,
-         contentTypes: [String]? = nil,
-         tag: String? = nil) {
+                isAfterHandler: Bool = false,
+                isDataIntercept: Bool = false,
+                isValidation: Bool = false,
+                isShowLoading: Bool = false,
+                loadingText: String? = nil,
+                isShowToast: Bool = true,
+                isCache: Bool = true,
+                statusCodes: [Int]? = nil,
+                contentTypes: [String]? = nil,
+                tag: String? = nil) {
         
         self.isBeforeHandler = isBeforeHandler
         self.isAfterHandler = isAfterHandler

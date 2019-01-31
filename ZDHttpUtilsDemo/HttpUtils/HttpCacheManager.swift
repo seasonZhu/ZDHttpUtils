@@ -24,9 +24,13 @@ public class HttpCacheManager {
             let fileUrl = URL(fileURLWithPath: filePath)
             do {
                 try data?.write(to: fileUrl)
-                callback?(true)
+                DispatchQueue.main.async {
+                    callback?(true)
+                }
             } catch _ {
-                callback?(false)
+                DispatchQueue.main.async {
+                    callback?(false)
+                }
             }
         }
     }
@@ -45,7 +49,7 @@ public class HttpCacheManager {
     /// - Returns: 字典
     static func getCacheDict(url: String) -> [String: Any]? {
         let pathUrl = URL.init(fileURLWithPath: getFilePath(url: url))
-        let data = try? Data.init(contentsOf: pathUrl)
+        let data = try? Data(contentsOf: pathUrl)
         let dict = data?.toDictionary
         return dict
     }
@@ -55,8 +59,8 @@ public class HttpCacheManager {
     /// - Parameter url: url
     /// - Returns: 字符串
     static func getCacheString(url: String) -> String? {
-        let pathUrl = URL.init(fileURLWithPath: getFilePath(url: url))
-        let string = try? String.init(contentsOf: pathUrl, encoding: .utf8)
+        let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
+        let string = try? String(contentsOf: pathUrl, encoding: .utf8)
         return string
     }
     
@@ -65,8 +69,8 @@ public class HttpCacheManager {
     /// - Parameter url: url
     /// - Returns: 数据
     static func getResumeData(url: String) -> Data? {
-        let pathUrl = URL.init(fileURLWithPath: getFilePath(url: url))
-        let data = try? Data.init(contentsOf: pathUrl)
+        let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
+        let data = try? Data(contentsOf: pathUrl)
         return data
     }
     
@@ -146,11 +150,12 @@ extension Data {
         do{
             let json = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
             
-            guard let dic = json as? Dictionary<String, Any> else {
+            // 其实这里有点不严谨jsonObject该方法转完了是Any Anyl可能存在,但是可能不能转为字典
+            guard let dict = json as? Dictionary<String, Any> else {
                 return nil
             }
             
-            return dic
+            return dict
             
         }catch {
             #if DEBUG

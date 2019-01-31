@@ -8,7 +8,7 @@
 
 /// Swift原生MD5
 
-public typealias Byte = UInt8
+typealias Byte = UInt8
 typealias Word = UInt32
 
 struct Digest {

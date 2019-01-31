@@ -9,8 +9,8 @@
 import Alamofire
 import ObjectMapper
 
-/// 基础Dao层 其实BaseDao与BaseViewModel以及涉及到业务层面了.不应该放在框架中
-class BaseDao<ApiUrl: HttpUrlProtocol> {
+/// 基础Dao层 其实BaseDao与BaseViewModel已经涉及到业务层面了
+public class BaseDao<ApiUrl: HttpUrlProtocol> {
     private let requestUtils: RequestUtils
     
     /// 初始化方法

@@ -39,8 +39,8 @@ extension String: BasicStructProtocol {}
 
 //MARK:- Bool字符串集合
 public struct BoolString {
-    static let trues = ["TRUE", "True", "true", "YES", "Yes", "yes"]
-    static let falses = ["FALSE", "False", "false", "NO", "No", "no"]
+    public static let trues = ["TRUE", "True", "true", "YES", "Yes", "yes", "1"]
+    public static let falses = ["FALSE", "False", "false", "NO", "No", "no", "0"]
 }
 
 //MARK:- 响应模型协议
