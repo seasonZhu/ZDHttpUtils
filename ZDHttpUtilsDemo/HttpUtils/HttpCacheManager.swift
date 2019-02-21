@@ -11,6 +11,9 @@ import Foundation
 // MARK: - 网络请求缓存本地化处理
 public class HttpCacheManager {
     
+    /// 读写队列
+    static let ioQueue = DispatchQueue(label: "com.lostsakura.season.HttpCacheManager")
+    
     /// 写数据
     ///
     /// - Parameters:
@@ -18,8 +21,7 @@ public class HttpCacheManager {
     ///   - url: url
     ///   - callback: 是否写入成功的回调
     static func write(data: Data?, by url: String, callback: ((Bool) -> ())? = nil) {
-        let ioQueue = DispatchQueue(label: "com.lostsakura.season")
-        ioQueue.async {
+        ioQueue.sync {
             let filePath = getFilePath(url: url)
             let fileUrl = URL(fileURLWithPath: filePath)
             do {
@@ -74,6 +76,28 @@ public class HttpCacheManager {
         return data
     }
     
+    /// 创建基本文件夹
+    ///
+    /// - Parameter path: 文件夹所在的路径
+    private static func createBaseDirectory(at path: String) {
+        do {
+            try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+            addDoNotBackupAttribute(path: path)
+        }catch {
+            #if DEBUG
+            print("create cache directory failed")
+            #endif
+        }
+    }
+    
+    private static func addDoNotBackupAttribute(path: String) {
+        var url = URL.init(fileURLWithPath: path)
+        url.setTemporaryResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
+    }
+}
+
+// MARK: - 对外方法
+extension HttpCacheManager {
     /// 通过传递的路径判断 文件或者文件夹, 如果不存在就进行创建, 这个方法一定要调用呀
     ///
     /// - Parameter path: 路径
@@ -103,7 +127,7 @@ public class HttpCacheManager {
     }
     
     /// 缓存文件夹路径
-    public class var httpUtilsCachePath: String {
+    public static var httpUtilsCachePath: String {
         let path = NSHomeDirectory() + "/Library/HttpUtilsCache"
         #if DEBUG
         print("path: \(path)")
@@ -111,28 +135,9 @@ public class HttpCacheManager {
         return path
     }
     
-    /// 创建基本文件夹
-    ///
-    /// - Parameter path: 文件夹所在的路径
-    private static func createBaseDirectory(at path: String) {
-        do {
-            try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-            addDoNotBackupAttribute(path: path)
-        }catch {
-            #if DEBUG
-            print("create cache directory failed")
-            #endif
-        }
-    }
-    
-    private static func addDoNotBackupAttribute(path: String) {
-        var url = URL.init(fileURLWithPath: path)
-        url.setTemporaryResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
-    }
-    
     /// 清理本地缓存的json数据
     public class func clearDiskCache() {
-        DispatchQueue.global().async {
+        ioQueue.sync {
             do {
                 try FileManager.default.removeItem(atPath: httpUtilsCachePath)
                 checkDirectory()
@@ -145,23 +150,66 @@ public class HttpCacheManager {
     }
 }
 
-extension Data {
-    var toDictionary: [String: Any]? {
+extension Data: DataTransformProtocol {
+    typealias A = Any?
+    
+    typealias D = [String: Any]?
+    
+    typealias L = [Any]?
+    
+    typealias DL = [[String: Any]]?
+    
+    var toAny: Any? {
         do{
-            let json = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
-            
-            // 其实这里有点不严谨jsonObject该方法转完了是Any Anyl可能存在,但是可能不能转为字典
-            guard let dict = json as? Dictionary<String, Any> else {
-                return nil
-            }
-            
-            return dict
-            
+            let any = try JSONSerialization.jsonObject(with: self, options: .mutableContainers)
+            return any
         }catch {
-            #if DEBUG
-            print("data转Dict失败")
-            #endif
+            print("data转换Any失败")
             return nil
         }
     }
+    
+    var toDictionary: [String: Any]? {
+        guard let dict = toAny as? [String: Any] else {
+            print("data转换字典失败")
+            return nil
+        }
+        return dict
+    }
+    
+    var toArray: [Any]? {
+        guard let array = toAny as? [Any] else {
+            print("data转换数组失败")
+            return nil
+        }
+        return array
+    }
+    
+    var toDictionaryArray: [[String: Any]]? {
+        guard let dictArray = toArray as? [[String: Any]] else {
+            print("data转换字典数组失败")
+            return nil
+        }
+        return dictArray
+    }
+}
+
+/// Data转换协议
+protocol DataTransformProtocol {
+    associatedtype A
+    associatedtype D
+    associatedtype L
+    associatedtype DL
+    
+    /// A -> Any缩写
+    var toAny: A { get }
+    
+    /// D -> Dictionary缩写
+    var toDictionary: D { get }
+    
+    /// L -> List 亦即 Array
+    var toArray: L { get }
+    
+    /// DL -> Dictionar List 亦即 Dictionary Array
+    var toDictionaryArray: DL { get }
 }
