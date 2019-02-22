@@ -369,6 +369,9 @@ extension ViewController {
         callbackHandler.success = { model, models, data, jsonString, httpResponse in
             guard let unwrapedModel = model else { return }
             print(unwrapedModel)
+            let coableU17Root = try? JSONDecoder().decode(CoableU17Root.self, from: data!)
+            print(coableU17Root)
+            print("\n")
         }
         
         callbackHandler.failure = { data, error, _ in

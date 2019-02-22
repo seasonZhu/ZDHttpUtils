@@ -147,7 +147,7 @@ extension ResponseBaseProtocol {
             
             result = bool as? R
             
-            //  这里其实判断的是T与Bool类型是否匹配,如果匹配说明是String转Bool,否则的话其实String转String,是不能Jump的
+            //  这里其实判断的是R与Bool类型是否匹配,如果匹配说明是String转Bool,否则的话其实String转String,是不能Jump的
             if let _ = result {
                 isJump = true
             }
