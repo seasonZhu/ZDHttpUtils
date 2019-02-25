@@ -11,6 +11,7 @@
 		6114B341218BDF94002FF421 /* ReflectProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6114B340218BDF94002FF421 /* ReflectProtocol.swift */; };
 		61159499221FC92D0058DD89 /* CodableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61159498221FC92D0058DD89 /* CodableEntity.swift */; };
 		611594B5222382FE0058DD89 /* AlamofireCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611594B4222382FE0058DD89 /* AlamofireCodable.swift */; };
+		611594B7222390AE0058DD89 /* CodableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611594B6222390AE0058DD89 /* CodableModel.swift */; };
 		6116D245214FAD5000B5595D /* NetworkListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6116D244214FAD5000B5595D /* NetworkListener.swift */; };
 		612937F2216B29F40020B969 /* HttpToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612937F1216B29F40020B969 /* HttpToast.swift */; };
 		6138ADA6216F2AD4006B5CFA /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6138ADA5216F2AD4006B5CFA /* Entity.swift */; };
@@ -63,6 +64,7 @@
 		6114B340218BDF94002FF421 /* ReflectProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflectProtocol.swift; sourceTree = "<group>"; };
 		61159498221FC92D0058DD89 /* CodableEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableEntity.swift; sourceTree = "<group>"; };
 		611594B4222382FE0058DD89 /* AlamofireCodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlamofireCodable.swift; sourceTree = "<group>"; };
+		611594B6222390AE0058DD89 /* CodableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableModel.swift; sourceTree = "<group>"; };
 		6116D244214FAD5000B5595D /* NetworkListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkListener.swift; sourceTree = "<group>"; };
 		612937F1216B29F40020B969 /* HttpToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpToast.swift; sourceTree = "<group>"; };
 		6138ADA5216F2AD4006B5CFA /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				6151243521533699005C15A9 /* Model.swift */,
 				6138ADA5216F2AD4006B5CFA /* Entity.swift */,
 				61159498221FC92D0058DD89 /* CodableEntity.swift */,
+				611594B6222390AE0058DD89 /* CodableModel.swift */,
 				61950482214B887700C838C5 /* Main.storyboard */,
 				61950485214B887700C838C5 /* Assets.xcassets */,
 				61950487214B887700C838C5 /* LaunchScreen.storyboard */,
@@ -345,6 +348,7 @@
 				61512432215245C7005C15A9 /* HttpUtils.swift in Sources */,
 				611594B5222382FE0058DD89 /* AlamofireCodable.swift in Sources */,
 				61DDC10621CC7B760088B51C /* U17Request.swift in Sources */,
+				611594B7222390AE0058DD89 /* CodableModel.swift in Sources */,
 				615124402154828C005C15A9 /* BaseDao.swift in Sources */,
 				61950481214B887700C838C5 /* ViewController.swift in Sources */,
 				61DDC10421CC7A960088B51C /* HttpRequestConvertible.swift in Sources */,

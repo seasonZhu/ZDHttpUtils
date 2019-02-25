@@ -353,6 +353,10 @@ extension ViewController {
             print(message)
         }))
         
+        Alamofire.request("http://sun.topray-media.cn/tz_inf/api/topics", method: .post).responseCodable { (response: DataResponse<ExampleModelName>) in
+            guard let value = response.value else { return }
+            print(value)
+        }
     }
     
     //MARK:- 有妖气的网络请求 返回非常的复杂
