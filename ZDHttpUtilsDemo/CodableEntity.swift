@@ -56,6 +56,7 @@ class CoableReturnData : Codable {
     
     var comicLists : [CodableComicList]? {
         didSet {
+            // 在init方法中赋值 不会走didSet的观察器,记住,所以涉及textItems的赋值,只能在init里面做了
             if comicLists?.count ?? 0 > 1 {
                 isMoreThanOneComic = true
             }else {
@@ -84,7 +85,9 @@ class CoableReturnData : Codable {
     }
     
     /*
-     如果模型里面有自定义的属性 也就是根据从服务器获取JSON推导出来的其他属性赋值的时候,需要写出Decodable协议实现的完整方法,注意 将init() {}也声明出来,否者你根本没有一个正常的初始化方法可以用
+     如果模型里面有自定义的属性
+     也就是根据从服务器获取JSON推导出来的其他属性赋值的时候
+     需要写出Decodable协议实现的完整方法,注意 将init() {}也声明出来,否者你根本没有一个正常的初始化方法可以用
      */
     
     required init(from decoder: Decoder) throws {
