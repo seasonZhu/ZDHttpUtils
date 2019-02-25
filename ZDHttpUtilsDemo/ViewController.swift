@@ -388,6 +388,12 @@ extension ViewController {
                           "time":"\(Int32(Date().timeIntervalSince1970))",]
         
         HttpUtils.request(method: .post, url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", parameters: parameters, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
+        
+        /// 兄弟们 毁天灭地的Alamofire responseCodable分类来了
+        Alamofire.request("http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", method: .post).responseCodable { (response: DataResponse<CoableU17Root>) in
+            guard let coableU17Root = response.value else { return }
+           print(coableU17Root)
+        }
     }
     
     @objc
