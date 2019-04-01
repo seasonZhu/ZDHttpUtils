@@ -9,18 +9,23 @@
 import Foundation
 import Alamofire
 
+/*
+ 有关AlamofireCodable的使用请详细参看: https://github.com/seasonZhu/AlamofireCodable 里面也有一些涉及Coswift的使用
+ */
+
 // MARK: - Codable
 
 extension Request {
-    /// Returns a result Codable type that contains the response data as-is.
+    /// 返回遵守Codable协议的Result类型
     ///
-    /// - parameter response: The response from the server.
-    /// - parameter data:     The data returned from the server.
-    /// - parameter error:    The error already encountered if it exists.
-    ///
-    /// - returns: The result Codable type.
-    public static func serializeResponseCodable<T: Codable>(response: HTTPURLResponse?, data: Data?, error: Error?) -> Result<T> {
-        guard error == nil else { return .failure(error!) }
+    /// - Parameters:
+    ///   - response: 服务器返回的响应
+    ///   - data: 服务器返回的数据
+    ///   - error: AFError
+    ///   - keyPath: 模型的keyPath 可解析深层的JSON数据
+    /// - Returns: Result<T>
+    public static func serializeResponseCodable<T: Codable>(response: HTTPURLResponse?, data: Data?, error: Error?, keyPath: String?) -> Result<T> {
+        if let error = error { return .failure(error) }
         
         if let response = response, emptyDataStatusCodes.contains(response.statusCode) {
             do {
@@ -35,43 +40,83 @@ extension Request {
             return .failure(AFError.responseSerializationFailed(reason: .inputDataNil))
         }
         
-        do {
-            let value = try JSONDecoder().decode(T.self, from: validData)
-            return .success(value)
-        } catch {
-            return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
+        if let keyPath = keyPath, !keyPath.isEmpty {
+            var keyPaths = keyPath.components(separatedBy: "/")
+            return keyPathForCodable(keyPaths: &keyPaths, data: validData)
+            
+        }else {
+            do {
+                let value = try JSONDecoder().decode(T.self, from: validData)
+                return .success(value)
+            } catch {
+                return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
+            }
         }
+    }
+    
+    /// 通过键值路径寻找深层的JSON对应的模型
+    ///
+    /// - Parameters:
+    ///   - keyPaths: 路径数组
+    ///   - data: 数据
+    /// - Returns: Result<T>
+    private static func keyPathForCodable<T: Codable>(keyPaths: inout [String], data: Data)  -> Result<T> {
+        if let firstKeyPath = keyPaths.first, keyPaths.count > 1 {
+            keyPaths.remove(at: 0)
+            if let JSONObject = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
+                let keyPathJSONObject = (JSONObject as AnyObject?)?.value(forKeyPath: firstKeyPath),
+                let keyPathData = try? JSONSerialization.data(withJSONObject: keyPathJSONObject) {
+                return keyPathForCodable(keyPaths: &keyPaths, data: keyPathData)
+            }
+        }else if let lastKeyPath = keyPaths.last, keyPaths.count == 1  {
+            keyPaths.remove(at: 0)
+            if let JSONObject = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
+                let keyPathJSONObject = (JSONObject as AnyObject?)?.value(forKeyPath: lastKeyPath),
+                let keyPathData = try? JSONSerialization.data(withJSONObject: keyPathJSONObject) {
+                do {
+                    let value = try JSONDecoder().decode(T.self, from: keyPathData)
+                    return .success(value)
+                } catch {
+                    return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
+                }
+            }
+        }
+        
+        return .failure(AFError.responseSerializationFailed(reason: .inputDataNil))
     }
 }
 
 extension DataRequest {
-    /// Creates a response serializer that returns the associated Coable as-is.
+    /// 创建一个遵守Codable协议的response serializer
     ///
-    /// - returns: A Codable response serializer.
-    public static func codableResponseSerializer<T: Codable>() -> DataResponseSerializer<T> {
+    /// - Parameter keyPath: 键值路径
+    /// - Returns: 遵守Codable协议的response serializer
+    public static func codableResponseSerializer<T: Codable>(keyPath: String?) -> DataResponseSerializer<T> {
         return DataResponseSerializer { _, response, data, error in
-            return Request.serializeResponseCodable(response: response, data: data, error: error)
+            return Request.serializeResponseCodable(response: response, data: data, error: error, keyPath: keyPath)
         }
     }
     
-    /// Adds a handler to be called once the request has finished.
+    /// 添加一个请求完成的handle
     ///
-    /// - parameter completionHandler: The code to be executed once the request has finished.
-    ///
-    /// - returns: The request.
+    /// - Parameters:
+    ///   - queue: 回调线程
+    ///   - keyPath: 键值路径
+    ///   - completionHandler: handle
+    /// - Returns: DataRequest
     @discardableResult
     public func responseCodable<T: Codable>(
         queue: DispatchQueue? = nil,
+        keyPath: String? = nil,
         completionHandler: @escaping (DataResponse<T>) -> Void)
         -> Self
     {
         return response(
             queue: queue,
-            responseSerializer: DataRequest.codableResponseSerializer(),
+            responseSerializer: DataRequest.codableResponseSerializer(keyPath: keyPath),
             completionHandler: completionHandler
         )
     }
 }
 
 private let emptyDataStatusCodes: Set<Int> = [204, 205]
-
