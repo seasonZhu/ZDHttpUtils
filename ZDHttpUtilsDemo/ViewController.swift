@@ -19,24 +19,16 @@ class ViewController: UIViewController {
         
         modelChangeByFastlane()
         
-        URLComponentsUse()
+        //URLComponentsUse()
         
         //HttpRequestConvertibleUse()
         
-        httpsCatificationSetting()
+        //httpsCatificationSetting()
         
         /*
          打包脚本
          fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:Debug/Release/Sit/Sit-Release changelog:打包测试
          */
-    }
-    
-    @objc
-    func newRequestToTop() {
-        let adapter = Adapter(config: Adapter.Config(keyPath: "list"), hud: Adapter.HUD())
-        HttpUtils.request(sessionManager: SessionManager.default, method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", adapter: adapter) { (result: ResponseResult<[ListItem]>) in
-            print(result.model)
-        }
     }
     
     //MARK:- 搭建界面
@@ -252,22 +244,6 @@ class ViewController: UIViewController {
                              adapter: Adapter()) { (result: ResponseResult<ResponseBase<Int>>) in
                                 print(result.model)
         }
-        
-//        HttpsServerTrustPolicy.manager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.pinCertificates(certificates: ServerTrustPolicy.certificates(), validateCertificateChain: true, validateHost: true)])
-//
-//        RequestUtils.default.post(url: "https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", interceptHandle: InterceptHandle(), callbackHandler: CallbackHandler<ResponseBase<Int>>()
-//            .onSuccess({ (model, models, data, jsonString, httpResponse) in
-//                print(jsonString)
-//            }).onFailure({ (data, error, httpResponse) in
-//                guard let unwrappedData = data, let jsonString = String(data: unwrappedData, encoding: .utf8), let unwrappedError = error, let nsError = unwrappedError as? NSError else {
-//                    return
-//                }
-//                //  这个地方虽然走的是失败,但是statusCode为200 其实是回传的data转的jsonString是一个xml的字符串,其实客户端与服务端是通的
-//                print(jsonString)
-//                print(unwrappedError)
-//                print(nsError)
-//                print(httpResponse?.statusCode ?? 0)
-//            }))
         
         //  我严格按照Alamofire中的文档说明进行编写认证策略,结果还是有问题,需要找找原因与反思一下
         SessionManager.serverTrust.request("https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", method: .post).response { (response) in
