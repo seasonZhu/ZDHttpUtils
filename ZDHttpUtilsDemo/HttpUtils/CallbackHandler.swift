@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
+
 
 /// 基本请求回调协议
 

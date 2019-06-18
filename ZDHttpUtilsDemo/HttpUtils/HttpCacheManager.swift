@@ -20,7 +20,7 @@ public class HttpCacheManager {
     ///   - data: 数据
     ///   - url: url
     ///   - callback: 是否写入成功的回调
-    static func write(data: Data?, by url: String, callback: ((Bool) -> ())? = nil) {
+    static func write(data: Data?, by url: String, callback: ((Bool) -> Void)? = nil) {
         ioQueue.sync {
             let filePath = getFilePath(url: url)
             let fileUrl = URL(fileURLWithPath: filePath)
@@ -42,7 +42,7 @@ public class HttpCacheManager {
     /// - Parameter url: url
     /// - Returns: 路径字符串
     static func getFilePath(url: String) -> String {
-        return httpUtilsCachePath + "/" + url.swiftMd5
+        return httpUtilsCachePath + "/" + url.md5
     }
     
     /// 通过url获取文件缓存并转为字典
@@ -79,13 +79,14 @@ public class HttpCacheManager {
     /// 创建基本文件夹
     ///
     /// - Parameter path: 文件夹所在的路径
-    private static func createBaseDirectory(at path: String) {
+    private static func createBaseDirectory(at path: String) throws {
         do {
             try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
             addDoNotBackupAttribute(path: path)
         }catch {
             #if DEBUG
             print("create cache directory failed")
+            throw error
             #endif
         }
     }
@@ -107,12 +108,12 @@ extension HttpCacheManager {
         //  是否是文件夹
         var isDir: ObjCBool = false
         if !fileManager.fileExists(atPath: path, isDirectory: &isDir) {
-            createBaseDirectory(at: path)
+            try? createBaseDirectory(at: path)
         }else {
             if !isDir.boolValue {
                 do {
                     try fileManager.removeItem(atPath: path)
-                    createBaseDirectory(at: path)
+                    try? createBaseDirectory(at: path)
                 }catch {
                     #if DEBUG
                     print("removeItem at Path Error")
@@ -136,7 +137,7 @@ extension HttpCacheManager {
     }
     
     /// 清理本地缓存的json数据
-    public class func clearDiskCache() {
+    public class func clearDiskCache() throws {
         ioQueue.sync {
             do {
                 try FileManager.default.removeItem(atPath: httpUtilsCachePath)
@@ -144,6 +145,7 @@ extension HttpCacheManager {
             }catch {
                 #if DEBUG
                 print("clearDiskCache error")
+                throw error
                 #endif
             }
         }

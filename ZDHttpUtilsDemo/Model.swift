@@ -7,24 +7,10 @@
 //
 
 import Foundation
-import ObjectMapper
+
 
 //MARK:- 网络请求测试用例
-struct Item: Mappable {
-    
-    init?(map: Map) {
-        
-    }
-    
-    mutating func mapping(map: Map) {
-        topicImageUrl <- map["topicImageUrl"]
-        topicOrder <- map["topicOrder"]
-        id <- map["id"]
-        upTime <- map["upTime"]
-        topicStatus <- map["topicStatus"]
-        topicTittle <- map["topicTittle"]
-        topicDesc <- map["topicDesc"]
-    }
+struct Item: Codable {
     
     var topicImageUrl: String?
     var topicOrder: Int?

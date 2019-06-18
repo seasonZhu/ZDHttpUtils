@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import HttpUtils
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        HttpCacheManager.checkDirectory()
+        HttpUtils.CacheManager.checkDirectory()
         NetworkLogger.shared.startLogging()
         return true
     }
@@ -26,7 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
         NetworkListener.shared.startListen()
         NetworkListener.shared.listenStatus { (type) in
-            showToast(type.description)
+            let hud = Adapter.HUD()
+            hud.clear()
+            hud.showNetworkStatus(status: type)
         }
     }
 

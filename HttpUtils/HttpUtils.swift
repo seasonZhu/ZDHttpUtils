@@ -1,57 +1,65 @@
 //
 //  HttpUtils.swift
-//  ZDHttpUtilsDemo
+//  HttpUtils
 //
-//  Created by season on 2018/9/19.
-//  Copyright © 2018年 season. All rights reserved.
+//  Created by season on 2019/6/18.
+//  Copyright © 2019 season. All rights reserved.
 //
 
 import Foundation
 import Alamofire
 
-
 /// 网络请求单元
 public class HttpUtils {
     
-    /// 基于ObjectMapper泛型返回的网络请求
+    /// 基本请求
     ///
     /// - Parameters:
-    ///   - sessionManage: Alamofire.SessionManage
-    ///   - method: 请求方式
+    ///   - sessionManager: Alamofire.SessionManager
+    ///   - method: 请求方法
     ///   - url: 请求网址
     ///   - parameters: 请求字段
+    ///   - encoding: 请求字段编码方式
     ///   - headers: 请求头
-    ///   - interceptHandle: 拦截回调
-    ///   - callbackHandler: 结果回调
-    public static func request<T: Mappable>(sessionManage: SessionManager = SessionManager.default,
-                                            method: HTTPMethod,
-                                            url: String,
-                                            parameters: Parameters? = nil,
-                                            headers: HTTPHeaders? = nil,
-                                            interceptHandle: InterceptHandle,
-                                            callbackHandler: CallbackHandler<T>) {
+    ///   - adapter: 配置器
+    ///   - responseResultHandle: 回调响应结果
+    public static func request<T: Codable>(sessionManager: SessionManager = SessionManager.default,
+                                           method: HTTPMethod,
+                                           url: URLConvertible,
+                                           parameters: Parameters? = nil,
+                                           encoding: ParameterEncoding = URLEncoding.default,
+                                           headers: HTTPHeaders? = nil,
+                                           adapter: Adapter = Adapter(),
+                                           responseResultHandle: @escaping ResponseResultHandle<T>) {
         
         //  前置拦截 如果没有前置拦截,打印请求Api
-        if interceptHandle.onBeforeHandler(method: method, url: url, parameters: String(describing: parameters)) {
+        if adapter.process.isBeforeHandler {
             #if DEBUG
             print("前置拦截,无法进行网络请求")
             #endif
             return
         }
         
+        //  打印请求API
+        if !NetworkLogger.shared.isLogging {
+            print("HttpUtils ## API Request ## \(method) ## \(url) ## parameters = \(parameters ?? [:])")
+        }
+        
         //  检查网络
         guard NetworkListener.shared.isReachable else {
-            #if DEBUG
             print("没有网络!")
-            callbackHandler.message?(.networkNotReachable)
-            #endif
+            let failure = ResponseResult<T>.Failure(cache: nil, data: nil, otherError: .networkNotReachable, error: nil, httpURLResponse: nil)
+            responseResultHandle(.failure(failure))
             
-            //  没有网络的拦截
-            interceptHandle.onNetworkIsNotReachableHandler(type: NetworkListener.shared.status)
-            
+            //  网络的拦截
+            if adapter.process.isNotReachableHandler {
+                // 展示网络拦截的弹窗
+                adapter.hud?.showNetworkStatus(status: NetworkListener.shared.status)
+            }
+
             //  响应缓存
-            if interceptHandle.onCacheHandler() {
-                responseCacheHandler(url: url, callbackHandler: callbackHandler)
+            if adapter.process.isUseCache {
+                responseCacheHandler(url: url, responseResultHandle: responseResultHandle)
             }
             
             return
@@ -59,132 +67,82 @@ public class HttpUtils {
         
         //  菊花转
         indicatorRun()
+        adapter.hud?.showWait()
         
-        let dataRequset =  interceptHandle.onValidationHandler(requst: sessionManage.request(url, method: method, parameters: parameters, headers: headers))
-
-        //  如果里面设置了后置拦截 就不进行打印
-        dataRequset.responseSwiftyJSON { (response) in
+        let dataRequset = sessionManager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers).validate(statusCode: adapter.config.statusCodes ?? defaultStatusCodes).validate(contentType: adapter.config.contentTypes ?? defaultContentTypes)
+        
+        dataRequset.responseCodable(queue: adapter.config.queue, keyPath: adapter.config.keyPath) { (response: DataResponse<T>) in
             //  菊花转结束
             indicatorStop()
+            adapter.hud?.clear()
             
             //  后置拦截 打印漂亮的Json
-            interceptHandle.onAfterHandler(url: url, response: response)
+            if adapter.process.isAfterHandler {
+                return
+            }
+            
+            //  进行结果打印
+            if !NetworkLogger.shared.isLogging {
+                print("HttpUtils ## API Response ## \(url) ## data = \(String(describing: response))")
+            }
             
             //  缓存数据
-            if interceptHandle.onCacheHandler() {
-                HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
-                    #if DEBUG
-                    print("写入JSON缓存\(isOK ? "成功" : "失败")")
-                    if !isOK {
-                        callbackHandler.message?(.writeJSONCacheFailed)
+            if adapter.process.isUseCache {
+                if let urlString = try? url.asURL().absoluteString {
+                    CacheManager.write(data: response.data, by: urlString) { (isOK) in
+                        #if DEBUG
+                        print("写入JSON缓存\(isOK ? "成功" : "失败")")
+                        #endif
                     }
-                    #endif
-                })
+                }
             }
-        }
-        
-        //  结果进行回调
-        
-        //  包含模型数组
-        if callbackHandler.isArray {
-            dataRequset.responseArray(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseArray: DataResponse<[T]>) in
-                responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-            }
-        }else {
-        //  包含普通模型
-            dataRequset.responseObject(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseObject: DataResponse<T>) in
-                responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-            }
-        }
-    }
-    
-    /// 响应模型处理
-    ///
-    /// - Parameters:
-    ///   - responseObject: 响应对象
-    ///   - callbackHandler: 回调
-    private static func responseObjectCallbackHandler<T: Mappable>(responseObject: DataResponse<T>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
-        
-        //  如果对数据进行拦截,那么直接return 不会回调数据
-        if interceptHandle.onDataInterceptHandler(data: responseObject.data, httpResponse: responseObject.response) {
-            return
-        }
-        
-        //  data -> jsonString
-        let jsonString: String?
-        if let data = responseObject.data {
-            jsonString = String(data: data, encoding: .utf8)
-        }else {
-            jsonString = nil
-        }
-        
-        //  响应请求结果回调
-        switch responseObject.result {
             
-        //  响应成功
-        case .success(let value):
-            callbackHandler.success?(value, nil, responseObject.data, jsonString, responseObject.response)
-        //  响应失败
-        case .failure(let error):
-            callbackHandler.failure?(responseObject.data, error, responseObject.response)
-            interceptHandle.onResponseErrorHandler(error: error)
-        }
-    }
-    
-    /// 响应模型数组处理
-    ///
-    /// - Parameters:
-    ///   - responseObject: 响应对象
-    ///   - callbackHandler: 回调
-    private static func responseArrayCallbackHandler<T: Mappable>(responseArray: DataResponse<[T]>, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
-        
-        if interceptHandle.onDataInterceptHandler(data: responseArray.data, httpResponse: responseArray.response) {
-            return
-        }
-        
-        //  data -> jsonString
-        let jsonString: String?
-        if let data = responseArray.data {
-            jsonString = String(data: data, encoding: .utf8)
-        }else {
-            jsonString = nil
-        }
-        
-        //  响应请求结果回调
-        switch responseArray.result {
+            //  data -> jsonString
+            let jsonString: String?
+            if let data = response.data {
+                jsonString = String(data: data, encoding: .utf8)
+            }else {
+                jsonString = nil
+            }
             
-        //  响应成功
-        case .success(let value):
-            callbackHandler.success?(nil, value, responseArray.data, jsonString, responseArray.response)
-        //  响应失败
-        case .failure(let error):
-            callbackHandler.failure?(responseArray.data, error, responseArray.response)
-            interceptHandle.onResponseErrorHandler(error: error)
+            //  响应请求结果回调
+            switch response.result {
+                
+            //  响应成功
+            case .success(let value):
+                let success = ResponseResult.Success(codableModel: value, data: response.data, jsonString: jsonString, httpURLResponse: response.response)
+                responseResultHandle(.success(success))
+                if let successMessage = adapter.hud?.successMessage {
+                    adapter.hud?.showMessage(message: successMessage)
+                }
+                
+            //  响应失败
+            case .failure(let error):
+                let failure = ResponseResult<T>.Failure(cache: nil, data: response.data, otherError: nil, error: error, httpURLResponse: response.response)
+                responseResultHandle(.failure(failure))
+                adapter.hud?.showError(error: error)
+            }
         }
+        
     }
-    
     
     /// 响应缓存回调
     ///
     /// - Parameters:
     ///   - url: 请求网址
     ///   - callbackHandler: 回调
-    private static func responseCacheHandler<T: Mappable>(url: String, callbackHandler: CallbackHandler<T>) {
-        if callbackHandler.isArray {
-            //  目前保存的data是包含所有的JSON信息的 即data保存的是Top格式 所以转换需要一点小手段
-            if let JSONDict = HttpCacheManager.getCacheDict(url: url), let dicts = JSONDict[MappingTable.share.result] as? [[String: Any]] {
-                let cache = Mapper<T>().mapArray(JSONArray: dicts)
-                callbackHandler.success?(nil, cache, nil, nil, nil)
-            }else {
-                callbackHandler.message?(.readJSONCacheFailed)
-            }
+    private static func responseCacheHandler<T: Codable>(url: URLConvertible, responseResultHandle: @escaping ResponseResultHandle<T>) {
+        guard let urlString = try? url.asURL().absoluteString else {
+            return
+        }
+        
+        if let data = CacheManager.getCacheData(url: urlString) {
+            let cache = try? JSONDecoder().decode(T.self, from: data)
+            let failure = ResponseResult<T>.Failure(cache: cache, data: data, otherError: .networkNotReachable, error: nil, httpURLResponse: nil)
+            responseResultHandle(.failure(failure))
         }else {
-            if let JSONString = HttpCacheManager.getCacheString(url: url) {
-                let cache = T(JSONString: JSONString)
-                callbackHandler.success?(cache, nil, nil, nil, nil)
-            }else {
-                callbackHandler.message?(.readJSONCacheFailed)
-            }
+            let failure = ResponseResult<T>.Failure(cache: nil, data: nil, otherError: .readJSONCacheFailed, error: nil, httpURLResponse: nil)
+            responseResultHandle(.failure(failure))
         }
     }
 }
@@ -203,24 +161,25 @@ extension HttpUtils {
     ///   - mimeType: 文件类型 详细看FawMimeType枚举
     ///   - callbackHandler: 上传回调
     public static func uploadData(sessionManager: SessionManager = SessionManager.default,
-                          url: String,
-                          uploadStream: UploadStream,
-                          parameters: Parameters? = nil,
-                          headers: HTTPHeaders? = nil,
-                          size: CGSize? = nil,
-                          mimeType: MimeType,
-                          callbackHandler: UploadCallbackHandler) {
+                                  url: URLConvertible,
+                                  uploadStream: UploadStream,
+                                  parameters: Parameters? = nil,
+                                  headers: HTTPHeaders? = nil,
+                                  size: CGSize? = nil,
+                                  mimeType: MimeType,
+                                  callbackHandler: UploadCallbackHandler) {
         
         //  检查网络
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
-            callbackHandler.message?(.networkNotReachable)
             #endif
             return
         }
         
-        print("HttpUtils ## API Request ## post ## \(url) ## parameters = \(String(describing: parameters))")
+        if !NetworkLogger.shared.isLogging {
+            print("HttpUtils ## API Request ## post ## \(url) ## parameters = \(parameters ?? [:])")
+        }
         
         //  请求头的设置
         var uploadHeaders = ["Content-Type": "multipart/form-data;charset=UTF-8"]
@@ -263,7 +222,9 @@ extension HttpUtils {
                                 //  菊花转结束
                                 indicatorStop()
                                 
-                                print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: encodingResult))")
+                                if !NetworkLogger.shared.isLogging {
+                                    print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: encodingResult))")
+                                }
                                 
                                 //  响应请求结果
                                 switch encodingResult {
@@ -300,7 +261,7 @@ extension HttpUtils {
     ///   - callbackHandler: 上传回调
     public static func uploadFromeFilePath(sessionManager: SessionManager = SessionManager.default,
                                            filePath: String,
-                                           to url: String,
+                                           to url: URLConvertible,
                                            method: HTTPMethod = .post,
                                            headers: HTTPHeaders? = nil,
                                            callbackHandler: UploadCallbackHandler) {
@@ -309,7 +270,6 @@ extension HttpUtils {
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
-            callbackHandler.message?(.networkNotReachable)
             #endif
             return
         }
@@ -349,16 +309,19 @@ extension HttpUtils {
     ///   - callbackHandler: 下载回调
     /// - Returns: 下载任务字典
     public static func downloadData(sessionManager: SessionManager = SessionManager.default,
-                                    url: String,
+                                    url: URLConvertible,
                                     parameters: Parameters? = nil,
                                     headers: HTTPHeaders? = nil,
                                     callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask? {
+        
+        guard let url = try? url.asURL().absoluteString else {
+            return nil
+        }
         
         //  检查网络
         guard NetworkListener.shared.isReachable else {
             #if DEBUG
             print("没有网络!")
-            callbackHandler.message?(.networkNotReachable)
             #endif
             return nil
         }
@@ -374,10 +337,12 @@ extension HttpUtils {
         //  状态栏的菊花转开始
         indicatorRun()
         
-        print("HttpUtils ## API Request ## \(url) ## parameters = \(String(describing: parameters))")
+        if !NetworkLogger.shared.isLogging {
+            print("HttpUtils ## API Request ## \(url) ## parameters = \(String(describing: parameters))")
+        }
         
         //  如果有临时数据那么就断点下载
-        if let resumData = HttpCacheManager.getResumeData(url: url) {
+        if let resumData = CacheManager.getResumeData(url: url) {
             return downloadResumData(sessionManager: sessionManager, url: url, resumData: resumData, to: destination, callbackHandler: callbackHandler)
         }
         
@@ -386,7 +351,9 @@ extension HttpUtils {
             //  状态栏的菊花转结束
             indicatorStop()
             
-            print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: responseData))")
+            if !NetworkLogger.shared.isLogging {
+                print("HttpUtils ## API Response ## \(String(describing: url)) ## data = \(String(describing: responseData))")
+            }
             
             //  响应请求结果
             switch responseData.result {
@@ -396,18 +363,15 @@ extension HttpUtils {
                 callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
                 
                 //  将请求失败而下载的部分数据存下来,下次进行
-                HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
+                CacheManager.write(data: responseData.resumeData, by: url) { (isOK) in
                     print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
-                    if !isOK {
-                        callbackHandler.message?(.writeDownloadResumeDataFailed)
-                    }
-                })
+                }
             }
             
             //  回调有响应,将任务移除
             downloadRequestTask.removeValue(forKey: url)
-        }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
-            callbackHandler.progress?(progress)
+            }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
+                callbackHandler.progress?(progress)
         }
         
         downloadRequestTask.updateValue(downloadRequest, forKey: url)
@@ -425,10 +389,15 @@ extension HttpUtils {
     /// - Returns: 下载任务字典
     @discardableResult
     static func downloadResumData(sessionManager: SessionManager = SessionManager.default,
-                                         url: String,
-                                         resumData: Data,
-                                         to destination: DownloadRequest.DownloadFileDestination? = nil,
-                                         callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+                                  url: URLConvertible,
+                                  resumData: Data,
+                                  to destination: DownloadRequest.DownloadFileDestination? = nil,
+                                  callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask {
+        
+        guard let url = try? url.asURL().absoluteString else {
+            return [:]
+        }
+        
         let downloadRequest = sessionManager.download(resumingWith: resumData, to: destination).responseData(queue: callbackHandler.queue) { (responseData) in
             
             //  状态栏的菊花转结束
@@ -440,24 +409,21 @@ extension HttpUtils {
             switch responseData.result {
             case .success(let value):
                 callbackHandler.success?(responseData.temporaryURL, responseData.destinationURL, value)
-                try? FileManager.default.removeItem(atPath: HttpCacheManager.getFilePath(url: url))
+                try? FileManager.default.removeItem(atPath: CacheManager.getFilePath(url: url))
             case .failure(let error):
                 callbackHandler.failure?(responseData.resumeData, responseData.temporaryURL, error, responseData.response?.statusCode)
                 
                 //  将请求失败而下载的部分数据存下来,下次进行
-                HttpCacheManager.write(data: responseData.resumeData, by: url, callback: { (isOK) in
+                CacheManager.write(data: responseData.resumeData, by: url) { (isOK) in
                     print("写入下载失败而下载的部分数据缓存\(isOK ? "成功" : "失败")")
-                    if !isOK {
-                        callbackHandler.message?(.writeDownloadResumeDataFailed)
-                    }
-                })
+                }
             }
             
             //  回调有响应,将任务移除
             downloadRequestTask.removeValue(forKey: url)
             
-        }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
-            callbackHandler.progress?(progress)
+            }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
+                callbackHandler.progress?(progress)
         }
         
         downloadRequestTask.updateValue(downloadRequest, forKey: url)
@@ -474,8 +440,8 @@ extension HttpUtils {
     /// 通过url暂停下载任务
     ///
     /// - Parameter url: 请求网址
-    public static func suspendDownloadRequest(url: String) {
-        guard let downloadRequest = downloadRequestTask[url] else {
+    public static func suspendDownloadRequest(url: URLConvertible) {
+        guard let url = try? url.asURL().absoluteString, let downloadRequest = downloadRequestTask[url] else {
             return
         }
         downloadRequest.suspend()
@@ -484,8 +450,8 @@ extension HttpUtils {
     /// 通过url继续下载任务
     ///
     /// - Parameter url: 请求网址
-    public static func resumeDownloadRequest(url: String) {
-        guard let downloadRequest = downloadRequestTask[url] else {
+    public static func resumeDownloadRequest(url: URLConvertible) {
+        guard let url = try? url.asURL().absoluteString, let downloadRequest = downloadRequestTask[url] else {
             return
         }
         downloadRequest.resume()
@@ -494,25 +460,11 @@ extension HttpUtils {
     /// 通过url取消下载任务
     ///
     /// - Parameter url: 请求网址
-    public static func cancelDownloadRequest(url: String) {
-        guard let downloadRequest = downloadRequestTask[url] else {
+    public static func cancelDownloadRequest(url: URLConvertible) {
+        guard let url = try? url.asURL().absoluteString, let downloadRequest = downloadRequestTask[url] else {
             return
         }
         downloadRequest.cancel()
-    }
-}
-
-//MARK:- 系统状态栏上的网络请求转圈
-extension HttpUtils {
-    
-    /// 菊花转开始
-    static func indicatorRun() {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-    }
-    
-    /// 菊花转停止
-    static func indicatorStop() {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
 }
 
@@ -564,7 +516,7 @@ extension HttpUtils {
             return (disposition, credential)
             
         }
-        /// 客户端证书验证
+            /// 客户端证书验证
         else if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
             print("客户端证书验证")
             
@@ -582,111 +534,12 @@ extension HttpUtils {
     }
 }
 
-/*
- Moya类似
- */
 
-// MARK:- 基于HttpRequestConvertible的网络请求单元
 extension HttpUtils {
-    /// 基于HttpRequestConvertible的ObjectMapper泛型返回的网络请求
-    /// 该请求方法还有待验证
-    /// - Parameters:
-    ///   - request: 遵守HttpRequestConvertible的枚举类型
-    ///   - interceptHandle: 拦截回调
-    ///   - callbackHandler: 结果回调
-    public static func request<T: Mappable>(sessionManager: SessionManager = SessionManager.default,
-                                            request: HttpRequestConvertible,
-                                            interceptHandle: InterceptHandle,
-                                            callbackHandler: CallbackHandler<T>) {
-        //  验证request的合法性
-        guard let urlRequest = try? request.asURLRequest(), let url = urlRequest.url?.absoluteString else {
-            return
-        }
-        
-        //  解析httpBody 基本都支持了 PropertyListEncoding仅支持了xml格式
-        var format = PropertyListSerialization.PropertyListFormat.xml
-        let parameters: Any
-        if let data = urlRequest.httpBody, let dict = data.toDictionary {
-            parameters = dict
-        }else if let data = urlRequest.httpBody, let queryString = String.init(data: data, encoding: .utf8) {
-            parameters = queryString
-        }else if let data = urlRequest.httpBody, let xml = try? PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format), let dict = xml as? Parameters {
-            parameters = dict
-        }else {
-            parameters = "null, or analyzing not support"
-        }
-        
-        //  前置拦截 如果没有前置拦截,打印请求Api
-        if interceptHandle.onBeforeHandler(method: request.method, url: url, parameters: parameters) {
-            #if DEBUG
-            print("前置拦截,无法进行网络请求")
-            #endif
-            return
-        }
-        
-        //  检查网络
-        guard NetworkListener.shared.isReachable else {
-            #if DEBUG
-            print("没有网络!")
-            callbackHandler.message?(.networkNotReachable)
-            #endif
-            
-            //  没有网络的拦截
-            interceptHandle.onNetworkIsNotReachableHandler(type: NetworkListener.shared.status)
-            
-            //  响应缓存
-            if interceptHandle.onCacheHandler() {
-                responseCacheHandler(url: url, callbackHandler: callbackHandler)
-            }
-            
-            return
-        }
-        
-        //  菊花转
-        indicatorRun()
-        
-        //  认证策略设置
-        if let p12File = request.p12File, let trustPolicy = request.trustPolicy {
-            challenge(sessionManage: sessionManager, trustPolicy: trustPolicy, p12Path: p12File.path, p12password: p12File.password)
-        }
-        
-        let dataRequset = interceptHandle.onValidationHandler(requst: sessionManager.request(request))
-        
-        //  如果里面设置了后置拦截 就不进行打印
-        dataRequset.responseSwiftyJSON { (response) in
-            //  菊花转结束
-            indicatorStop()
-            
-            //  后置拦截 打印漂亮的Json
-            interceptHandle.onAfterHandler(url: url, response: response)
-            
-            //  缓存数据
-            if interceptHandle.onCacheHandler() {
-                HttpCacheManager.write(data: response.data, by: url, callback: { (isOK) in
-                    #if DEBUG
-                    print("写入JSON缓存\(isOK ? "成功" : "失败")")
-                    if !isOK {
-                        callbackHandler.message?(.writeJSONCacheFailed)
-                    }
-                    #endif
-                })
-            }
-        }
-        
-        //  结果进行回调
-        
-        //  包含模型数组
-        if callbackHandler.isArray {
-            dataRequset.responseArray(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseArray: DataResponse<[T]>) in
-                responseArrayCallbackHandler(responseArray: responseArray, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-            }
-        }else {
-            //  包含普通模型
-            dataRequset.responseObject(queue: callbackHandler.queue, keyPath: callbackHandler.keyPath) { (responseObject: DataResponse<T>) in
-                responseObjectCallbackHandler(responseObject: responseObject, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
-            }
-        }
-
-        
-    }
+    
+    /// 默认的StatusCodes校验
+    private static let defaultStatusCodes = Array(200..<300)
+    
+    ///  默认的ContentTypes校验
+    private static let defaultContentTypes = ["*/*"]
 }

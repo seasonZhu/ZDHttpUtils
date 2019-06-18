@@ -7,7 +7,7 @@
 //
 
 import Alamofire
-import ObjectMapper
+
 
 /// 基础Dao层 其实BaseDao与BaseViewModel已经涉及到业务层面了
 public class BaseDao<ApiUrl: HttpUrlProtocol> {

@@ -8,7 +8,7 @@
 
 import UIKit
 import Alamofire
-import ObjectMapper
+
 
 class CheckoutViewModel: BaseViewModel {
     //MARK:- 对象方法使用

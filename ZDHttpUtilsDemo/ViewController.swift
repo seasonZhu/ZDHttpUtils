@@ -8,7 +8,8 @@
 
 import UIKit
 import Alamofire
-import ObjectMapper
+import HttpUtils
+
 
 class ViewController: UIViewController {
 
@@ -16,26 +17,26 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUpUI()
         
-        let student = Student()
-        //student.name = "season"
-        //student.age = 18
-        
-        let person = Person(sex: "man", name: "sola")
-        print(student.toDictionary)
-        print(person.toDictionary)
-        
         modelChangeByFastlane()
         
-        //URLComponentsUse()
+        URLComponentsUse()
         
         //HttpRequestConvertibleUse()
         
-        //httpsCatificationSetting()
+        httpsCatificationSetting()
         
         /*
          打包脚本
          fastlane pg version:1.0.0 build:10 scheme:ZDHttpUtilsDemo displayName:HttpUtils mode:Debug/Release/Sit/Sit-Release changelog:打包测试
          */
+    }
+    
+    @objc
+    func newRequestToTop() {
+        let adapter = Adapter(config: Adapter.Config(keyPath: "list"), hud: Adapter.HUD())
+        HttpUtils.request(sessionManager: SessionManager.default, method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", adapter: adapter) { (result: ResponseResult<[ListItem]>) in
+            print(result.model)
+        }
     }
     
     //MARK:- 搭建界面
@@ -127,10 +128,10 @@ class ViewController: UIViewController {
             let p12path = Bundle.main.path(forResource: "client", ofType: "p12")
             let p12password = "123456"
             
-            SessionManager.serverTrust.request("https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", method: .post).response { (response) in
-                print(response)
-                print(response.response?.statusCode ?? -9999)
-            }
+//            SessionManager.serverTrust.request("https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", method: .post).response { (response) in
+//                print(response)
+//                print(response.response?.statusCode ?? -9999)
+//            }
             
             /*
             //SessionManager.serverTrust.delegate.sessionDidReceiveChallenge = nil/* { (session, challenge) in
@@ -169,19 +170,7 @@ class ViewController: UIViewController {
              */
         }
     }
-    
-    //MARK:- 设置请求服务的key
-    private func configMappingTable() {
-        MappingTable.share.result = "list"
-        MappingTable.share.code = "code"
-    }
-    
-    //MARK:- 设置u17请求服务的key
-    private func configU17MappingTable() {
-        MappingTable.share.result = "data"
-        MappingTable.share.code = "code"
-    }
-    
+
     //MARK:- 通过fastlane进行模式区分
     private func modelChangeByFastlane() {
         let text = Bundle.main.infoDictionary?["BaseUrl"] as? String
@@ -211,46 +200,39 @@ class ViewController: UIViewController {
         //  这个不能打断点在这里看url是啥 要去控制台打po看url?.absoluteString是完整的网址, 而且这个url是没什么卵用的,要用其absoluteString
         print(url)
         print(url?.absoluteString)
-        configMappingTable()
         
         Alamofire.request(url!.absoluteString, method: .post).responseJSON { (responseJSON) in
-            let response = responseJSON.flatMap({ (json) -> ResponseArray<Item>? in
-                let response = ResponseArray<Item>(JSON: json as! [String: Any])
-                return response
-            })
-            print(response)
+            print(responseJSON)
         }
     }
     
-    private func HttpRequestConvertibleUse() {
-        
-        configU17MappingTable()
-        
-        let requestModel = U17RequestModel(sexType: "2",
-                                           key: "fabe6953ce6a1b8738bd2cabebf893a472d2b6274ef7ef6f6a5dc7171e5cafb14933ae65c70bceb97e0e9d47af6324d50394ba70c1bb462e0ed18b88b26095a82be87bc9eddf8e548a2a3859274b25bd0ecfce13e81f8317cfafa822d8ee486fe2c43e7acd93e9f19fdae5c628266dc4762060f6026c5ca83e865844fc6beea59822ed4a70f5288c25edb1367700ebf5c78a27f5cce53036f1dac4a776588cd890cd54f9e5a7adcaeec340c7a69cd986:::open",
-                                           target: "U17_3.0",
-                                           version: "3.3.3",
-                                           v: "3320101",
-                                           model: "Simulator",
-                                           device_id: "29B09615-E478-4320-8E6A-55B1DE48CB36",
-                                           time: "\(Int32(Date().timeIntervalSince1970))")
-        
-        typealias ResponseU17 = Response<U17Data>
-        
-        let callbackHandler = CallbackHandler<ResponseU17>()
-        
-        callbackHandler.success = { model, models, data, jsonString, httpResponse in
-            guard let unwrapedModel = model else { return }
-            print(unwrapedModel)
-        }
-        
-        callbackHandler.failure = { data, error, _ in
-            print(String(describing: data), String(describing: error))
-        }
-        
-        HttpUtils.request(request: U17Request.home(requestModel), interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
-        
-    }
+//    private func HttpRequestConvertibleUse() {
+//
+//        let requestModel = U17RequestModel(sexType: "2",
+//                                           key: "fabe6953ce6a1b8738bd2cabebf893a472d2b6274ef7ef6f6a5dc7171e5cafb14933ae65c70bceb97e0e9d47af6324d50394ba70c1bb462e0ed18b88b26095a82be87bc9eddf8e548a2a3859274b25bd0ecfce13e81f8317cfafa822d8ee486fe2c43e7acd93e9f19fdae5c628266dc4762060f6026c5ca83e865844fc6beea59822ed4a70f5288c25edb1367700ebf5c78a27f5cce53036f1dac4a776588cd890cd54f9e5a7adcaeec340c7a69cd986:::open",
+//                                           target: "U17_3.0",
+//                                           version: "3.3.3",
+//                                           v: "3320101",
+//                                           model: "Simulator",
+//                                           device_id: "29B09615-E478-4320-8E6A-55B1DE48CB36",
+//                                           time: "\(Int32(Date().timeIntervalSince1970))")
+//
+//        typealias ResponseU17 = Response<U17Data>
+//
+//        let callbackHandler = CallbackHandler<ResponseU17>()
+//
+//        callbackHandler.success = { model, models, data, jsonString, httpResponse in
+//            guard let unwrapedModel = model else { return }
+//            print(unwrapedModel)
+//        }
+//
+//        callbackHandler.failure = { data, error, _ in
+//            print(String(describing: data), String(describing: error))
+//        }
+//
+//        HttpUtils.request(request: U17Request.home(requestModel), interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
+//
+//    }
     
     //MARK:- 这是一个Https的双向认证,会走HttpUtils的sessionDidReceiveChallenge的方法
     private func httpsCatificationSetting() {
@@ -267,19 +249,9 @@ class ViewController: UIViewController {
         
         let requestUtils = RequestUtils(httpConfig: HttpConfig.Builder().setRequestType(.post).setCertification(trustPolicy: HttpsServerTrustPolicy.default, p12Path: p12path, p12password: p12password).constructor)
         requestUtils.request(url: "https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition",
-                             interceptHandle: InterceptHandle(),
-                             callbackHandler: CallbackHandler<ResponseBase<Int>>()
-                                .onSuccess({ (model, models, data, jsonString, httpResponse) in
-                                    print(jsonString ?? "jsonString is empty")
-                                }).onFailure({ (data, error, httpResponse) in
-                                    guard let unwrappedData = data, let jsonString = String(data: unwrappedData, encoding: .utf8), let unwrappedError = error else {
-                                        return
-                                    }
-                                    //  这个地方虽然走的是失败,但是statusCode为200 其实是回传的data转的jsonString是一个xml的字符串,其实客户端与服务端是通的
-                                    print(jsonString)
-                                    print(unwrappedError)
-                                    print(httpResponse?.statusCode ?? 0)
-                                }))
+                             adapter: Adapter()) { (result: ResponseResult<ResponseBase<Int>>) in
+                                print(result.model)
+        }
         
 //        HttpsServerTrustPolicy.manager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.pinCertificates(certificates: ServerTrustPolicy.certificates(), validateCertificateChain: true, validateHost: true)])
 //
@@ -309,79 +281,24 @@ extension ViewController {
     //MARK:- 到顶层的模型请求
     @objc
     func requestToTop() {
-        
-        configMappingTable()
-        
-        //  直接到顶层路径进行转换
-        let callbackHandler = CallbackHandler<ResponseArray<Item>>()
-            .onSuccess { (model, models, data, jsonString, httpResponse) in
-                // 其实一旦回调成功, model或者models中有一个必然有值,因为走success的条件是 Alamofire中.success (let value) 所以这里,知道后台返回的是JSON或者是JSON数组的话,这里完全可以隐式解包,当然使用guard守护也是不错
-                guard let unwrapedModel = model else { return }
-                print(unwrapedModel)
-            }.onFailure { (data, error, _) in
-                print(String(describing: data), String(describing: error))
-            }.onMessage { (message) in
-                print(message)
+        let adapter = Adapter(hud: Adapter.HUD())
+        HttpUtils.request(sessionManager: SessionManager.default, method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", adapter: adapter) { (result: ResponseResult<ExampleModelName>) in
+            print(result.model)
         }
-        
-        //HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", parameters: nil, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
-        
-        
-        CheckoutViewModel().getList(callbackHandler: callbackHandler)
-        //CheckoutViewModel.getList(callbackHandler: callbackHandler)
     }
     
     //MARK:- 到底层的模型请求
     @objc
     func requestToRoot() {
-        
-        configMappingTable()
-        
-        //  直接到目的路径 所以泛型的类型需要进行更改
-        HttpUtils.request(method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics",
-                          parameters: nil,
-                          interceptHandle: InterceptHandle(),
-                          callbackHandler: CallbackHandler<Item>().setKeyPath("list").setIsArray(true)
-                            .onSuccess({ (model, models, data, jsonString, httpResponse) in
-                                guard let unwrapedModels = models else { return }
-                                print(unwrapedModels)
-        })
-                            .onFailure({ (data, error, _ ) in
-            print(String(describing: data), String(describing: error))
-        })
-                            .onMessage({ (message) in
-            print(message)
-        }))
-        
-        Alamofire.request("http://sun.topray-media.cn/tz_inf/api/topics", method: .post).responseCodable { (response: DataResponse<ExampleModelName>) in
-            guard let value = response.value else { return }
-            print(value)
+        let adapter = Adapter(config: Adapter.Config(keyPath: "list"), hud: Adapter.HUD())
+        HttpUtils.request(sessionManager: SessionManager.default, method: .post, url: "http://sun.topray-media.cn/tz_inf/api/topics", adapter: adapter) { (result: ResponseResult<[ListItem]>) in
+            print(result.model)
         }
     }
     
     //MARK:- 有妖气的网络请求 返回非常的复杂
     @objc
     func requestU17() {
-        
-        configU17MappingTable()
-        
-        /// 这个地方还是需要进行一次强转的,否则的话类型会是Mappable这个基类,另外可以在函数里面进行别名的使用
-        typealias ResponseU17 = Response<U17Data>
-        
-        let callbackHandler = CallbackHandler<ResponseU17>() // CallbackHandler<U17Root>()
-        
-        callbackHandler.success = { model, models, data, jsonString, httpResponse in
-            guard let unwrapedModel = model else { return }
-            print(unwrapedModel)
-            let coableU17Root = try? JSONDecoder().decode(CoableU17Root.self, from: data!)
-            print(coableU17Root)
-            print("\n")
-        }
-        
-        callbackHandler.failure = { data, error, _ in
-            print(String(describing: data), String(describing: error))
-        }
-        
         let parameters = ["sexType":"2",
                           "key":"fabe6953ce6a1b8738bd2cabebf893a472d2b6274ef7ef6f6a5dc7171e5cafb14933ae65c70bceb97e0e9d47af6324d50394ba70c1bb462e0ed18b88b26095a82be87bc9eddf8e548a2a3859274b25bd0ecfce13e81f8317cfafa822d8ee486fe2c43e7acd93e9f19fdae5c628266dc4762060f6026c5ca83e865844fc6beea59822ed4a70f5288c25edb1367700ebf5c78a27f5cce53036f1dac4a776588cd890cd54f9e5a7adcaeec340c7a69cd986:::open",
                           "target":"U17_3.0",
@@ -391,33 +308,27 @@ extension ViewController {
                           "device_id":"29B09615-E478-4320-8E6A-55B1DE48CB36",
                           "time":"\(Int32(Date().timeIntervalSince1970))",]
         
-        HttpUtils.request(method: .post, url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", parameters: parameters, interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
-        
-        /// 兄弟们 毁天灭地的Alamofire responseCodable分类来了
-        Alamofire.request("http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", method: .post).responseCodable { (response: DataResponse<CoableU17Root>) in
-            guard let coableU17Root = response.value else { return }
-           print(coableU17Root)
+        let adapter = Adapter(hud: Adapter.HUD())
+        HttpUtils.request(method: .post, url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew", parameters: parameters, adapter: adapter) { (result: ResponseResult<CoableU17Root>) in
+            print(result.model)
         }
     }
     
     @objc
     func requesJSONStringToModel() {
-        
-        configMappingTable()
+
+        let decoder = JSONDecoder()
         
         let JSONString = "{\"list\": \"-1\", \"code\": 200, \"message\": \"hello\"}"
-        
+        let jsonStringData = JSONString.data(using: .utf8)!
         // 字符串映射为Bool类型
-        let boolModel = Mapper<ResponseBase<Bool>>().map(JSONString: JSONString)
-        print(boolModel)
-        
-        // 字符串还是映射为String类型
-        let stringModel = Mapper<ResponseBase<String>>().map(JSONString: JSONString)
+        let stringModel = try? decoder.decode(ResponseBase<String>.self, from: jsonStringData)
         print(stringModel)
-        
+
         // 转为Int类型
         let JSONIntString = "{\"list\": -1, \"code\": 200, \"message\": \"hello\"}"
-        let intModel = Mapper<ResponseBase<Int>>().map(JSONString: JSONIntString)
+        let jsonIntStringData = JSONIntString.data(using: .utf8)!
+        let intModel = try? decoder.decode(ResponseBase<Int>.self, from: jsonIntStringData)
         print(intModel)
     }
     
@@ -445,7 +356,7 @@ extension ViewController {
     
     @objc
     func requestUploadByFilePath() {
-        RequestUtils(httpConfig: HttpConfig.Builder().constructor).uploadFromeFilePath(filePath: HttpCacheManager.getFilePath(url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew"), to: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
+        RequestUtils(httpConfig: HttpConfig.Builder().constructor).uploadFromeFilePath(filePath: HttpUtils.CacheManager.getFilePath(url: "http://app.u17.com/v3/appV3_3/ios/phone/comic/boutiqueListNew"), to: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
             print(dict)
             print("上传\(isSuccess ? "成功" : "失败")了")
         }).onUploadProgress({ (url, progress) in
@@ -484,20 +395,6 @@ extension ViewController {
     }
 }
 
-class Student {
-    var name: String?
-    var age: Int?
-}
-
-extension Student: ReflectProtocol {}
-
-struct Person {
-    let sex: String
-    let name: String
-}
-
-extension Person: ReflectProtocol {}
-
 // MARK: - 按照文档写了一个认证策略管理器,完全都不能用
 extension SessionManager {
     static let serverTrust: SessionManager = {
@@ -506,4 +403,11 @@ extension SessionManager {
         let serverTrustPolicyManager = ServerTrustPolicyManager(policies: ["dssp.dstsp.com": ServerTrustPolicy.disableEvaluation])
         return SessionManager(configuration: configuration, serverTrustPolicyManager: serverTrustPolicyManager)
     }()
+}
+
+
+struct ResponseBase<T: Codable>: Codable {
+    var list: T?
+    var code: Int?
+    var message: String?
 }

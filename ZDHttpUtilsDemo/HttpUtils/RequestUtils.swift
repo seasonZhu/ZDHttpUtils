@@ -8,7 +8,6 @@
 
 import Foundation
 import Alamofire
-import ObjectMapper
 
 /// 网络请求RequestUtils
 public class RequestUtils {
@@ -90,9 +89,9 @@ extension RequestUtils {
     ///   - parameters: 请求参数
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    public func request<T: Mappable>(method: HTTPMethod? = nil, url: String, parameters: Parameters? = nil, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
+    public func request<T: Codable>(method: HTTPMethod? = nil, url: URLConvertible, parameters: Parameters? = nil, adapter: Adapter, responseResultHandle: @escaping ResponseResultHandle<T>) {
         /// 自定义的请求
-        HttpUtils.request(sessionManage: sessionManager, method: method ?? httpConfig.requestType, url: url, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+        HttpUtils.request(sessionManager: sessionManager, method: method ?? httpConfig.requestType, url: url, parameters: parameters, headers: headers, adapter: adapter, responseResultHandle: responseResultHandle)
     }
     
     /// get请求
@@ -102,8 +101,8 @@ extension RequestUtils {
     ///   - parameters: 请求参数
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    public func get<T: Mappable>(url: String, parameters: Parameters? = nil, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManager, method: .get, url: url, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+    public func get<T: Codable>(url: URLConvertible, parameters: Parameters? = nil, adapter: Adapter, responseResultHandle: @escaping ResponseResultHandle<T>) {
+        HttpUtils.request(sessionManager: sessionManager, method: .get, url: url, parameters: parameters, headers: headers, adapter: adapter, responseResultHandle: responseResultHandle)
     }
     
     /// post请求
@@ -113,8 +112,8 @@ extension RequestUtils {
     ///   - parameters: 请求参数
     ///   - interceptHandle: 拦截回调
     ///   - callbackHandler: 结果回调
-    public func post<T: Mappable>(url: String, parameters: Parameters? = nil, interceptHandle: InterceptHandle, callbackHandler: CallbackHandler<T>) {
-        HttpUtils.request(sessionManage: sessionManager, method: .post, url: url, parameters: parameters, headers: headers, interceptHandle: interceptHandle, callbackHandler: callbackHandler)
+    public func post<T: Codable>(url: URLConvertible, parameters: Parameters? = nil, adapter: Adapter, responseResultHandle: @escaping ResponseResultHandle<T>) {
+        HttpUtils.request(sessionManager: sessionManager, method: .post, url: url, parameters: parameters, headers: headers, adapter: adapter, responseResultHandle: responseResultHandle)
     }
 }
 
@@ -130,7 +129,7 @@ extension RequestUtils {
     ///   - size: 文件的长宽
     ///   - mimeType: 文件类型
     ///   - callbackHandler: 结果回调
-    public func upload(url: String,
+    public func upload(url: URLConvertible,
                        uploadStream: UploadStream,
                        parameters: Parameters? = nil,
                        size: CGSize? = nil,
@@ -148,7 +147,7 @@ extension RequestUtils {
     ///   - headers: 请求头
     ///   - callbackHandler: 上传回调
     public func uploadFromeFilePath(filePath: String,
-                                    to url: String,
+                                    to url: URLConvertible,
                                     method: HTTPMethod = .post,
                                     headers: HTTPHeaders? = nil,
                                     callbackHandler: UploadCallbackHandler) {
@@ -167,28 +166,28 @@ extension RequestUtils {
     ///   - callbackHandler: 结果回调
     /// - Returns: 下载任务字典
     @discardableResult
-    public func download(url: String, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask? {
+    public func download(url: URLConvertible, parameters: Parameters? = nil, callbackHandler: DownloadCallbackHandler) -> DownloadRequestTask? {
         return HttpUtils.downloadData(sessionManager: sessionManager, url: url, parameters: parameters, headers: headers, callbackHandler: callbackHandler)
     }
     
     /// 通过url暂停下载任务
     ///
     /// - Parameter url: 请求网址
-    public static func suspendDownloadRequest(url: String) {
+    public static func suspendDownloadRequest(url: URLConvertible) {
         HttpUtils.suspendDownloadRequest(url: url)
     }
     
     /// 通过url继续下载任务
     ///
     /// - Parameter url: 请求网址
-    public static func resumeDownloadRequest(url: String) {
+    public static func resumeDownloadRequest(url: URLConvertible) {
         HttpUtils.resumeDownloadRequest(url: url)
     }
     
     /// 通过url取消下载任务
     ///
     /// - Parameter url: 请求网址
-    public static func cancelDownloadRequest(url: String) {
+    public static func cancelDownloadRequest(url: URLConvertible) {
         HttpUtils.cancelDownloadRequest(url: url)
     }
 }

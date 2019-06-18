@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
+
 
 
 /// 这个根的没有使用 使用的是泛型装配
