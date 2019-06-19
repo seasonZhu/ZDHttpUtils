@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ZDHttpUtils"
-  s.version      = "0.0.2"
-  s.summary      = "基于Alamofire/ObjectMapper/SwiftyJson的封装."
+  s.version      = "0.0.3"
+  s.summary      = "基于Alamofire与Codable的封装."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-                   Swift 基于Alamofire/ObjectMapper/SwiftyJson的封装
+                   Swift 基于Alamofire与Codable的封装.
                    DESC
 
   s.homepage     = "https://github.com/seasonZhu/ZDHttpUtils"
@@ -54,25 +54,13 @@ Pod::Spec.new do |s|
   #
 
   s.author             = { "zhujilong" => "zhujilong1987@163.com" }
-  # Or just: s.author    = "zhujilong"
-  # s.authors            = { "zhujilong" => "zhujilong2007@sina.com" }
-  # s.social_media_url   = "http://twitter.com/zhujilong"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
   #  If this Pod runs only on iOS or OS X, then specify the platform and
   #  the deployment target. You can optionally include the target after the platform.
   #
-
-  # s.platform     = :ios
-   s.platform     = :ios, "9.0"
-
-  #  When using multiple platforms
-  # s.ios.deployment_target = "5.0"
-  # s.osx.deployment_target = "10.7"
-  # s.watchos.deployment_target = "2.0"
-  # s.tvos.deployment_target = "9.0"
-
+   s.platform     = :ios, "9.1"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -91,12 +79,12 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "ZDHttpUtilsDemo/HttpUtils/*.{swift}"
+  s.source_files  = "HttpUtils/*.{swift}"
   s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
 
-  s.swift_version = '4.0'
+  s.swift_version = '5.0'
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -136,8 +124,4 @@ Pod::Spec.new do |s|
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   s.dependency 'Alamofire', '~> 4.7.3'
-  s.dependency 'AlamofireObjectMapper', '~> 5.2.0'
-  s.dependency 'Alamofire-SwiftyJSON', '~> 3.0.0'
-  s.dependency 'Toast-Swift', '~> 4.0.1'
-
 end
