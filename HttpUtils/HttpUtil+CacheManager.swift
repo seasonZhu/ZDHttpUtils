@@ -39,48 +39,6 @@ extension HttpUtils {
             }
         }
         
-        /// 通过url获取文件缓存数据
-        ///
-        /// - Parameter url: url
-        /// - Returns: Data
-        static func getCacheData(url: String) -> Data? {
-            let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
-            let data = try? Data(contentsOf: pathUrl)
-            return data
-        }
-        
-        /// 通过url获取文件缓存并转为字典
-        ///
-        /// - Parameter url: url
-        /// - Returns: 字典
-        static func getCacheDict(url: String) -> [String: Any]? {
-            guard let data = getCacheData(url: url) else {
-                return nil
-            }
-            let dict = data.toDictionary
-            return dict
-        }
-        
-        /// 通过url获取文件缓存并转为字符串
-        ///
-        /// - Parameter url: url
-        /// - Returns: 字符串
-        static func getCacheString(url: String) -> String? {
-            let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
-            let string = try? String(contentsOf: pathUrl, encoding: .utf8)
-            return string
-        }
-        
-        /// 通过url获取断点续传需要的数据
-        ///
-        /// - Parameter url: url
-        /// - Returns: 数据
-        static func getResumeData(url: String) -> Data? {
-            let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
-            let data = try? Data(contentsOf: pathUrl)
-            return data
-        }
-        
         /// 创建基本文件夹
         ///
         /// - Parameter path: 文件夹所在的路径
@@ -147,6 +105,48 @@ extension HttpUtils.CacheManager {
     /// - Returns: 路径字符串
     public static func getFilePath(url: String) -> String {
         return httpUtilsCachePath + "/" + url.md5
+    }
+    
+    /// 通过url获取文件缓存数据
+    ///
+    /// - Parameter url: url
+    /// - Returns: Data
+    public static func getCacheData(url: String) -> Data? {
+        let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
+        let data = try? Data(contentsOf: pathUrl)
+        return data
+    }
+    
+    /// 通过url获取文件缓存并转为字典
+    ///
+    /// - Parameter url: url
+    /// - Returns: 字典
+    public static func getCacheDict(url: String) -> [String: Any]? {
+        guard let data = getCacheData(url: url) else {
+            return nil
+        }
+        let dict = data.toDictionary
+        return dict
+    }
+    
+    /// 通过url获取文件缓存并转为字符串
+    ///
+    /// - Parameter url: url
+    /// - Returns: 字符串
+    public static func getCacheString(url: String) -> String? {
+        let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
+        let string = try? String(contentsOf: pathUrl, encoding: .utf8)
+        return string
+    }
+    
+    /// 通过url获取断点续传需要的数据
+    ///
+    /// - Parameter url: url
+    /// - Returns: 数据
+    static func getResumeData(url: String) -> Data? {
+        let pathUrl = URL(fileURLWithPath: getFilePath(url: url))
+        let data = try? Data(contentsOf: pathUrl)
+        return data
     }
     
     /// 清理本地缓存的json数据

@@ -16,7 +16,6 @@ import Alamofire
 /// - wifi: wifi信号
 /// - mobile: 手机信号
 public enum NetworkType {
-    
     case unknown
     case notReachable
     case wifi

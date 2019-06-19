@@ -12,6 +12,10 @@ import HttpUtils
 
 
 class ViewController: UIViewController {
+    
+    let downloadPDF = "https://dssp.dstsp.com/ow/static/manual/usermanual.pdf"
+    
+    let downloadQQ = "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,8 +24,6 @@ class ViewController: UIViewController {
         modelChangeByFastlane()
         
         //URLComponentsUse()
-        
-        //HttpRequestConvertibleUse()
         
         //httpsCatificationSetting()
         
@@ -100,66 +102,20 @@ class ViewController: UIViewController {
     }
     
     /// 下载的暂停/继续/取消
-    ///
+    /// QQ的续下载由于QQ的下载机制所以不能正确执行,试试可以换成下载PDF用来断点续下载
     /// - Parameter button: 按钮
     @objc
     func buttonAction(_ button: UIButton) {
         if button.tag == 1000 {
-            RequestUtils.suspendDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
+            RequestUtils.suspendDownloadRequest(url: downloadQQ)
         }
         
         if button.tag == 1001 {
-            RequestUtils.resumeDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
+            RequestUtils.resumeDownloadRequest(url: downloadQQ)
         }
         
         if button.tag == 1002 {
-            RequestUtils.cancelDownloadRequest(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg")
-            
-            
-            let cerPath = Bundle.main.path(forResource: "server_formal", ofType: "cer")
-            let p12path = Bundle.main.path(forResource: "client", ofType: "p12")
-            let p12password = "123456"
-            
-//            SessionManager.serverTrust.request("https://dssp.dstsp.com:50080/dssp/v1/nac/vr/voiceRecognition", method: .post).response { (response) in
-//                print(response)
-//                print(response.response?.statusCode ?? -9999)
-//            }
-            
-            /*
-            //SessionManager.serverTrust.delegate.sessionDidReceiveChallenge = nil/* { (session, challenge) in
-                
-                var disposition: URLSession.AuthChallengeDisposition = .performDefaultHandling
-                var credential: URLCredential?
-                
-                /*if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
-                    let host = challenge.protectionSpace.host
-                    if
-                        let serverTrustPolicy = qServerTrustPolicyManager.serverTrustPolicy(forHost: host),
-                        let serverTrust = challenge.protectionSpace.serverTrust
-                    {
-                        if serverTrustPolicy.evaluate(serverTrust, forHost: host) {
-                            disposition = .useCredential
-                            credential = URLCredential(trust: serverTrust)
-                        } else {
-                            disposition = .cancelAuthenticationChallenge
-                        }
-                    }
-                }else */if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate {
-                    print("客户端证书验证")
-                    
-                    guard let identityAndTrust = try? ClientTrustPolicy.extractIdentity(p12Path: p12path!, p12password: p12password) else {
-                        return (.cancelAuthenticationChallenge, nil)
-                    }
-                    
-                    let urlCredential = URLCredential(identity: identityAndTrust.identityRef, certificates: identityAndTrust.certArray as? [Any], persistence: URLCredential.Persistence.forSession)
-                    
-                    return (.useCredential, urlCredential)
-                    
-                }
-                
-                return (disposition, credential)
-            }*/
-             */
+            RequestUtils.cancelDownloadRequest(url: downloadQQ)
         }
     }
 
@@ -187,8 +143,8 @@ class ViewController: UIViewController {
     
     //MARK:- URLComponents的简单使用
     private func URLComponentsUse() {
-        let urlComponents = URLComponents(url: URL.init(string: "tz_inf/api/topics")!, resolvingAgainstBaseURL: true)
-        let url = urlComponents?.url(relativeTo: URL.init(string: "http://sun.topray-media.cn/"))
+        let urlComponents = URLComponents(url: URL(string: "tz_inf/api/topics")!, resolvingAgainstBaseURL: true)
+        let url = urlComponents?.url(relativeTo: URL(string: "http://sun.topray-media.cn/"))
         //  这个不能打断点在这里看url是啥 要去控制台打po看url?.absoluteString是完整的网址, 而且这个url是没什么卵用的,要用其absoluteString
         print(url)
         print(url?.absoluteString)
@@ -197,34 +153,6 @@ class ViewController: UIViewController {
             print(responseJSON)
         }
     }
-    
-//    private func HttpRequestConvertibleUse() {
-//
-//        let requestModel = U17RequestModel(sexType: "2",
-//                                           key: "fabe6953ce6a1b8738bd2cabebf893a472d2b6274ef7ef6f6a5dc7171e5cafb14933ae65c70bceb97e0e9d47af6324d50394ba70c1bb462e0ed18b88b26095a82be87bc9eddf8e548a2a3859274b25bd0ecfce13e81f8317cfafa822d8ee486fe2c43e7acd93e9f19fdae5c628266dc4762060f6026c5ca83e865844fc6beea59822ed4a70f5288c25edb1367700ebf5c78a27f5cce53036f1dac4a776588cd890cd54f9e5a7adcaeec340c7a69cd986:::open",
-//                                           target: "U17_3.0",
-//                                           version: "3.3.3",
-//                                           v: "3320101",
-//                                           model: "Simulator",
-//                                           device_id: "29B09615-E478-4320-8E6A-55B1DE48CB36",
-//                                           time: "\(Int32(Date().timeIntervalSince1970))")
-//
-//        typealias ResponseU17 = Response<U17Data>
-//
-//        let callbackHandler = CallbackHandler<ResponseU17>()
-//
-//        callbackHandler.success = { model, models, data, jsonString, httpResponse in
-//            guard let unwrapedModel = model else { return }
-//            print(unwrapedModel)
-//        }
-//
-//        callbackHandler.failure = { data, error, _ in
-//            print(String(describing: data), String(describing: error))
-//        }
-//
-//        HttpUtils.request(request: U17Request.home(requestModel), interceptHandle: InterceptHandle(), callbackHandler: callbackHandler)
-//
-//    }
     
     //MARK:- 这是一个Https的双向认证,会走HttpUtils的sessionDidReceiveChallenge的方法
     private func httpsCatificationSetting() {
@@ -322,7 +250,7 @@ extension ViewController {
         let data = UIImage(named: "weibo_icon")!.jpegData(compressionQuality: 1.0)!
         let uploadStream = ["weibo_icon": data]
         
-        RequestUtils(httpConfig: HttpConfig.Builder().constructor).upload(url: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", uploadStream: uploadStream, parameters: parameters, size: nil, mimeType: .image("jpg"), callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
+        RequestUtils(httpConfig: HttpConfig.Builder().addHeads(["name": "season"]).constructor).upload(url: "http://sit-dssp.dstsp.com:50001/dssp/v1/core/appQuestion/commit", uploadStream: uploadStream, parameters: parameters, size: nil, mimeType: .image("jpg"), callbackHandler: UploadCallbackHandler().onUploadResult({ (url, isSuccess, error, dict) in
             print(dict)
             print("上传\(isSuccess ? "成功" : "失败")了")
         }).onUploadProgress({ (url, progress) in
@@ -344,7 +272,7 @@ extension ViewController {
     func requestDownloadPDF() {
         let downloadTask = RequestUtils.default
         
-        downloadTask.download(url: "https://dssp.dstsp.com/ow/static/manual/usermanual.pdf", callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
+        downloadTask.download(url: downloadPDF, callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
             
             print("fileUrl: \(fileUrl)")
             print("data: \(data)")
@@ -359,7 +287,7 @@ extension ViewController {
     func requestDownloadQQDmg() {
         let downloadTask = RequestUtils(httpConfig: HttpConfig.Builder().constructor)
         
-        downloadTask.download(url: "https://dldir1.qq.com/qqfile/QQforMac/QQ_V6.4.0.dmg", callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
+        downloadTask.download(url: downloadQQ, callbackHandler: DownloadCallbackHandler().onSuccess({ (tempUrl, fileUrl, data) in
             print("tempUrl: \(tempUrl)")
             print("fileUrl: \(fileUrl)")
             print("data: \(data)")

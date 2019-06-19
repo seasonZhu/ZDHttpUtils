@@ -21,6 +21,9 @@ public protocol ConfigProtocol {
 extension Adapter {
     public struct Config: ConfigProtocol {
         
+        /// 默认
+        public static let `default` = Config()
+        
         /// 模型的键值路径
         public let keyPath: String?
         

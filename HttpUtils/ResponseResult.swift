@@ -11,7 +11,6 @@ import Foundation
 /// 请求结果回调
 public typealias ResponseResultHandle<T> = (ResponseResult<T>) -> Void
 
-
 /// 网络请求响应结果
 ///
 /// - success: 响应成功
@@ -109,7 +108,7 @@ public class UploadCallbackHandler {
     public init() {}
     
     /// 设置回调线程
-    /// 不进行设置,Alamofire中是往主线程回调的
+    /// 如果不进行设置,Alamofire中是往主线程回调的
     /// - Parameter queue: 回调线程
     /// - Returns: 对象自己
     public func setQueue(_ queue: DispatchQueue?) -> Self {
@@ -118,7 +117,7 @@ public class UploadCallbackHandler {
     }
     
     /// 设置回调进度线程
-    /// 不进行设置,Alamofire中是往主线程回调的
+    /// 如果不进行设置,Alamofire中是往主线程回调的
     /// - Parameter queue: 回调线程
     /// - Returns: 对象自己
     public func setProgressQueue(_ progressQueue: DispatchQueue?) -> Self {
@@ -175,7 +174,7 @@ public class DownloadCallbackHandler {
     public init() {}
     
     /// 设置回调线程
-    /// 不进行设置,Alamofire中是往主线程回调的
+    /// 如果不进行设置,Alamofire中是往主线程回调的
     /// - Parameter queue: 回调线程
     /// - Returns: 对象自己
     public func setQueue(_ queue: DispatchQueue?) -> Self {
@@ -184,7 +183,7 @@ public class DownloadCallbackHandler {
     }
     
     /// 设置回调进度线程
-    /// 不进行设置,Alamofire中是往主线程回调的
+    /// 如果不进行设置,Alamofire中是往主线程回调的
     /// - Parameter queue: 回调线程
     /// - Returns: 对象自己
     public func setProgressQueue(_ progressQueue: DispatchQueue?) -> Self {

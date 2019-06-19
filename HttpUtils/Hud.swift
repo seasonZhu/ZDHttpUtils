@@ -8,34 +8,37 @@
 
 import UIKit
 
+/*
+ * 这本是一个对外的public类,是我自己写的,这里为了方便使用和避免冲突,私有化了
+ */
 
 /// 自动完成后的回调
- typealias CompleteHandle = () -> Void
+typealias CompleteHandle = () -> Void
 
 /// 点击通知栏的ToolBar回调
- typealias ToolbarTapHandle = CompleteHandle
+typealias ToolbarTapHandle = CompleteHandle
 
 // MARK:- Hud
 
 /// 对外的Hud类
- class Hud {
+class Hud {
     
     /// 非showOnNavigationBar的整体背景颜色
-     static var backgroundColor: UIColor = .clear {
+    static var backgroundColor: UIColor = .clear {
         didSet {
             HudInternal.backgroundColor = backgroundColor
         }
     }
     
     /// 非showOnNavigationBar的mainView的背景颜色
-     static var mainColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8) {
+    static var mainColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8) {
         didSet {
             HudInternal.mainColor = mainColor
         }
     }
     
     /// 非showOnNavigationBar的文字显示颜色和绘制的颜色
-     static var textColor: UIColor = .white {
+    static var textColor: UIColor = .white {
         didSet {
             HudInternal.textColor = textColor
             HudGraph.drawColor = textColor
@@ -43,7 +46,7 @@ import UIKit
     }
     
     /// 菊花转的颜色
-     static var indicatorColor: UIColor = .white {
+    static var indicatorColor: UIColor = .white {
         didSet {
             HudInternal.indicatorColor = indicatorColor
         }
@@ -59,7 +62,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showMessage(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showMessage(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showMessage(message: message, autoClear: autoClear, autoClearTime: autoClearTime, responseTap: responseTap, completeHandle: completeHandle)
     }
@@ -74,7 +77,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showWait(message: String? = nil, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showWait(message: String? = nil, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showWait(message:message, autoClear:autoClear, autoClearTime:autoClearTime, responseTap:responseTap, completeHandle:completeHandle)
     }
@@ -89,7 +92,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showSuccess(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showSuccess(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showNotice(type: .success, message: message, autoClear: autoClear, autoClearTime: autoClearTime, responseTap: responseTap, completeHandle: completeHandle)
     }
@@ -104,7 +107,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showFail(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showFail(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showNotice(type: .fail, message: message, autoClear: autoClear, autoClearTime: autoClearTime, responseTap: responseTap, completeHandle: completeHandle)
     }
@@ -119,7 +122,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showInfo(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showInfo(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showNotice(type: .info, message: message, autoClear: autoClear, autoClearTime: autoClearTime, responseTap: responseTap, completeHandle: completeHandle)
     }
@@ -135,7 +138,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showNotice(type: HudType = .info, message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showNotice(type: HudType = .info, message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showNotice(type: type, message: message, autoClear: autoClear, autoClearTime: autoClearTime, responseTap: responseTap, completeHandle: completeHandle)
     }
@@ -153,7 +156,7 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showAnimate(images: [UIImage], autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, timeMilliseconds: Int = 70, scale: CGFloat = 0.618, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showAnimate(images: [UIImage], autoClear: Bool = true, autoClearTime: TimeInterval = 3, responseTap: Bool = false, timeMilliseconds: Int = 70, scale: CGFloat = 0.618, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showAnimate(images: images, autoClear: autoClear, autoClearTime: autoClearTime, responseTap: responseTap, timeMilliseconds: timeMilliseconds, scale: scale, completeHandle: completeHandle)
     }
@@ -170,13 +173,13 @@ import UIKit
     ///   - completeHandle: 自动移除后的操作响应
     /// - Returns: 返回window
     @discardableResult
-     static func showOnNavigationBar(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, textColor: UIColor = .black, fontSize: CGFloat = 13, backgroundColor: UIColor? = nil , toolbarTapHandle: ToolbarTapHandle? = nil, completeHandle: CompleteHandle? = nil) -> UIWindow? {
+    static func showOnNavigationBar(message: String, autoClear: Bool = true, autoClearTime: TimeInterval = 3, textColor: UIColor = .black, fontSize: CGFloat = 13, backgroundColor: UIColor? = nil , toolbarTapHandle: ToolbarTapHandle? = nil, completeHandle: CompleteHandle? = nil) -> UIWindow? {
         guard let _ = UIApplication.shared.keyWindow else { return nil }
         return HudInternal.showOnNavigationBar(message: message, autoClear: autoClear, autoClearTime: autoClearTime, textColor: textColor, fontSize: fontSize, backgroundColor: backgroundColor, toolbarTapHandle: toolbarTapHandle, completeHandle: completeHandle)
     }
     
     /// 清除Hud
-     static func clear() {
+    static func clear() {
         HudInternal.clear()
     }
     
@@ -192,7 +195,7 @@ extension Hud {
     /// - Parameter backgroundColor: 背景颜色
     /// - Returns: Hud类
     @discardableResult
-     static func setBackgroundColor(_ backgroundColor: UIColor) -> Hud.Type {
+    static func setBackgroundColor(_ backgroundColor: UIColor) -> Hud.Type {
         self.backgroundColor = backgroundColor
         return type(of: Hud())
     }
@@ -202,7 +205,7 @@ extension Hud {
     /// - Parameter mainColor: 主颜色
     /// - Returns: Hud类
     @discardableResult
-     static func setMainColor(_ mainColor: UIColor) -> Hud.Type {
+    static func setMainColor(_ mainColor: UIColor) -> Hud.Type {
         self.mainColor = mainColor
         return type(of: Hud())
     }
@@ -212,7 +215,7 @@ extension Hud {
     /// - Parameter textColor: 文字颜色
     /// - Returns: Hud类
     @discardableResult
-     static func setTextColor(_ textColor: UIColor) -> Hud.Type {
+    static func setTextColor(_ textColor: UIColor) -> Hud.Type {
         self.textColor = textColor
         return type(of: Hud())
     }
@@ -222,7 +225,7 @@ extension Hud {
     /// - Parameter indicatorColor: 菊花转颜色
     /// - Returns: Hud类
     @discardableResult
-     static func setIndicatorColor(_ indicatorColor: UIColor) -> Hud.Type {
+    static func setIndicatorColor(_ indicatorColor: UIColor) -> Hud.Type {
         self.indicatorColor = indicatorColor
         return type(of: Hud())
     }
@@ -231,7 +234,7 @@ extension Hud {
     ///
     /// - Returns: Hud类
     @discardableResult
-     static func setDeault() -> Hud.Type {
+    static func setDeault() -> Hud.Type {
         backgroundColor = .clear
         mainColor = UIColor(red:0, green:0, blue:0, alpha: 0.8)
         textColor = .white
@@ -246,7 +249,7 @@ extension Hud {
 /// - success: 成功
 /// - fail: 失败
 /// - info: 信息
- enum HudType {
+enum HudType {
     case success
     case fail
     case info
@@ -838,8 +841,8 @@ private class HudGraph {
 }
 
 // MARK: - UIWindow的隐藏分类
- extension UIWindow{
-     func hide() {
+extension UIWindow{
+    func hide() {
         HudInternal.hideHud(self)
     }
 }

@@ -22,6 +22,9 @@ public protocol ProcessProtocol {
 extension Adapter {
     public struct Process: ProcessProtocol {
         
+        /// 默认
+        public static let `default` = Process()
+        
         /// 是否拦截没有网络
         public var isNotReachableHandler: Bool
         

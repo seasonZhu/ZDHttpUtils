@@ -14,7 +14,6 @@ import Alamofire
  */
 
 // MARK: - Codable
-
 extension Request {
     /// 返回遵守Codable协议的Result类型
     ///

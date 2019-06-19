@@ -14,6 +14,8 @@ public protocol HUDProtocol {
     
     var successMessage: String? { set get }
     
+    var errorMessage: String? { set get }
+    
     func showWait()
     
     func showNetworkStatus(status: NetworkType)
@@ -28,16 +30,23 @@ public protocol HUDProtocol {
 extension Adapter {
     public struct HUD: HUDProtocol {
         
+        /// 默认
+        public static let `default` = HUD()
+        
         /// 等待的文字描述
         public var waitMessage: String?
         
         /// 成功的文字描述
         public var successMessage: String?
         
+        /// 错误的文字描述
+        public var errorMessage: String?
+        
         /// 初始化方法
-        public init(waitMessage: String? = nil, successMessage: String? = nil) {
+        public init(waitMessage: String? = nil, successMessage: String? = nil, errorMessage: String? = nil) {
             self.waitMessage = waitMessage
             self.successMessage = successMessage
+            self.errorMessage = errorMessage
         }
         
         /// 等待界面
@@ -56,7 +65,11 @@ extension Adapter {
         ///
         /// - Parameter error: Error
         public func showError(error: Error? = nil) {
-            Hud.showMessage(message: error.debugDescription)
+            if let errorMessage = errorMessage {
+                Hud.showMessage(message: errorMessage)
+            }else {
+                Hud.showMessage(message: error.debugDescription)
+            }
         }
         
         /// 展示信息

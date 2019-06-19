@@ -14,7 +14,6 @@ import Foundation
 /// - gif: 动图
 /// - video: 视频
 public enum MimeType {
-    
     case image(_ fileName: String?)
     case gif(_ fileName: String?)
     case video(_ fileName: String?)

@@ -29,7 +29,7 @@ public class HttpUtils {
                                            parameters: Parameters? = nil,
                                            encoding: ParameterEncoding = URLEncoding.default,
                                            headers: HTTPHeaders? = nil,
-                                           adapter: Adapter = Adapter(),
+                                           adapter: Adapter = Adapter.default,
                                            responseResultHandle: @escaping ResponseResultHandle<T>) {
         
         //  前置拦截 如果没有前置拦截,打印请求Api
@@ -230,14 +230,14 @@ extension HttpUtils {
                                 switch encodingResult {
                                 case .success(let uploadRequest, _ , let streamFileURL):
                                     
-                                    uploadRequest.responseJSON(queue: callbackHandler.queue, completionHandler: { (response) in
+                                    uploadRequest.responseJSON(queue: callbackHandler.queue) { (response) in
                                         switch response.result {
                                         case .success(let value):
                                             callbackHandler.result?(streamFileURL, true, nil, value as? [String: Any])
                                         case .failure(let error):
                                             callbackHandler.result?(streamFileURL, false, error ,nil)
                                         }
-                                    })
+                                    }
                                     
                                     uploadRequest.uploadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { progress in
                                         callbackHandler.progress?(streamFileURL, progress)
@@ -280,14 +280,14 @@ extension HttpUtils {
         let uploadRequest = Alamofire.upload(fileUrl, to: url)
         
         //  上传结果
-        uploadRequest.responseJSON(queue: callbackHandler.queue, completionHandler: { (response) in
+        uploadRequest.responseJSON(queue: callbackHandler.queue) { (response) in
             switch response.result {
             case .success(let value):
                 callbackHandler.result?(fileUrl, true, nil, value as? [String: Any])
             case .failure(let error):
                 callbackHandler.result?(fileUrl, false, error ,nil)
             }
-        })
+        }
         
         //  上传进度
         uploadRequest.uploadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
@@ -370,8 +370,11 @@ extension HttpUtils {
             
             //  回调有响应,将任务移除
             downloadRequestTask.removeValue(forKey: url)
-            }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
-                callbackHandler.progress?(progress)
+        }
+        
+        //  下载进度的回调
+        downloadRequest.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
+            callbackHandler.progress?(progress)
         }
         
         downloadRequestTask.updateValue(downloadRequest, forKey: url)
@@ -422,7 +425,10 @@ extension HttpUtils {
             //  回调有响应,将任务移除
             downloadRequestTask.removeValue(forKey: url)
             
-            }.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
+            }
+        
+            //  下载进度的回调
+            downloadRequest.downloadProgress(queue: callbackHandler.progressQueue ?? DispatchQueue.main) { (progress) in
                 callbackHandler.progress?(progress)
         }
         
@@ -433,6 +439,7 @@ extension HttpUtils {
 
 // MARK: - 存储下载任务的字典 用于通过url获取下载任务 进而进行暂停/恢复/取消等操作
 public typealias DownloadRequestTask = [String: DownloadRequest]
+
 extension HttpUtils {
     
     public static var downloadRequestTask = DownloadRequestTask()
