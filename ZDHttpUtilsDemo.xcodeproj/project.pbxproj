@@ -31,7 +31,7 @@
 		616D913D22B8B9FB007CB67C /* Adapter+HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616D913C22B8B9FB007CB67C /* Adapter+HUD.swift */; };
 		616D913F22B8BAF2007CB67C /* Adapter+Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616D913E22B8BAF2007CB67C /* Adapter+Config.swift */; };
 		616D914122B8CFD1007CB67C /* Hud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616D914022B8CFD1007CB67C /* Hud.swift */; };
-		616D914322B8E16C007CB67C /* RequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616D914222B8E16B007CB67C /* RequestUtils.swift */; };
+		616D914922B9CE0E007CB67C /* RequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616D914822B9CE0E007CB67C /* RequestUtils.swift */; };
 		6195047F214B887700C838C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6195047E214B887700C838C5 /* AppDelegate.swift */; };
 		61950481214B887700C838C5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61950480214B887700C838C5 /* ViewController.swift */; };
 		61950484214B887700C838C5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61950482214B887700C838C5 /* Main.storyboard */; };
@@ -94,7 +94,7 @@
 		616D913C22B8B9FB007CB67C /* Adapter+HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Adapter+HUD.swift"; sourceTree = "<group>"; };
 		616D913E22B8BAF2007CB67C /* Adapter+Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Adapter+Config.swift"; sourceTree = "<group>"; };
 		616D914022B8CFD1007CB67C /* Hud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hud.swift; sourceTree = "<group>"; };
-		616D914222B8E16B007CB67C /* RequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RequestUtils.swift; path = ZDHttpUtilsDemo/HttpUtils/RequestUtils.swift; sourceTree = SOURCE_ROOT; };
+		616D914822B9CE0E007CB67C /* RequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestUtils.swift; sourceTree = "<group>"; };
 		6195047B214B887700C838C5 /* ZDHttpUtilsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZDHttpUtilsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6195047E214B887700C838C5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		61950480214B887700C838C5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -152,7 +152,7 @@
 				616D910022B8758A007CB67C /* HttpUtils.h */,
 				616D914022B8CFD1007CB67C /* Hud.swift */,
 				616D910C22B87741007CB67C /* String+MD5.swift */,
-				616D914222B8E16B007CB67C /* RequestUtils.swift */,
+				616D914822B9CE0E007CB67C /* RequestUtils.swift */,
 				616D913422B87F1D007CB67C /* ResponseResult.swift */,
 				616D912E22B87C16007CB67C /* AlamofireCodable.swift */,
 				616D913822B8B23F007CB67C /* Adapter.swift */,
@@ -422,7 +422,7 @@
 				616D912F22B87C16007CB67C /* AlamofireCodable.swift in Sources */,
 				616D912522B87A9E007CB67C /* MimeType.swift in Sources */,
 				616D913122B87D56007CB67C /* HttpUtils.swift in Sources */,
-				616D914322B8E16C007CB67C /* RequestUtils.swift in Sources */,
+				616D914922B9CE0E007CB67C /* RequestUtils.swift in Sources */,
 				616D913922B8B23F007CB67C /* Adapter.swift in Sources */,
 				616D913F22B8BAF2007CB67C /* Adapter+Config.swift in Sources */,
 			);
